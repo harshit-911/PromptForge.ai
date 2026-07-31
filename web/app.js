@@ -1193,9 +1193,13 @@ function renderProfessionalSecurityReportCard(text) {
   const escapeHtml = (str) => (str || "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 
   const extract = (block, field) => {
-    const reg = new RegExp("^\\s*\\*?\\*?" + field + "\\*?\\*?\\s*:\\s*([^\\n]+)", "im");
-    const m = block.match(reg);
-    return m ? m[1].replace(/[\*`]/g, '').trim() : "";
+    const reg = new RegExp("^\\s*\\*?\\*?" + field + "\\*?\\*?\\s*:\\s*([^\\n]+)", "gim");
+    const matches = [...block.matchAll(reg)];
+    if (matches.length > 0) {
+      const lastMatch = matches[matches.length - 1];
+      return lastMatch[1].replace(/[\*`]/g, '').trim();
+    }
+    return "";
   };
 
   const extractBlock = (blockText, field) => {

@@ -282,9 +282,9 @@ class BenchmarkEvaluator:
 
     def _extract_field(self, text: str, field_name: str) -> str:
         pattern = rf"^\s*\*?\*?{field_name}\*?\*?\s*:\s*([^\n]+)"
-        match = re.search(pattern, text, re.IGNORECASE | re.MULTILINE)
-        if match:
-            val = match.group(1).strip()
+        matches = list(re.finditer(pattern, text, re.IGNORECASE | re.MULTILINE))
+        if matches:
+            val = matches[-1].group(1).strip()
             val = re.sub(r"[\*`]", "", val)
             return val
         return ""

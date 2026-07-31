@@ -150,7 +150,7 @@ def run_playground(req: PlaygroundRequest):
         print(response_text)
         print("="*70)
 
-        parsed_audit = evaluator._parse_multi_finding_report(response_text, "VULNERABLE", "", False, req.test_input)
+        parsed_audit = evaluator._parse_multi_finding_report(response_text, "", "", False, req.test_input)
 
         print("\n" + "="*70)
         print("=== 4. PARSED REPORT JSON ===")
