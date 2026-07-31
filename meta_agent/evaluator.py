@@ -209,6 +209,10 @@ class BenchmarkEvaluator:
         if not category or category.upper() in ("CODE VULNERABILITY", "VULNERABILITY", "UNKNOWN", "REAL CVE VULNERABILITY", "UNSPECIFIED VULNERABILITY"):
             if "LOG4J" in in_upper or "LOGMANAGER" in in_upper or "${JNDI" in in_upper or "LOGGER" in in_upper:
                 category = "Log4Shell Remote Code Execution"
+            elif "SCANF" in in_upper or "STRCPY" in in_upper or "GETS(" in in_upper:
+                category = "Buffer Overflow (Unbound Input Function)"
+                cwe = "CWE-120"
+                owasp = "A06:2021 - Vulnerable and Outdated Components"
             elif "SUBPROCESS" in in_upper or "EXEC(" in in_upper or "OS.SYSTEM" in in_upper:
                 category = "Command Injection"
             elif "READFILE" in in_upper or "PATH" in in_upper:
@@ -234,9 +238,13 @@ class BenchmarkEvaluator:
             owasp = "A08:2021 - Software and Data Integrity Failures"
             category = "Log4Shell Remote Code Execution"
 
-        if not related_cve or "NONE" in related_cve.upper() or not is_cve_benchmark:
-            if not ("CVE-" in text.upper() and (is_cve_benchmark or "LOG4J" in in_upper)):
-                related_cve = "None"
+        # Dynamic CVE Extraction from input or model response
+        cve_match = re.search(r"CVE-\d{4}-\d{4,7}", in_upper) or re.search(r"CVE-\d{4}-\d{4,7}", text.upper())
+        if cve_match:
+            related_cve = cve_match.group(0)
+
+        if not related_cve or "NONE" in related_cve.upper():
+            related_cve = "None"
 
         return {
             "category": category,

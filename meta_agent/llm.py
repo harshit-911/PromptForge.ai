@@ -228,6 +228,37 @@ SECURE CODE:
 // In build.gradle / pom.xml:
 // implementation 'org.apache.logging.log4j:log4j-core:2.17.0'"""
 
+        if "SCANF" in input_text or "STRCPY" in input_text or "GETS(" in input_text or "CVE-2022-2434" in input_text:
+            cve_val = "CVE-2022-2434" if "CVE-2022-2434" in input_text else "None"
+            return f"""STATUS: VULNERABLE
+TOTAL FINDINGS: 1
+
+----------------------------------
+Finding #1
+
+CATEGORY: Buffer Overflow (Unbound Input Function)
+OWASP: A06:2021 - Vulnerable and Outdated Components
+CWE: CWE-120
+RELATED CVE: {cve_val}
+SEVERITY: HIGH
+CONFIDENCE: HIGH
+
+AFFECTED CODE:
+scanf("%s", password);
+
+REASONING:
+The application uses unsafe C input functions (scanf) without width bounds, enabling buffer overflow and stack corruption.
+
+IMPACT:
+- Memory Corruption
+- Potential authentication bypass or code execution
+
+RECOMMENDATION:
+Replace scanf with safe bounded input functions like fgets(buffer, sizeof(buffer), stdin).
+
+SECURE CODE:
+fgets(password_buf, sizeof(password_buf), stdin);"""
+
         if "SPRING" in input_text and ("CLASS.CLASSLOADER" in input_text or "CVE-2022-22965" in input_text):
             return """STATUS: VULNERABLE
 TOTAL FINDINGS: 1

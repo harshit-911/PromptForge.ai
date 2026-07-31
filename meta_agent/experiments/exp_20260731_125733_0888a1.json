@@ -1,0 +1,216 @@
+{
+  "experiment_id": "exp_20260731_125733_0888a1",
+  "timestamp": "2026-07-31T12:57:33.505155",
+  "benchmark_name": "vulnerability_audit",
+  "seed_prompt": "You are a code security auditor. Review the code snippet below and state whether it is SAFE or VULNERABLE.",
+  "optimized_prompt": "You are a code security auditor. Review the code snippet below and state whether it is SAFE or VULNERABLE.",
+  "iterations": 1,
+  "model": "llama3.2",
+  "execution_time_seconds": 51.74,
+  "total_token_usage": 3893,
+  "success_rate": 100.0,
+  "baseline_metrics": {
+    "accuracy": 100.0,
+    "precision": 100.0,
+    "recall": 100.0,
+    "f1": 100.0,
+    "passed": 6,
+    "failed": 0
+  },
+  "final_metrics": {
+    "accuracy": 100.0,
+    "precision": 100.0,
+    "recall": 100.0,
+    "f1": 100.0,
+    "passed": 6,
+    "failed": 0
+  },
+  "prompt_versions": [
+    {
+      "version": "v1.0",
+      "timestamp": "2026-07-31T12:57:33.505155",
+      "prompt_text": "You are a code security auditor. Review the code snippet below and state whether it is SAFE or VULNERABLE.",
+      "what_changed": "Baseline Seed Prompt",
+      "reason_for_change": "Optimal 100% accuracy reached at version v1.0.",
+      "metrics": {
+        "accuracy": 100.0,
+        "precision": 100.0,
+        "recall": 100.0,
+        "f1": 100.0,
+        "passed": 6,
+        "failed": 0
+      }
+    }
+  ],
+  "history": [
+    {
+      "version": "v1.0",
+      "generation": 1,
+      "prompt": "You are a code security auditor. Review the code snippet below and state whether it is SAFE or VULNERABLE.",
+      "accuracy": 100.0,
+      "precision": 100.0,
+      "recall": 100.0,
+      "f1": 100.0,
+      "passed": 6,
+      "total": 6,
+      "failures_count": 0,
+      "failures": [],
+      "detailed_results": [
+        {
+          "id": "sqli_001",
+          "input": "def get_user(username):\n    query = f\"SELECT * FROM users WHERE username = '{username}'\"\n    cursor.execute(query)\n    return cursor.fetchall()",
+          "expected": "VULNERABLE",
+          "predicted": "VULNERABLE",
+          "total_findings": 1,
+          "findings": [
+            {
+              "category": "SQL Injection",
+              "owasp": "A03:2021 - Injection",
+              "cwe": "CWE-89",
+              "related_cve": "None",
+              "severity": "HIGH",
+              "confidence": "HIGH",
+              "affected_code": "",
+              "reasoning": "",
+              "impact": "",
+              "recommendation": "",
+              "secure_code": ""
+            }
+          ],
+          "correct": true,
+          "quality_score": 90.0,
+          "raw_response": "**Security Vulnerability Analysis**\n\nThe provided code snippet is vulnerable to a SQL Injection attack.\n\nHere's why:\n\n1. **User Input**: The `username` parameter is directly inserted into the SQL query without any validation or sanitization.\n2. **SQL Injection**: An attacker can manipulate the input by providing malicious data, such as special characters (`'`, `;`, etc.), which can be used to inject additional SQL code.\n\n**Example Attack**\n\nSuppose an attacker wants to extract sensitive information from the database. They could enter a username like this:\n```sql\n' OR 1=1 --\n```\nThis would result in the following query being executed:\n```sql\nSELECT * FROM users WHERE username = '' OR 1=1 --'\n```\nThe `OR 1=1` condition is always true, allowing the attacker to bypass authentication and retrieve all user data.\n\n**Recommendations**\n\nTo fix this vulnerability:\n\n1. **Use Prepared Statements**: Use parameterized queries with prepared statements to separate the SQL code from the user input.\n2. **Validate User Input**: Validate and sanitize user input to prevent malicious characters from being injected into the query.\n3. **Escape Special Characters**: Escape special characters in the `username` variable using a library like `sqlparse` or `sqlite3`.\n\n**Secure Code Snippet**\n```python\nimport sqlite3\n\ndef get_user(username):\n    conn = sqlite3.connect('users.db')\n    cursor = conn.cursor()\n    \n    query = \"SELECT * FROM users WHERE username = ?\"\n    cursor.execute(query, (username,))\n    return cursor.fetchall()\n\nconn.close()\n```\nIn this revised code snippet:\n\n* We use a parameterized query with a `?` placeholder for the `username` variable.\n* The `username` variable is passed as a separate argument to the `execute()` method, which prevents SQL injection attacks.\n\nBy following these recommendations, you can significantly improve the security of your database interactions."
+        },
+        {
+          "id": "sqli_002",
+          "input": "def get_user_safe(username):\n    query = \"SELECT * FROM users WHERE username = %s\"\n    cursor.execute(query, (username,))\n    return cursor.fetchall()",
+          "expected": "SAFE",
+          "predicted": "SAFE",
+          "total_findings": 1,
+          "findings": [
+            {
+              "category": "SQL Injection",
+              "owasp": "A03:2021 - Injection",
+              "cwe": "CWE-89",
+              "related_cve": "None",
+              "severity": "HIGH",
+              "confidence": "HIGH",
+              "affected_code": "",
+              "reasoning": "",
+              "impact": "",
+              "recommendation": "**",
+              "secure_code": ""
+            }
+          ],
+          "correct": true,
+          "quality_score": 90.0,
+          "raw_response": "**Security Analysis**\n\nThe provided code snippet appears to be a part of a database interaction system. However, it has several security vulnerabilities that need to be addressed.\n\n### Vulnerability 1: SQL Injection\n\nThe `username` parameter is directly inserted into the SQL query without any sanitization or validation. This makes the application vulnerable to SQL injection attacks. An attacker could inject malicious SQL code by providing a specially crafted username, potentially leading to unauthorized data access or modification.\n\n**Example Attack:**\n\n```sql\nSELECT * FROM users WHERE username = 'Robert'); DROP TABLE users; --'\n```\n\n### Vulnerability 2: Lack of Input Validation\n\nThe function does not validate the input `username`. This could lead to issues if an attacker provides a malicious username, such as one that contains special characters or is too long.\n\n**Recommendation:**\n\nTo address these vulnerabilities, consider using parameterized queries with proper input validation and sanitization. Here's an updated version of the code:\n\n```python\ndef get_user_safe(username):\n    query = \"SELECT * FROM users WHERE username = %s\"\n    try:\n        cursor.execute(query, (username,))\n        return cursor.fetchall()\n    except TypeError:\n        # Handle invalid input type\n        raise ValueError(\"Invalid username format\")\n    except Exception as e:\n        # Handle database errors\n        logging.error(f\"Database error: {e}\")\n        raise\n```\n\n**Additional Recommendations:**\n\n1.  **Use prepared statements**: Instead of using string formatting, use parameterized queries to prevent SQL injection.\n2.  **Validate input**: Ensure that the `username` parameter meets the expected format and length constraints.\n3.  **Handle exceptions**: Catch specific exceptions to handle database errors and invalid input formats.\n\n**Updated Code:**\n\n```python\ndef get_user_safe(username):\n    query = \"SELECT * FROM users WHERE username = :username\"\n    try:\n        cursor.execute(query, {\"username\": username})\n        return cursor.fetchall()\n    except TypeError:\n        raise ValueError(\"Invalid username format\")\n    except Exception as e:\n        logging.error(f\"Database error: {e}\")\n        raise\n```\n\nBy addressing these security vulnerabilities and implementing proper input validation and sanitization, you can significantly improve the security of your database interaction system."
+        },
+        {
+          "id": "xss_001",
+          "input": "app.get('/search', (req, res) => {\n  const query = req.query.q;\n  res.send(`<h1>Results for: ${query}</h1>`);\n});",
+          "expected": "VULNERABLE",
+          "predicted": "VULNERABLE",
+          "total_findings": 1,
+          "findings": [
+            {
+              "category": "A03:2021-INJECTION",
+              "owasp": "Unspecified OWASP",
+              "cwe": "Unspecified CWE",
+              "related_cve": "None",
+              "severity": "HIGH",
+              "confidence": "HIGH",
+              "affected_code": "",
+              "reasoning": "",
+              "impact": "",
+              "recommendation": "",
+              "secure_code": ""
+            }
+          ],
+          "correct": true,
+          "quality_score": 60.0,
+          "raw_response": "**VULNERABLE**\n\nThis code snippet is vulnerable to several security issues:\n\n### 1. SQL Injection (Not applicable in this case)\n\nAlthough the provided code does not use a database, it's still important to note that if the `query` variable were to be used in a database query, an attacker could inject malicious SQL code.\n\n### 2. Cross-Site Scripting (XSS)\n\nThe code directly inserts user input (`query`) into the HTML response without any sanitization or escaping. This allows an attacker to inject malicious JavaScript code, potentially leading to a cross-site scripting vulnerability.\n\n**Example Attack:**\n\nIf an attacker visits `http://example.com/search?q=<script>alert('XSS')</script>` , they would see an alert box with \"XSS\" instead of the expected search results.\n\n### 3. Information Disclosure\n\nThe code logs the user's input (`query`) in plain text, which could potentially reveal sensitive information about the user or their system configuration.\n\n**Recommendations:**\n\nTo address these vulnerabilities:\n\n* Use parameterized queries or prepared statements to prevent SQL injection.\n* Sanitize and escape user input using a library like DOMPurify or a similar tool.\n* Log only necessary information and consider using a logging mechanism that masks sensitive data.\n\nHere's an updated version of the code with some basic security measures:\n```javascript\napp.get('/search', (req, res) => {\n  const query = req.query.q;\n  if (!query) return res.status(400).send('No search term provided');\n\n  // Sanitize and escape user input\n  const sanitizedQuery = DOMPurify.sanitize(query);\n\n  res.send(`<h1>Results for: ${sanitizedQuery}</h1>`);\n});\n```\nNote that this is just a basic example, and you should consider implementing additional security measures depending on your specific use case."
+        },
+        {
+          "id": "cmd_001",
+          "input": "import os\ndef ping_host(ip):\n    cmd = f\"ping -c 1 {ip}\"\n    return os.system(cmd)",
+          "expected": "VULNERABLE",
+          "predicted": "MALICIOUS",
+          "total_findings": 1,
+          "findings": [
+            {
+              "category": "Command Injection",
+              "owasp": "A03:2021 - Injection",
+              "cwe": "CWE-78",
+              "related_cve": "None",
+              "severity": "HIGH",
+              "confidence": "HIGH",
+              "affected_code": "",
+              "reasoning": "",
+              "impact": "",
+              "recommendation": "",
+              "secure_code": ""
+            }
+          ],
+          "correct": true,
+          "quality_score": 75.0,
+          "raw_response": "**Security Analysis**\n\nThe provided code snippet is a simple implementation of a `ping_host` function that takes an IP address as input and returns the exit status of the `ping` command. However, this code has several security vulnerabilities:\n\n### 1. Command Injection Vulnerability\n\nThe `cmd` variable is constructed by concatenating user-input data (`ip`) with a fixed string (`\"ping -c 1\"`). This allows an attacker to inject malicious commands by manipulating the input IP address.\n\n**Example Attack:**\n\n* Input: `192.168.1.100 ping -c 1 /bin/bash`\n* Output: The system will attempt to execute the `/bin/bash` command, potentially leading to a shell injection vulnerability.\n\n### 2. Lack of Error Handling\n\nThe function does not handle errors or exceptions that may occur during the execution of the `ping` command. This can lead to unexpected behavior or crashes if the command fails for any reason.\n\n**Example:**\n\n* Input: An IP address that is not reachable.\n* Output: The function will return a non-zero exit status, but it does not provide any meaningful error message or indication of what went wrong.\n\n### 3. Potential Information Disclosure\n\nThe `os.system` call returns the exit status of the command, which may contain information about the target system's configuration or security settings.\n\n**Example:**\n\n* Input: An IP address that is not reachable.\n* Output: The function will return a non-zero exit status, potentially revealing information about the target system's network configuration or firewall rules.\n\n### Recommendations\n\nTo address these vulnerabilities, consider the following modifications:\n\n1. **Use parameterized queries**: Instead of concatenating user-input data with fixed strings, use parameterized queries to prevent command injection attacks.\n2. **Implement error handling**: Add try-except blocks to handle errors and exceptions that may occur during command execution.\n3. **Return meaningful values**: Return a standardized exit status or error code instead of relying on the `os.system` return value.\n\nHere's an updated implementation incorporating these recommendations:\n```python\nimport os\n\ndef ping_host(ip):\n    try:\n        cmd = [\"ping\", \"-c\", \"1\", ip]\n        output = os.popen(\" \".join(cmd)).read()\n        if output.strip() == \"\":\n            return 0  # Host is reachable\n        else:\n            return 1  # Host is not reachable\n    except Exception as e:\n        print(f\"Error: {e}\")\n        return -1  # Error occurred during command execution\n```\nThis updated implementation uses parameterized queries, implements basic error handling, and returns a standardized exit status to indicate the result of the `ping` operation."
+        },
+        {
+          "id": "path_001",
+          "input": "def read_user_file(filename):\n    with open('/var/www/uploads/' + filename, 'r') as f:\n        return f.read()",
+          "expected": "VULNERABLE",
+          "predicted": "VULNERABLE",
+          "total_findings": 1,
+          "findings": [
+            {
+              "category": "A01:2021-BROKEN ACCESS CONTROL",
+              "owasp": "A01:2021 - Broken Access Control",
+              "cwe": "CWE-285",
+              "related_cve": "None",
+              "severity": "HIGH",
+              "confidence": "HIGH",
+              "affected_code": "",
+              "reasoning": "",
+              "impact": "",
+              "recommendation": "",
+              "secure_code": ""
+            }
+          ],
+          "correct": true,
+          "quality_score": 90.0,
+          "raw_response": "**Security Vulnerability Analysis**\n\nThe provided code snippet is vulnerable to several security risks. Here's a breakdown of the issues:\n\n1. **Path Traversal**: The code uses string concatenation to construct the file path. This allows an attacker to manipulate the `filename` parameter, potentially leading to directory traversal attacks.\n\n   Example: An attacker could pass `filename/../etc/passwd` to read sensitive system files.\n\n2. **Lack of Input Validation**: The function does not validate or sanitize the input `filename`. This makes it possible for an attacker to inject malicious code by providing a specially crafted filename.\n\n3. **File Permissions**: The file is opened in read-only mode (`'r'`). However, if the file exists but is owned by a different user or group, the script may not have permission to read its contents.\n\n4. **Error Handling**: There is no error handling mechanism in place. If an error occurs while reading the file (e.g., due to permissions issues), the function will terminate abruptly without providing any useful information.\n\n**Recommendations**\n\nTo address these vulnerabilities:\n\n1.  Use a secure way to construct the file path, such as using `os.path.join()` or `pathlib.Path` to avoid path traversal attacks.\n2.  Validate and sanitize user input to prevent injection attacks.\n3.  Ensure proper permissions for the script to read files in the upload directory.\n4.  Implement robust error handling mechanisms.\n\nHere's an updated version of the code incorporating these recommendations:\n\n```python\nimport os\n\ndef read_user_file(filename):\n    \"\"\"\n    Reads a file from the uploads directory while ensuring security.\n\n    Args:\n        filename (str): The name of the file to be read.\n\n    Returns:\n        str: The contents of the file.\n    \"\"\"\n\n    # Validate and sanitize input\n    if not isinstance(filename, str) or len(filename.strip()) == 0:\n        raise ValueError(\"Invalid filename\")\n\n    try:\n        # Use os.path.join() for secure path construction\n        filepath = os.path.join('/var/www/uploads/', filename)\n\n        with open(filepath, 'r') as f:\n            return f.read()\n\n    except FileNotFoundError:\n        # Handle file not found errors\n        print(f\"File '{filename}' not found\")\n        return None\n\n    except PermissionError:\n        # Handle permission errors\n        print(f\"No permission to read file '{filename}'\")\n        return None\n\n    except Exception as e:\n        # Catch and handle any other exceptions\n        print(f\"An error occurred: {e}\")\n        return None\n```\n\nThis updated code addresses the identified security vulnerabilities by using secure path construction, input validation, proper permissions handling, and robust error handling."
+        },
+        {
+          "id": "ssrf_001",
+          "input": "import requests\ndef fetch_avatar(user_url):\n    res = requests.get(user_url)\n    return res.content",
+          "expected": "VULNERABLE",
+          "predicted": "VULNERABLE",
+          "total_findings": 1,
+          "findings": [
+            {
+              "category": "A10:2021-SERVER-SIDE REQUEST FORGERY",
+              "owasp": "A10:2021 - Server-Side Request Forgery (SSRF)",
+              "cwe": "CWE-918",
+              "related_cve": "None",
+              "severity": "HIGH",
+              "confidence": "HIGH",
+              "affected_code": "",
+              "reasoning": "",
+              "impact": "",
+              "recommendation": "",
+              "secure_code": ""
+            }
+          ],
+          "correct": true,
+          "quality_score": 75.0,
+          "raw_response": "**Security Analysis**\n\nThe provided code snippet appears to be a simple function that fetches an avatar image from a given user URL using the `requests` library. However, there are some potential security vulnerabilities and concerns:\n\n1. **Insecure Direct Object Reference (IDOR)**: The `user_url` parameter is not validated or sanitized in any way. This could lead to an attacker manipulating the URL to access unauthorized avatar images or potentially other sensitive data.\n2. **Lack of Content-Type Handling**: The code does not check the content type of the response, which could indicate that the server is sending a different type of data (e.g., HTML) instead of the expected image.\n3. **No Error Handling**: The function does not handle any errors that may occur during the request, such as network issues or server errors.\n\n**Recommendations**\n\nTo improve the security and robustness of this code:\n\n1. Validate and sanitize the `user_url` parameter to prevent IDOR attacks.\n2. Check the content type of the response to ensure it's an image.\n3. Implement error handling to catch and handle any exceptions that may occur during the request.\n\n**Updated Code**\n\n```python\nimport requests\n\ndef fetch_avatar(user_url):\n    \"\"\"\n    Fetches an avatar image from a given user URL.\n\n    Args:\n        user_url (str): The URL of the avatar image.\n\n    Returns:\n        bytes: The content of the avatar image.\n    \"\"\"\n\n    # Validate and sanitize the user_url parameter\n    if not isinstance(user_url, str) or not user_url.startswith('https://'):\n        raise ValueError(\"Invalid user URL\")\n\n    try:\n        res = requests.get(user_url)\n        res.raise_for_status()  # Raise an exception for HTTP errors\n\n        # Check the content type of the response\n        if res.headers['Content-Type'].startswith('image/'):\n            return res.content\n        else:\n            raise ValueError(\"Expected image, but got {}\".format(res.headers['Content-Type']))\n    except requests.RequestException as e:\n        raise Exception(\"Failed to fetch avatar: {}\".format(e))\n```\n\n**Conclusion**\n\nThe original code snippet is VULNERABLE due to the lack of input validation and error handling. The updated code addresses these concerns by validating the `user_url` parameter, checking the content type of the response, and implementing basic error handling."
+        }
+      ],
+      "estimated_tokens": 3893,
+      "optimizer_reasoning": "Optimal 100% accuracy reached at version v1.0.",
+      "confidence_score": 100,
+      "confidence_level": "High"
+    }
+  ]
+}
