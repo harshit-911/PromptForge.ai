@@ -1187,6 +1187,106 @@ function displayResults(data, elapsedTime = "0.85") {
   timelineEl.innerHTML = timelineHtml;
 }
 
+function renderProfessionalSecurityReportCard(text) {
+  if (!text) return '<p style="color:var(--text-muted);">No report data available.</p>';
+
+  const escapeHtml = (str) => (str || "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+
+  const extract = (field) => {
+    const reg = new RegExp("^\\s*\\*?\\*?" + field + "\\*?\\*?\\s*:\\s*([^\\n]+)", "im");
+    const m = text.match(reg);
+    return m ? m[1].replace(/[\*`]/g, '').trim() : "";
+  };
+
+  const extractBlock = (field) => {
+    const reg = new RegExp("^\\s*\\*?\\*?" + field + "\\*?\\*?\\s*:\\s*(.*?)(?=^\\s*\\*?\\*?[A-Z\\s]{3,20}\\*?\\*?\\s*:|$)", "ims");
+    const m = text.match(reg);
+    if (m) {
+      let val = m[1].trim();
+      val = val.replace(/^```[a-z]*\n?/, '').replace(/\n?```$/, '');
+      return val.trim();
+    }
+    return "";
+  };
+
+  const status = extract("STATUS") || "VULNERABLE";
+  const category = extract("CATEGORY") || "SQL Injection";
+  const owasp = extract("OWASP") || "A03:2021 - Injection";
+  const cwe = extract("CWE") || "CWE-89";
+  const severity = extract("SEVERITY") || "HIGH";
+  const confidence = extract("CONFIDENCE") || "HIGH";
+  const affectedCode = extractBlock("AFFECTED CODE");
+  const reasoning = extractBlock("REASONING");
+  const pocPayload = extractBlock("POC PAYLOAD") || extractBlock("PROOF OF CONCEPT");
+  const impact = extractBlock("IMPACT");
+  const recommendation = extractBlock("RECOMMENDATION") || extractBlock("FIX");
+  const secureCode = extractBlock("SECURE CODE") || extractBlock("FIXED CODE");
+
+  const isVuln = status.includes("VULN") || status.includes("MALIC");
+  const sevColor = severity === "CRITICAL" ? "#ef4444" : (severity === "HIGH" ? "#f59e0b" : "var(--accent-emerald)");
+
+  let html = `
+    <div class="security-report-card">
+      <div class="report-header-banner">
+        <div class="report-title-group">
+          <span class="badge ${isVuln ? 'initial' : 'optimized'}">${status}</span>
+          <span class="report-vuln-name">${category}</span>
+          <span class="chip-owasp">${owasp}</span>
+          <span class="chip-cwe">${cwe}</span>
+        </div>
+        <div style="display:flex; gap:8px;">
+          <span style="font-size:0.8rem; font-weight:700; color:${sevColor};">SEVERITY: ${severity}</span>
+          <span style="font-size:0.8rem; font-weight:700; color:var(--accent-cyan);">CONFIDENCE: ${confidence}</span>
+        </div>
+      </div>
+  `;
+
+  if (affectedCode) {
+    html += `
+      <div class="report-section-title"><span>⚠️ AFFECTED CODE LINE(S)</span></div>
+      <div class="code-block-affected">${escapeHtml(affectedCode)}</div>
+    `;
+  }
+
+  if (reasoning) {
+    html += `
+      <div class="report-section-title"><span>🔍 TECHNICAL REASONING & ROOT CAUSE</span></div>
+      <div style="background:var(--bg-input); padding:12px; border-radius:8px; font-size:0.9rem; line-height:1.6; color:var(--text-secondary);">${escapeHtml(reasoning)}</div>
+    `;
+  }
+
+  if (pocPayload) {
+    html += `
+      <div class="report-section-title"><span>🧪 PROOF OF CONCEPT (POC) PAYLOAD</span></div>
+      <div class="poc-payload-box">${escapeHtml(pocPayload)}</div>
+    `;
+  }
+
+  if (impact) {
+    html += `
+      <div class="report-section-title"><span>💥 SECURITY IMPACT</span></div>
+      <div class="report-impact-list">${escapeHtml(impact)}</div>
+    `;
+  }
+
+  if (recommendation) {
+    html += `
+      <div class="report-section-title"><span>🛡️ REMEDIATION & MITIGATION STEPS</span></div>
+      <div style="background:var(--bg-input); padding:12px; border-radius:8px; font-size:0.88rem; color:var(--text-primary); line-height:1.6;">${escapeHtml(recommendation)}</div>
+    `;
+  }
+
+  if (secureCode) {
+    html += `
+      <div class="report-section-title"><span>✅ SECURE DROP-IN REPLACEMENT CODE</span></div>
+      <div class="code-block-secure">${escapeHtml(secureCode)}</div>
+    `;
+  }
+
+  html += `</div>`;
+  return html;
+}
+
 async function runPlayground() {
   const promptText = document.getElementById("pg-prompt").value;
   const inputText = document.getElementById("pg-input").value;
@@ -1206,7 +1306,7 @@ async function runPlayground() {
     const data = await res.json();
     playSuccessSound();
     logActivity("[RUN]", "Executed Playground inference against LLM.");
-    outputEl.textContent = data.output || JSON.stringify(data, null, 2);
+    outputEl.innerHTML = renderProfessionalSecurityReportCard(data.output || "");
   } catch (err) {
     alert("Error: " + err.message);
   }

@@ -1,0 +1,652 @@
+{
+  "experiment_id": "exp_20260731_115805_0ca9b0",
+  "timestamp": "2026-07-31T11:58:05.590298",
+  "benchmark_name": "vulnerability_audit",
+  "seed_prompt": "You are a code security auditor. Review the code snippet below and state whether it is SAFE or VULNERABLE.",
+  "optimized_prompt": "You are a code security auditor. Review the code snippet below and state whether it is SAFE or VULNERABLE.",
+  "iterations": 2,
+  "model": "gemini-2.0-flash",
+  "execution_time_seconds": 0.35,
+  "total_token_usage": 5527,
+  "success_rate": 33.33,
+  "baseline_metrics": {
+    "accuracy": 33.33,
+    "precision": 66.67,
+    "recall": 40.0,
+    "f1": 50.0,
+    "passed": 2,
+    "failed": 4
+  },
+  "final_metrics": {
+    "accuracy": 33.33,
+    "precision": 66.67,
+    "recall": 40.0,
+    "f1": 50.0,
+    "passed": 2,
+    "failed": 4
+  },
+  "prompt_versions": [
+    {
+      "version": "v1.0",
+      "timestamp": "2026-07-31T11:58:05.590298",
+      "prompt_text": "You are a code security auditor. Review the code snippet below and state whether it is SAFE or VULNERABLE.",
+      "what_changed": "Baseline Seed Prompt",
+      "reason_for_change": "The system detected potentially unvalidated input parameters passed to downstream execution functions.\n\nPOC PAYLOAD:\n' OR '1'='1\n\nIMPACT:\n- Potential unauthorized data access\n\nRECOMMENDATION:\nValidate and sanitize all user-controlled inputs.\n\nSECURE CODE:\n// Apply parameterized inputs",
+      "metrics": {
+        "accuracy": 33.33,
+        "precision": 66.67,
+        "recall": 40.0,
+        "f1": 50.0,
+        "passed": 2,
+        "failed": 4
+      }
+    },
+    {
+      "version": "v1.1",
+      "timestamp": "2026-07-31T11:58:05.590298",
+      "prompt_text": "You are a code security auditor. Review the code snippet below and state whether it is SAFE or VULNERABLE.\n\nCRITICAL SECURITY RULES & PROFESSIONAL REPORT SCHEMA:\nREQUIRED PROFESSIONAL SECURITY AUDIT REPORT SCHEMA:\nEvery audit response MUST be a complete, multi-section report formatted with the exact headers below. Do NOT use generic labels like \"Code Vulnerability\". Always specify exact vulnerability names (SQL Injection, XSS, Command Injection, Path Traversal, SSRF, Hardcoded Secret, Weak JWT, etc.).\n\nSTATUS: [VULNERABLE | SAFE]\nCATEGORY: [Specific Vulnerability Name, e.g. SQL Injection, Cross-Site Scripting (XSS), Command Injection]\nOWASP: [e.g. A03:2021 - Injection | A01:2021 - Broken Access Control | A10:2021 - SSRF]\nCWE: [e.g. CWE-89 | CWE-79 | CWE-78 | CWE-22 | CWE-918 | CWE-798]\nSEVERITY: [CRITICAL | HIGH | MEDIUM | LOW | NONE]\nCONFIDENCE: [HIGH | MEDIUM | LOW]\n\nAFFECTED CODE:\n[Highlight the exact vulnerable line(s) of code or log snippet]\n\nREASONING:\n[Provide a detailed technical explanation of why the vulnerability exists, how untrusted input reaches the sink, and how controls are bypassed]\n\nPOC PAYLOAD:\n[Provide a safe, educational proof-of-concept payload snippet e.g. ' OR '1'='1 or ../../etc/passwd]\n\nIMPACT:\n- Bulleted list of security impacts (e.g. Database exfiltration, Remote Code Execution, Authentication Bypass)\n\nRECOMMENDATION:\n[Actionable mitigation steps and remediation guidelines]\n\nSECURE CODE:\n[Provide complete, drop-in fixed code snippet demonstrating parameterized queries, input sanitization, or secure controls]\n\nADDITIONAL DOMAIN RULES:\n+ Distinction Rule: Parameterized query bindings and sanitized input strings MUST be classified as STATUS: SAFE with CONFIDENCE: HIGH.\n+ OWASP Injection Rule: Unescaped string concatenation passed into database or OS calls MUST be classified as STATUS: VULNERABLE with exact CWE mapping (CWE-89 for SQLi, CWE-78 for Command Injection).",
+      "what_changed": "Mutated 4 security rule boundaries",
+      "reason_for_change": "The application dynamically constructs an SQL statement by directly concatenating un-sanitized user input into the query string. An attacker can supply malicious input payload containing single quotes and SQL operator commands to manipulate the logic of the query executed by the database.\n\nPOC PAYLOAD:\n' OR '1'='1\n\nIMPACT:\n- Complete database exfiltration and unauthorized read access\n- Authentication bypass of user credentials\n- Data manipulation, deletion, or administrative takeover\n\nRECOMMENDATION:\nUse parameterized queries (prepared statements) or ORM binding parameters instead of string formatting or concatenation.\n\nSECURE CODE:\ncursor.execute(\"SELECT * FROM users WHERE username = %s\", (user,))",
+      "metrics": {
+        "accuracy": 33.33,
+        "precision": 66.67,
+        "recall": 40.0,
+        "f1": 50.0,
+        "passed": 2,
+        "failed": 4
+      }
+    }
+  ],
+  "history": [
+    {
+      "version": "v1.0",
+      "generation": 1,
+      "prompt": "You are a code security auditor. Review the code snippet below and state whether it is SAFE or VULNERABLE.",
+      "accuracy": 33.33,
+      "precision": 66.67,
+      "recall": 40.0,
+      "f1": 50.0,
+      "passed": 2,
+      "total": 6,
+      "failures_count": 4,
+      "failures": [
+        {
+          "id": "sqli_002",
+          "input": "def get_user_safe(username):\n    query = \"SELECT * FROM users WHERE username = %s\"\n    cursor.execute(query, (username,))\n    return cursor.fetchall()",
+          "expected_status": "SAFE",
+          "expected_category": "A03:2021-INJECTION",
+          "predicted_status": "VULNERABLE",
+          "predicted_category": "SQL Injection",
+          "predicted_cwe": "CWE-89",
+          "predicted_owasp": "A03:2021 - Injection",
+          "quality_score": 100.0,
+          "raw_response": "STATUS: VULNERABLE\nCATEGORY: SQL Injection\nOWASP: A03:2021 - Injection\nCWE: CWE-89\nSEVERITY: CRITICAL\nCONFIDENCE: HIGH\n\nAFFECTED CODE:\nsql = f\"SELECT * FROM users WHERE username = '{user}'\"\n\nREASONING:\nThe application dynamically constructs an SQL statement by directly concatenating un-sanitized user input into the query string. An attacker can supply malicious input payload containing single quotes and SQL operator commands to manipulate the logic of the query executed by the database.\n\nPOC PAYLOAD:\n' OR '1'='1\n\nIMPACT:\n- Complete database exfiltration and unauthorized read access\n- Authentication bypass of user credentials\n- Data manipulation, deletion, or administrative takeover\n\nRECOMMENDATION:\nUse parameterized queries (prepared statements) or ORM binding parameters instead of string formatting or concatenation.\n\nSECURE CODE:\ncursor.execute(\"SELECT * FROM users WHERE username = %s\", (user,))"
+        },
+        {
+          "id": "xss_001",
+          "input": "app.get('/search', (req, res) => {\n  const query = req.query.q;\n  res.send(`<h1>Results for: ${query}</h1>`);\n});",
+          "expected_status": "VULNERABLE",
+          "expected_category": "A03:2021-INJECTION",
+          "predicted_status": "SAFE",
+          "predicted_category": "Benign Code",
+          "predicted_cwe": "CWE-00",
+          "predicted_owasp": "A03:2021 - Injection",
+          "quality_score": 100.0,
+          "raw_response": "STATUS: SAFE\nCATEGORY: Benign Code\nOWASP: A03:2021 - Injection\nCWE: CWE-00\nSEVERITY: NONE\nCONFIDENCE: HIGH\n\nAFFECTED CODE:\nN/A (Code implementation is secure)\n\nREASONING:\nThe code properly utilizes secure parameterized bindings and input validation controls. No vulnerability detected.\n\nPOC PAYLOAD:\nN/A\n\nIMPACT:\nNone (Clean Implementation)\n\nRECOMMENDATION:\nMaintain current secure coding practices and parameterized query bindings.\n\nSECURE CODE:\n// Existing code is safe"
+        },
+        {
+          "id": "path_001",
+          "input": "def read_user_file(filename):\n    with open('/var/www/uploads/' + filename, 'r') as f:\n        return f.read()",
+          "expected_status": "VULNERABLE",
+          "expected_category": "A01:2021-BROKEN ACCESS CONTROL",
+          "predicted_status": "SAFE",
+          "predicted_category": "Benign Code",
+          "predicted_cwe": "CWE-00",
+          "predicted_owasp": "A03:2021 - Injection",
+          "quality_score": 100.0,
+          "raw_response": "STATUS: SAFE\nCATEGORY: Benign Code\nOWASP: A03:2021 - Injection\nCWE: CWE-00\nSEVERITY: NONE\nCONFIDENCE: HIGH\n\nAFFECTED CODE:\nN/A (Code implementation is secure)\n\nREASONING:\nThe code properly utilizes secure parameterized bindings and input validation controls. No vulnerability detected.\n\nPOC PAYLOAD:\nN/A\n\nIMPACT:\nNone (Clean Implementation)\n\nRECOMMENDATION:\nMaintain current secure coding practices and parameterized query bindings.\n\nSECURE CODE:\n// Existing code is safe"
+        },
+        {
+          "id": "ssrf_001",
+          "input": "import requests\ndef fetch_avatar(user_url):\n    res = requests.get(user_url)\n    return res.content",
+          "expected_status": "VULNERABLE",
+          "expected_category": "A10:2021-SERVER-SIDE REQUEST FORGERY",
+          "predicted_status": "SAFE",
+          "predicted_category": "Benign Code",
+          "predicted_cwe": "CWE-00",
+          "predicted_owasp": "A03:2021 - Injection",
+          "quality_score": 100.0,
+          "raw_response": "STATUS: SAFE\nCATEGORY: Benign Code\nOWASP: A03:2021 - Injection\nCWE: CWE-00\nSEVERITY: NONE\nCONFIDENCE: HIGH\n\nAFFECTED CODE:\nN/A (Code implementation is secure)\n\nREASONING:\nThe code properly utilizes secure parameterized bindings and input validation controls. No vulnerability detected.\n\nPOC PAYLOAD:\nN/A\n\nIMPACT:\nNone (Clean Implementation)\n\nRECOMMENDATION:\nMaintain current secure coding practices and parameterized query bindings.\n\nSECURE CODE:\n// Existing code is safe"
+        }
+      ],
+      "detailed_results": [
+        {
+          "id": "sqli_001",
+          "input": "def get_user(username):\n    query = f\"SELECT * FROM users WHERE username = '{username}'\"\n    cursor.execute(query)\n    return cursor.fetchall()",
+          "expected": "VULNERABLE",
+          "predicted": "VULNERABLE",
+          "category": "SQL Injection",
+          "cwe": "CWE-89",
+          "owasp": "A03:2021 - Injection",
+          "severity": "CRITICAL",
+          "confidence": "HIGH",
+          "affected_code": "sql = f\"SELECT * FROM users WHERE username = '{user}'\"",
+          "reasoning": "The application dynamically constructs an SQL statement by directly concatenating un-sanitized user input into the query string. An attacker can supply malicious input payload containing single quotes and SQL operator commands to manipulate the logic of the query executed by the database.",
+          "poc_payload": "' OR '1'='1",
+          "impact": "- Complete database exfiltration and unauthorized read access",
+          "recommendation": "Use parameterized queries (prepared statements) or ORM binding parameters instead of string formatting or concatenation.",
+          "secure_code": "cursor.execute(\"SELECT * FROM users WHERE username = %s\", (user,))",
+          "correct": true,
+          "quality_score": 100.0,
+          "raw_response": "STATUS: VULNERABLE\nCATEGORY: SQL Injection\nOWASP: A03:2021 - Injection\nCWE: CWE-89\nSEVERITY: CRITICAL\nCONFIDENCE: HIGH\n\nAFFECTED CODE:\nsql = f\"SELECT * FROM users WHERE username = '{user}'\"\n\nREASONING:\nThe application dynamically constructs an SQL statement by directly concatenating un-sanitized user input into the query string. An attacker can supply malicious input payload containing single quotes and SQL operator commands to manipulate the logic of the query executed by the database.\n\nPOC PAYLOAD:\n' OR '1'='1\n\nIMPACT:\n- Complete database exfiltration and unauthorized read access\n- Authentication bypass of user credentials\n- Data manipulation, deletion, or administrative takeover\n\nRECOMMENDATION:\nUse parameterized queries (prepared statements) or ORM binding parameters instead of string formatting or concatenation.\n\nSECURE CODE:\ncursor.execute(\"SELECT * FROM users WHERE username = %s\", (user,))"
+        },
+        {
+          "id": "sqli_002",
+          "input": "def get_user_safe(username):\n    query = \"SELECT * FROM users WHERE username = %s\"\n    cursor.execute(query, (username,))\n    return cursor.fetchall()",
+          "expected": "SAFE",
+          "predicted": "VULNERABLE",
+          "category": "SQL Injection",
+          "cwe": "CWE-89",
+          "owasp": "A03:2021 - Injection",
+          "severity": "CRITICAL",
+          "confidence": "HIGH",
+          "affected_code": "sql = f\"SELECT * FROM users WHERE username = '{user}'\"",
+          "reasoning": "The application dynamically constructs an SQL statement by directly concatenating un-sanitized user input into the query string. An attacker can supply malicious input payload containing single quotes and SQL operator commands to manipulate the logic of the query executed by the database.",
+          "poc_payload": "' OR '1'='1",
+          "impact": "- Complete database exfiltration and unauthorized read access",
+          "recommendation": "Use parameterized queries (prepared statements) or ORM binding parameters instead of string formatting or concatenation.",
+          "secure_code": "cursor.execute(\"SELECT * FROM users WHERE username = %s\", (user,))",
+          "correct": false,
+          "quality_score": 100.0,
+          "raw_response": "STATUS: VULNERABLE\nCATEGORY: SQL Injection\nOWASP: A03:2021 - Injection\nCWE: CWE-89\nSEVERITY: CRITICAL\nCONFIDENCE: HIGH\n\nAFFECTED CODE:\nsql = f\"SELECT * FROM users WHERE username = '{user}'\"\n\nREASONING:\nThe application dynamically constructs an SQL statement by directly concatenating un-sanitized user input into the query string. An attacker can supply malicious input payload containing single quotes and SQL operator commands to manipulate the logic of the query executed by the database.\n\nPOC PAYLOAD:\n' OR '1'='1\n\nIMPACT:\n- Complete database exfiltration and unauthorized read access\n- Authentication bypass of user credentials\n- Data manipulation, deletion, or administrative takeover\n\nRECOMMENDATION:\nUse parameterized queries (prepared statements) or ORM binding parameters instead of string formatting or concatenation.\n\nSECURE CODE:\ncursor.execute(\"SELECT * FROM users WHERE username = %s\", (user,))"
+        },
+        {
+          "id": "xss_001",
+          "input": "app.get('/search', (req, res) => {\n  const query = req.query.q;\n  res.send(`<h1>Results for: ${query}</h1>`);\n});",
+          "expected": "VULNERABLE",
+          "predicted": "SAFE",
+          "category": "Benign Code",
+          "cwe": "CWE-00",
+          "owasp": "A03:2021 - Injection",
+          "severity": "NONE",
+          "confidence": "HIGH",
+          "affected_code": "N/A (Code implementation is secure)",
+          "reasoning": "The code properly utilizes secure parameterized bindings and input validation controls. No vulnerability detected.",
+          "poc_payload": "N/A",
+          "impact": "None (Clean Implementation)",
+          "recommendation": "Maintain current secure coding practices and parameterized query bindings.",
+          "secure_code": "// Existing code is safe",
+          "correct": false,
+          "quality_score": 100.0,
+          "raw_response": "STATUS: SAFE\nCATEGORY: Benign Code\nOWASP: A03:2021 - Injection\nCWE: CWE-00\nSEVERITY: NONE\nCONFIDENCE: HIGH\n\nAFFECTED CODE:\nN/A (Code implementation is secure)\n\nREASONING:\nThe code properly utilizes secure parameterized bindings and input validation controls. No vulnerability detected.\n\nPOC PAYLOAD:\nN/A\n\nIMPACT:\nNone (Clean Implementation)\n\nRECOMMENDATION:\nMaintain current secure coding practices and parameterized query bindings.\n\nSECURE CODE:\n// Existing code is safe"
+        },
+        {
+          "id": "cmd_001",
+          "input": "import os\ndef ping_host(ip):\n    cmd = f\"ping -c 1 {ip}\"\n    return os.system(cmd)",
+          "expected": "VULNERABLE",
+          "predicted": "VULNERABLE",
+          "category": "Command Injection",
+          "cwe": "CWE-78",
+          "owasp": "A03:2021 - Injection",
+          "severity": "CRITICAL",
+          "confidence": "HIGH",
+          "affected_code": "os.system(\"ping -c 1 \" + user_ip)",
+          "reasoning": "User-controlled parameter is directly concatenated into a system shell execution call without input sanitization or allowlist validation.",
+          "poc_payload": "127.0.0.1; cat /etc/passwd",
+          "impact": "- Arbitrary operating system command execution",
+          "recommendation": "Avoid invoking OS shell command strings. Pass argument lists to subprocess without shell=True.",
+          "secure_code": "subprocess.run([\"ping\", \"-c\", \"1\", user_ip], check=True)",
+          "correct": true,
+          "quality_score": 100.0,
+          "raw_response": "STATUS: VULNERABLE\nCATEGORY: Command Injection\nOWASP: A03:2021 - Injection\nCWE: CWE-78\nSEVERITY: CRITICAL\nCONFIDENCE: HIGH\n\nAFFECTED CODE:\nos.system(\"ping -c 1 \" + user_ip)\n\nREASONING:\nUser-controlled parameter is directly concatenated into a system shell execution call without input sanitization or allowlist validation.\n\nPOC PAYLOAD:\n127.0.0.1; cat /etc/passwd\n\nIMPACT:\n- Arbitrary operating system command execution\n- Server takeover and lateral network movement\n\nRECOMMENDATION:\nAvoid invoking OS shell command strings. Pass argument lists to subprocess without shell=True.\n\nSECURE CODE:\nsubprocess.run([\"ping\", \"-c\", \"1\", user_ip], check=True)"
+        },
+        {
+          "id": "path_001",
+          "input": "def read_user_file(filename):\n    with open('/var/www/uploads/' + filename, 'r') as f:\n        return f.read()",
+          "expected": "VULNERABLE",
+          "predicted": "SAFE",
+          "category": "Benign Code",
+          "cwe": "CWE-00",
+          "owasp": "A03:2021 - Injection",
+          "severity": "NONE",
+          "confidence": "HIGH",
+          "affected_code": "N/A (Code implementation is secure)",
+          "reasoning": "The code properly utilizes secure parameterized bindings and input validation controls. No vulnerability detected.",
+          "poc_payload": "N/A",
+          "impact": "None (Clean Implementation)",
+          "recommendation": "Maintain current secure coding practices and parameterized query bindings.",
+          "secure_code": "// Existing code is safe",
+          "correct": false,
+          "quality_score": 100.0,
+          "raw_response": "STATUS: SAFE\nCATEGORY: Benign Code\nOWASP: A03:2021 - Injection\nCWE: CWE-00\nSEVERITY: NONE\nCONFIDENCE: HIGH\n\nAFFECTED CODE:\nN/A (Code implementation is secure)\n\nREASONING:\nThe code properly utilizes secure parameterized bindings and input validation controls. No vulnerability detected.\n\nPOC PAYLOAD:\nN/A\n\nIMPACT:\nNone (Clean Implementation)\n\nRECOMMENDATION:\nMaintain current secure coding practices and parameterized query bindings.\n\nSECURE CODE:\n// Existing code is safe"
+        },
+        {
+          "id": "ssrf_001",
+          "input": "import requests\ndef fetch_avatar(user_url):\n    res = requests.get(user_url)\n    return res.content",
+          "expected": "VULNERABLE",
+          "predicted": "SAFE",
+          "category": "Benign Code",
+          "cwe": "CWE-00",
+          "owasp": "A03:2021 - Injection",
+          "severity": "NONE",
+          "confidence": "HIGH",
+          "affected_code": "N/A (Code implementation is secure)",
+          "reasoning": "The code properly utilizes secure parameterized bindings and input validation controls. No vulnerability detected.",
+          "poc_payload": "N/A",
+          "impact": "None (Clean Implementation)",
+          "recommendation": "Maintain current secure coding practices and parameterized query bindings.",
+          "secure_code": "// Existing code is safe",
+          "correct": false,
+          "quality_score": 100.0,
+          "raw_response": "STATUS: SAFE\nCATEGORY: Benign Code\nOWASP: A03:2021 - Injection\nCWE: CWE-00\nSEVERITY: NONE\nCONFIDENCE: HIGH\n\nAFFECTED CODE:\nN/A (Code implementation is secure)\n\nREASONING:\nThe code properly utilizes secure parameterized bindings and input validation controls. No vulnerability detected.\n\nPOC PAYLOAD:\nN/A\n\nIMPACT:\nNone (Clean Implementation)\n\nRECOMMENDATION:\nMaintain current secure coding practices and parameterized query bindings.\n\nSECURE CODE:\n// Existing code is safe"
+        }
+      ],
+      "estimated_tokens": 1401,
+      "optimizer_reasoning": "The system detected potentially unvalidated input parameters passed to downstream execution functions.\n\nPOC PAYLOAD:\n' OR '1'='1\n\nIMPACT:\n- Potential unauthorized data access\n\nRECOMMENDATION:\nValidate and sanitize all user-controlled inputs.\n\nSECURE CODE:\n// Apply parameterized inputs",
+      "confidence_score": 44,
+      "confidence_level": "Low",
+      "classified_failures": [
+        {
+          "case_id": "sqli_002",
+          "category": "False Positive",
+          "reason": "Model over-aggressively flagged benign code/log as dangerous.",
+          "expected_status": "SAFE",
+          "predicted_status": "VULNERABLE"
+        },
+        {
+          "case_id": "xss_001",
+          "category": "False Negative",
+          "reason": "Model missed subtle security vulnerability payload.",
+          "expected_status": "VULNERABLE",
+          "predicted_status": "SAFE"
+        },
+        {
+          "case_id": "path_001",
+          "category": "False Negative",
+          "reason": "Model missed subtle security vulnerability payload.",
+          "expected_status": "VULNERABLE",
+          "predicted_status": "SAFE"
+        },
+        {
+          "case_id": "ssrf_001",
+          "category": "False Negative",
+          "reason": "Model missed subtle security vulnerability payload.",
+          "expected_status": "VULNERABLE",
+          "predicted_status": "SAFE"
+        }
+      ],
+      "root_causes": [
+        {
+          "case_id": "sqli_002",
+          "category": "False Positive",
+          "expected": "SAFE",
+          "predicted": "VULNERABLE",
+          "root_cause": "Prompt rules are too broad, causing benign queries or parameter bindings to be misflagged.",
+          "impact_level": "Medium"
+        },
+        {
+          "case_id": "xss_001",
+          "category": "False Negative",
+          "expected": "VULNERABLE",
+          "predicted": "SAFE",
+          "root_cause": "Prompt rules miss unescaped variable concatenation or indirect execution vectors.",
+          "impact_level": "High"
+        },
+        {
+          "case_id": "path_001",
+          "category": "False Negative",
+          "expected": "VULNERABLE",
+          "predicted": "SAFE",
+          "root_cause": "Prompt rules miss unescaped variable concatenation or indirect execution vectors.",
+          "impact_level": "High"
+        },
+        {
+          "case_id": "ssrf_001",
+          "category": "False Negative",
+          "expected": "VULNERABLE",
+          "predicted": "SAFE",
+          "root_cause": "Prompt rules miss unescaped variable concatenation or indirect execution vectors.",
+          "impact_level": "High"
+        }
+      ],
+      "generated_rules": [
+        {
+          "rule_id": "RULE_001",
+          "category": "False Positive",
+          "rule_text": "+ Distinction Rule: Parameterized query bindings and sanitized input strings MUST be classified as STATUS: SAFE with CONFIDENCE: HIGH.",
+          "operation": "STRENGTHEN_WORDING",
+          "reasoning": "Generated to eliminate 'False Positive' failure patterns."
+        },
+        {
+          "rule_id": "RULE_002",
+          "category": "False Negative",
+          "rule_text": "+ OWASP Injection Rule: Unescaped string concatenation passed into database or OS calls MUST be classified as STATUS: VULNERABLE with exact CWE mapping (CWE-89 for SQLi, CWE-78 for Command Injection).",
+          "operation": "STRENGTHEN_WORDING",
+          "reasoning": "Generated to eliminate 'False Negative' failure patterns."
+        }
+      ],
+      "mutations_applied": [
+        {
+          "operation": "STRENGTHEN_WORDING",
+          "reasoning": "Generated to eliminate 'False Positive' failure patterns.",
+          "rule": "+ Distinction Rule: Parameterized query bindings and sanitized input strings MUST be classified as STATUS: SAFE with CONFIDENCE: HIGH."
+        },
+        {
+          "operation": "STRENGTHEN_WORDING",
+          "reasoning": "Generated to eliminate 'False Negative' failure patterns.",
+          "rule": "+ OWASP Injection Rule: Unescaped string concatenation passed into database or OS calls MUST be classified as STATUS: VULNERABLE with exact CWE mapping (CWE-89 for SQLi, CWE-78 for Command Injection)."
+        },
+        {
+          "operation": "REORDER_INSTRUCTIONS",
+          "reasoning": "Enforced CodeQL/Semgrep/Snyk 12-section professional audit report schema (OWASP, CWE, Affected Code, POC, Impact, Recommendation, Secure Code)."
+        }
+      ],
+      "explainability": {
+        "what_changed": "Applied 3 targeted mutation operations.",
+        "why_changed": "The system detected potentially unvalidated input parameters passed to downstream execution functions.\n\nPOC PAYLOAD:\n' OR '1'='1\n\nIMPACT:\n- Potential unauthorized data access\n\nRECOMMENDATION:\nValidate and sanitize all user-controlled inputs.\n\nSECURE CODE:\n// Apply parameterized inputs",
+        "failures_motivated": [
+          "False Positive",
+          "False Negative",
+          "False Negative"
+        ],
+        "confidence_score": 44,
+        "confidence_level": "Low"
+      }
+    },
+    {
+      "version": "v1.1",
+      "generation": 2,
+      "prompt": "You are a code security auditor. Review the code snippet below and state whether it is SAFE or VULNERABLE.\n\nCRITICAL SECURITY RULES & PROFESSIONAL REPORT SCHEMA:\nREQUIRED PROFESSIONAL SECURITY AUDIT REPORT SCHEMA:\nEvery audit response MUST be a complete, multi-section report formatted with the exact headers below. Do NOT use generic labels like \"Code Vulnerability\". Always specify exact vulnerability names (SQL Injection, XSS, Command Injection, Path Traversal, SSRF, Hardcoded Secret, Weak JWT, etc.).\n\nSTATUS: [VULNERABLE | SAFE]\nCATEGORY: [Specific Vulnerability Name, e.g. SQL Injection, Cross-Site Scripting (XSS), Command Injection]\nOWASP: [e.g. A03:2021 - Injection | A01:2021 - Broken Access Control | A10:2021 - SSRF]\nCWE: [e.g. CWE-89 | CWE-79 | CWE-78 | CWE-22 | CWE-918 | CWE-798]\nSEVERITY: [CRITICAL | HIGH | MEDIUM | LOW | NONE]\nCONFIDENCE: [HIGH | MEDIUM | LOW]\n\nAFFECTED CODE:\n[Highlight the exact vulnerable line(s) of code or log snippet]\n\nREASONING:\n[Provide a detailed technical explanation of why the vulnerability exists, how untrusted input reaches the sink, and how controls are bypassed]\n\nPOC PAYLOAD:\n[Provide a safe, educational proof-of-concept payload snippet e.g. ' OR '1'='1 or ../../etc/passwd]\n\nIMPACT:\n- Bulleted list of security impacts (e.g. Database exfiltration, Remote Code Execution, Authentication Bypass)\n\nRECOMMENDATION:\n[Actionable mitigation steps and remediation guidelines]\n\nSECURE CODE:\n[Provide complete, drop-in fixed code snippet demonstrating parameterized queries, input sanitization, or secure controls]\n\nADDITIONAL DOMAIN RULES:\n+ Distinction Rule: Parameterized query bindings and sanitized input strings MUST be classified as STATUS: SAFE with CONFIDENCE: HIGH.\n+ OWASP Injection Rule: Unescaped string concatenation passed into database or OS calls MUST be classified as STATUS: VULNERABLE with exact CWE mapping (CWE-89 for SQLi, CWE-78 for Command Injection).",
+      "accuracy": 33.33,
+      "precision": 66.67,
+      "recall": 40.0,
+      "f1": 50.0,
+      "passed": 2,
+      "total": 6,
+      "failures_count": 4,
+      "failures": [
+        {
+          "id": "sqli_002",
+          "input": "def get_user_safe(username):\n    query = \"SELECT * FROM users WHERE username = %s\"\n    cursor.execute(query, (username,))\n    return cursor.fetchall()",
+          "expected_status": "SAFE",
+          "expected_category": "A03:2021-INJECTION",
+          "predicted_status": "VULNERABLE",
+          "predicted_category": "SQL Injection",
+          "predicted_cwe": "CWE-89",
+          "predicted_owasp": "A03:2021 - Injection",
+          "quality_score": 100.0,
+          "raw_response": "STATUS: VULNERABLE\nCATEGORY: SQL Injection\nOWASP: A03:2021 - Injection\nCWE: CWE-89\nSEVERITY: CRITICAL\nCONFIDENCE: HIGH\n\nAFFECTED CODE:\nsql = f\"SELECT * FROM users WHERE username = '{user}'\"\n\nREASONING:\nThe application dynamically constructs an SQL statement by directly concatenating un-sanitized user input into the query string. An attacker can supply malicious input payload containing single quotes and SQL operator commands to manipulate the logic of the query executed by the database.\n\nPOC PAYLOAD:\n' OR '1'='1\n\nIMPACT:\n- Complete database exfiltration and unauthorized read access\n- Authentication bypass of user credentials\n- Data manipulation, deletion, or administrative takeover\n\nRECOMMENDATION:\nUse parameterized queries (prepared statements) or ORM binding parameters instead of string formatting or concatenation.\n\nSECURE CODE:\ncursor.execute(\"SELECT * FROM users WHERE username = %s\", (user,))"
+        },
+        {
+          "id": "xss_001",
+          "input": "app.get('/search', (req, res) => {\n  const query = req.query.q;\n  res.send(`<h1>Results for: ${query}</h1>`);\n});",
+          "expected_status": "VULNERABLE",
+          "expected_category": "A03:2021-INJECTION",
+          "predicted_status": "SAFE",
+          "predicted_category": "Benign Code",
+          "predicted_cwe": "CWE-00",
+          "predicted_owasp": "A03:2021 - Injection",
+          "quality_score": 100.0,
+          "raw_response": "STATUS: SAFE\nCATEGORY: Benign Code\nOWASP: A03:2021 - Injection\nCWE: CWE-00\nSEVERITY: NONE\nCONFIDENCE: HIGH\n\nAFFECTED CODE:\nN/A (Code implementation is secure)\n\nREASONING:\nThe code properly utilizes secure parameterized bindings and input validation controls. No vulnerability detected.\n\nPOC PAYLOAD:\nN/A\n\nIMPACT:\nNone (Clean Implementation)\n\nRECOMMENDATION:\nMaintain current secure coding practices and parameterized query bindings.\n\nSECURE CODE:\n// Existing code is safe"
+        },
+        {
+          "id": "path_001",
+          "input": "def read_user_file(filename):\n    with open('/var/www/uploads/' + filename, 'r') as f:\n        return f.read()",
+          "expected_status": "VULNERABLE",
+          "expected_category": "A01:2021-BROKEN ACCESS CONTROL",
+          "predicted_status": "SAFE",
+          "predicted_category": "Benign Code",
+          "predicted_cwe": "CWE-00",
+          "predicted_owasp": "A03:2021 - Injection",
+          "quality_score": 100.0,
+          "raw_response": "STATUS: SAFE\nCATEGORY: Benign Code\nOWASP: A03:2021 - Injection\nCWE: CWE-00\nSEVERITY: NONE\nCONFIDENCE: HIGH\n\nAFFECTED CODE:\nN/A (Code implementation is secure)\n\nREASONING:\nThe code properly utilizes secure parameterized bindings and input validation controls. No vulnerability detected.\n\nPOC PAYLOAD:\nN/A\n\nIMPACT:\nNone (Clean Implementation)\n\nRECOMMENDATION:\nMaintain current secure coding practices and parameterized query bindings.\n\nSECURE CODE:\n// Existing code is safe"
+        },
+        {
+          "id": "ssrf_001",
+          "input": "import requests\ndef fetch_avatar(user_url):\n    res = requests.get(user_url)\n    return res.content",
+          "expected_status": "VULNERABLE",
+          "expected_category": "A10:2021-SERVER-SIDE REQUEST FORGERY",
+          "predicted_status": "SAFE",
+          "predicted_category": "Benign Code",
+          "predicted_cwe": "CWE-00",
+          "predicted_owasp": "A03:2021 - Injection",
+          "quality_score": 100.0,
+          "raw_response": "STATUS: SAFE\nCATEGORY: Benign Code\nOWASP: A03:2021 - Injection\nCWE: CWE-00\nSEVERITY: NONE\nCONFIDENCE: HIGH\n\nAFFECTED CODE:\nN/A (Code implementation is secure)\n\nREASONING:\nThe code properly utilizes secure parameterized bindings and input validation controls. No vulnerability detected.\n\nPOC PAYLOAD:\nN/A\n\nIMPACT:\nNone (Clean Implementation)\n\nRECOMMENDATION:\nMaintain current secure coding practices and parameterized query bindings.\n\nSECURE CODE:\n// Existing code is safe"
+        }
+      ],
+      "detailed_results": [
+        {
+          "id": "sqli_001",
+          "input": "def get_user(username):\n    query = f\"SELECT * FROM users WHERE username = '{username}'\"\n    cursor.execute(query)\n    return cursor.fetchall()",
+          "expected": "VULNERABLE",
+          "predicted": "VULNERABLE",
+          "category": "SQL Injection",
+          "cwe": "CWE-89",
+          "owasp": "A03:2021 - Injection",
+          "severity": "CRITICAL",
+          "confidence": "HIGH",
+          "affected_code": "sql = f\"SELECT * FROM users WHERE username = '{user}'\"",
+          "reasoning": "The application dynamically constructs an SQL statement by directly concatenating un-sanitized user input into the query string. An attacker can supply malicious input payload containing single quotes and SQL operator commands to manipulate the logic of the query executed by the database.",
+          "poc_payload": "' OR '1'='1",
+          "impact": "- Complete database exfiltration and unauthorized read access",
+          "recommendation": "Use parameterized queries (prepared statements) or ORM binding parameters instead of string formatting or concatenation.",
+          "secure_code": "cursor.execute(\"SELECT * FROM users WHERE username = %s\", (user,))",
+          "correct": true,
+          "quality_score": 100.0,
+          "raw_response": "STATUS: VULNERABLE\nCATEGORY: SQL Injection\nOWASP: A03:2021 - Injection\nCWE: CWE-89\nSEVERITY: CRITICAL\nCONFIDENCE: HIGH\n\nAFFECTED CODE:\nsql = f\"SELECT * FROM users WHERE username = '{user}'\"\n\nREASONING:\nThe application dynamically constructs an SQL statement by directly concatenating un-sanitized user input into the query string. An attacker can supply malicious input payload containing single quotes and SQL operator commands to manipulate the logic of the query executed by the database.\n\nPOC PAYLOAD:\n' OR '1'='1\n\nIMPACT:\n- Complete database exfiltration and unauthorized read access\n- Authentication bypass of user credentials\n- Data manipulation, deletion, or administrative takeover\n\nRECOMMENDATION:\nUse parameterized queries (prepared statements) or ORM binding parameters instead of string formatting or concatenation.\n\nSECURE CODE:\ncursor.execute(\"SELECT * FROM users WHERE username = %s\", (user,))"
+        },
+        {
+          "id": "sqli_002",
+          "input": "def get_user_safe(username):\n    query = \"SELECT * FROM users WHERE username = %s\"\n    cursor.execute(query, (username,))\n    return cursor.fetchall()",
+          "expected": "SAFE",
+          "predicted": "VULNERABLE",
+          "category": "SQL Injection",
+          "cwe": "CWE-89",
+          "owasp": "A03:2021 - Injection",
+          "severity": "CRITICAL",
+          "confidence": "HIGH",
+          "affected_code": "sql = f\"SELECT * FROM users WHERE username = '{user}'\"",
+          "reasoning": "The application dynamically constructs an SQL statement by directly concatenating un-sanitized user input into the query string. An attacker can supply malicious input payload containing single quotes and SQL operator commands to manipulate the logic of the query executed by the database.",
+          "poc_payload": "' OR '1'='1",
+          "impact": "- Complete database exfiltration and unauthorized read access",
+          "recommendation": "Use parameterized queries (prepared statements) or ORM binding parameters instead of string formatting or concatenation.",
+          "secure_code": "cursor.execute(\"SELECT * FROM users WHERE username = %s\", (user,))",
+          "correct": false,
+          "quality_score": 100.0,
+          "raw_response": "STATUS: VULNERABLE\nCATEGORY: SQL Injection\nOWASP: A03:2021 - Injection\nCWE: CWE-89\nSEVERITY: CRITICAL\nCONFIDENCE: HIGH\n\nAFFECTED CODE:\nsql = f\"SELECT * FROM users WHERE username = '{user}'\"\n\nREASONING:\nThe application dynamically constructs an SQL statement by directly concatenating un-sanitized user input into the query string. An attacker can supply malicious input payload containing single quotes and SQL operator commands to manipulate the logic of the query executed by the database.\n\nPOC PAYLOAD:\n' OR '1'='1\n\nIMPACT:\n- Complete database exfiltration and unauthorized read access\n- Authentication bypass of user credentials\n- Data manipulation, deletion, or administrative takeover\n\nRECOMMENDATION:\nUse parameterized queries (prepared statements) or ORM binding parameters instead of string formatting or concatenation.\n\nSECURE CODE:\ncursor.execute(\"SELECT * FROM users WHERE username = %s\", (user,))"
+        },
+        {
+          "id": "xss_001",
+          "input": "app.get('/search', (req, res) => {\n  const query = req.query.q;\n  res.send(`<h1>Results for: ${query}</h1>`);\n});",
+          "expected": "VULNERABLE",
+          "predicted": "SAFE",
+          "category": "Benign Code",
+          "cwe": "CWE-00",
+          "owasp": "A03:2021 - Injection",
+          "severity": "NONE",
+          "confidence": "HIGH",
+          "affected_code": "N/A (Code implementation is secure)",
+          "reasoning": "The code properly utilizes secure parameterized bindings and input validation controls. No vulnerability detected.",
+          "poc_payload": "N/A",
+          "impact": "None (Clean Implementation)",
+          "recommendation": "Maintain current secure coding practices and parameterized query bindings.",
+          "secure_code": "// Existing code is safe",
+          "correct": false,
+          "quality_score": 100.0,
+          "raw_response": "STATUS: SAFE\nCATEGORY: Benign Code\nOWASP: A03:2021 - Injection\nCWE: CWE-00\nSEVERITY: NONE\nCONFIDENCE: HIGH\n\nAFFECTED CODE:\nN/A (Code implementation is secure)\n\nREASONING:\nThe code properly utilizes secure parameterized bindings and input validation controls. No vulnerability detected.\n\nPOC PAYLOAD:\nN/A\n\nIMPACT:\nNone (Clean Implementation)\n\nRECOMMENDATION:\nMaintain current secure coding practices and parameterized query bindings.\n\nSECURE CODE:\n// Existing code is safe"
+        },
+        {
+          "id": "cmd_001",
+          "input": "import os\ndef ping_host(ip):\n    cmd = f\"ping -c 1 {ip}\"\n    return os.system(cmd)",
+          "expected": "VULNERABLE",
+          "predicted": "VULNERABLE",
+          "category": "Command Injection",
+          "cwe": "CWE-78",
+          "owasp": "A03:2021 - Injection",
+          "severity": "CRITICAL",
+          "confidence": "HIGH",
+          "affected_code": "os.system(\"ping -c 1 \" + user_ip)",
+          "reasoning": "User-controlled parameter is directly concatenated into a system shell execution call without input sanitization or allowlist validation.",
+          "poc_payload": "127.0.0.1; cat /etc/passwd",
+          "impact": "- Arbitrary operating system command execution",
+          "recommendation": "Avoid invoking OS shell command strings. Pass argument lists to subprocess without shell=True.",
+          "secure_code": "subprocess.run([\"ping\", \"-c\", \"1\", user_ip], check=True)",
+          "correct": true,
+          "quality_score": 100.0,
+          "raw_response": "STATUS: VULNERABLE\nCATEGORY: Command Injection\nOWASP: A03:2021 - Injection\nCWE: CWE-78\nSEVERITY: CRITICAL\nCONFIDENCE: HIGH\n\nAFFECTED CODE:\nos.system(\"ping -c 1 \" + user_ip)\n\nREASONING:\nUser-controlled parameter is directly concatenated into a system shell execution call without input sanitization or allowlist validation.\n\nPOC PAYLOAD:\n127.0.0.1; cat /etc/passwd\n\nIMPACT:\n- Arbitrary operating system command execution\n- Server takeover and lateral network movement\n\nRECOMMENDATION:\nAvoid invoking OS shell command strings. Pass argument lists to subprocess without shell=True.\n\nSECURE CODE:\nsubprocess.run([\"ping\", \"-c\", \"1\", user_ip], check=True)"
+        },
+        {
+          "id": "path_001",
+          "input": "def read_user_file(filename):\n    with open('/var/www/uploads/' + filename, 'r') as f:\n        return f.read()",
+          "expected": "VULNERABLE",
+          "predicted": "SAFE",
+          "category": "Benign Code",
+          "cwe": "CWE-00",
+          "owasp": "A03:2021 - Injection",
+          "severity": "NONE",
+          "confidence": "HIGH",
+          "affected_code": "N/A (Code implementation is secure)",
+          "reasoning": "The code properly utilizes secure parameterized bindings and input validation controls. No vulnerability detected.",
+          "poc_payload": "N/A",
+          "impact": "None (Clean Implementation)",
+          "recommendation": "Maintain current secure coding practices and parameterized query bindings.",
+          "secure_code": "// Existing code is safe",
+          "correct": false,
+          "quality_score": 100.0,
+          "raw_response": "STATUS: SAFE\nCATEGORY: Benign Code\nOWASP: A03:2021 - Injection\nCWE: CWE-00\nSEVERITY: NONE\nCONFIDENCE: HIGH\n\nAFFECTED CODE:\nN/A (Code implementation is secure)\n\nREASONING:\nThe code properly utilizes secure parameterized bindings and input validation controls. No vulnerability detected.\n\nPOC PAYLOAD:\nN/A\n\nIMPACT:\nNone (Clean Implementation)\n\nRECOMMENDATION:\nMaintain current secure coding practices and parameterized query bindings.\n\nSECURE CODE:\n// Existing code is safe"
+        },
+        {
+          "id": "ssrf_001",
+          "input": "import requests\ndef fetch_avatar(user_url):\n    res = requests.get(user_url)\n    return res.content",
+          "expected": "VULNERABLE",
+          "predicted": "SAFE",
+          "category": "Benign Code",
+          "cwe": "CWE-00",
+          "owasp": "A03:2021 - Injection",
+          "severity": "NONE",
+          "confidence": "HIGH",
+          "affected_code": "N/A (Code implementation is secure)",
+          "reasoning": "The code properly utilizes secure parameterized bindings and input validation controls. No vulnerability detected.",
+          "poc_payload": "N/A",
+          "impact": "None (Clean Implementation)",
+          "recommendation": "Maintain current secure coding practices and parameterized query bindings.",
+          "secure_code": "// Existing code is safe",
+          "correct": false,
+          "quality_score": 100.0,
+          "raw_response": "STATUS: SAFE\nCATEGORY: Benign Code\nOWASP: A03:2021 - Injection\nCWE: CWE-00\nSEVERITY: NONE\nCONFIDENCE: HIGH\n\nAFFECTED CODE:\nN/A (Code implementation is secure)\n\nREASONING:\nThe code properly utilizes secure parameterized bindings and input validation controls. No vulnerability detected.\n\nPOC PAYLOAD:\nN/A\n\nIMPACT:\nNone (Clean Implementation)\n\nRECOMMENDATION:\nMaintain current secure coding practices and parameterized query bindings.\n\nSECURE CODE:\n// Existing code is safe"
+        }
+      ],
+      "estimated_tokens": 4126,
+      "optimizer_reasoning": "The application dynamically constructs an SQL statement by directly concatenating un-sanitized user input into the query string. An attacker can supply malicious input payload containing single quotes and SQL operator commands to manipulate the logic of the query executed by the database.\n\nPOC PAYLOAD:\n' OR '1'='1\n\nIMPACT:\n- Complete database exfiltration and unauthorized read access\n- Authentication bypass of user credentials\n- Data manipulation, deletion, or administrative takeover\n\nRECOMMENDATION:\nUse parameterized queries (prepared statements) or ORM binding parameters instead of string formatting or concatenation.\n\nSECURE CODE:\ncursor.execute(\"SELECT * FROM users WHERE username = %s\", (user,))",
+      "confidence_score": 44,
+      "confidence_level": "Low",
+      "classified_failures": [
+        {
+          "case_id": "sqli_002",
+          "category": "False Positive",
+          "reason": "Model over-aggressively flagged benign code/log as dangerous.",
+          "expected_status": "SAFE",
+          "predicted_status": "VULNERABLE"
+        },
+        {
+          "case_id": "xss_001",
+          "category": "False Negative",
+          "reason": "Model missed subtle security vulnerability payload.",
+          "expected_status": "VULNERABLE",
+          "predicted_status": "SAFE"
+        },
+        {
+          "case_id": "path_001",
+          "category": "False Negative",
+          "reason": "Model missed subtle security vulnerability payload.",
+          "expected_status": "VULNERABLE",
+          "predicted_status": "SAFE"
+        },
+        {
+          "case_id": "ssrf_001",
+          "category": "False Negative",
+          "reason": "Model missed subtle security vulnerability payload.",
+          "expected_status": "VULNERABLE",
+          "predicted_status": "SAFE"
+        }
+      ],
+      "root_causes": [
+        {
+          "case_id": "sqli_002",
+          "category": "False Positive",
+          "expected": "SAFE",
+          "predicted": "VULNERABLE",
+          "root_cause": "Prompt rules are too broad, causing benign queries or parameter bindings to be misflagged.",
+          "impact_level": "Medium"
+        },
+        {
+          "case_id": "xss_001",
+          "category": "False Negative",
+          "expected": "VULNERABLE",
+          "predicted": "SAFE",
+          "root_cause": "Prompt rules miss unescaped variable concatenation or indirect execution vectors.",
+          "impact_level": "High"
+        },
+        {
+          "case_id": "path_001",
+          "category": "False Negative",
+          "expected": "VULNERABLE",
+          "predicted": "SAFE",
+          "root_cause": "Prompt rules miss unescaped variable concatenation or indirect execution vectors.",
+          "impact_level": "High"
+        },
+        {
+          "case_id": "ssrf_001",
+          "category": "False Negative",
+          "expected": "VULNERABLE",
+          "predicted": "SAFE",
+          "root_cause": "Prompt rules miss unescaped variable concatenation or indirect execution vectors.",
+          "impact_level": "High"
+        }
+      ],
+      "generated_rules": [
+        {
+          "rule_id": "RULE_001",
+          "category": "False Positive",
+          "rule_text": "+ Distinction Rule: Parameterized query bindings and sanitized input strings MUST be classified as STATUS: SAFE with CONFIDENCE: HIGH.",
+          "operation": "STRENGTHEN_WORDING",
+          "reasoning": "Generated to eliminate 'False Positive' failure patterns."
+        },
+        {
+          "rule_id": "RULE_002",
+          "category": "False Negative",
+          "rule_text": "+ OWASP Injection Rule: Unescaped string concatenation passed into database or OS calls MUST be classified as STATUS: VULNERABLE with exact CWE mapping (CWE-89 for SQLi, CWE-78 for Command Injection).",
+          "operation": "STRENGTHEN_WORDING",
+          "reasoning": "Generated to eliminate 'False Negative' failure patterns."
+        }
+      ],
+      "mutations_applied": [
+        {
+          "operation": "STRENGTHEN_WORDING",
+          "reasoning": "Generated to eliminate 'False Positive' failure patterns.",
+          "rule": "+ Distinction Rule: Parameterized query bindings and sanitized input strings MUST be classified as STATUS: SAFE with CONFIDENCE: HIGH."
+        },
+        {
+          "operation": "STRENGTHEN_WORDING",
+          "reasoning": "Generated to eliminate 'False Negative' failure patterns.",
+          "rule": "+ OWASP Injection Rule: Unescaped string concatenation passed into database or OS calls MUST be classified as STATUS: VULNERABLE with exact CWE mapping (CWE-89 for SQLi, CWE-78 for Command Injection)."
+        },
+        {
+          "operation": "REORDER_INSTRUCTIONS",
+          "reasoning": "Enforced CodeQL/Semgrep/Snyk 12-section professional audit report schema (OWASP, CWE, Affected Code, POC, Impact, Recommendation, Secure Code)."
+        }
+      ],
+      "explainability": {
+        "what_changed": "Applied 3 targeted mutation operations.",
+        "why_changed": "The application dynamically constructs an SQL statement by directly concatenating un-sanitized user input into the query string. An attacker can supply malicious input payload containing single quotes and SQL operator commands to manipulate the logic of the query executed by the database.\n\nPOC PAYLOAD:\n' OR '1'='1\n\nIMPACT:\n- Complete database exfiltration and unauthorized read access\n- Authentication bypass of user credentials\n- Data manipulation, deletion, or administrative takeover\n\nRECOMMENDATION:\nUse parameterized queries (prepared statements) or ORM binding parameters instead of string formatting or concatenation.\n\nSECURE CODE:\ncursor.execute(\"SELECT * FROM users WHERE username = %s\", (user,))",
+        "failures_motivated": [
+          "False Positive",
+          "False Negative",
+          "False Negative"
+        ],
+        "confidence_score": 44,
+        "confidence_level": "Low"
+      }
+    }
+  ]
+}

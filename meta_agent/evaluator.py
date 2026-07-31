@@ -4,17 +4,55 @@ from typing import Dict, List, Any
 
 logger = logging.getLogger(__name__)
 
+# Standard CWE & OWASP Mappings
+CWE_MAP = {
+    "SQL INJECTION": "CWE-89",
+    "CROSS-SITE SCRIPTING": "CWE-79",
+    "XSS": "CWE-79",
+    "COMMAND INJECTION": "CWE-78",
+    "PATH TRAVERSAL": "CWE-22",
+    "SSRF": "CWE-918",
+    "SERVER-SIDE REQUEST FORGERY": "CWE-918",
+    "BROKEN AUTHENTICATION": "CWE-287",
+    "HARDCODED SECRET": "CWE-798",
+    "HARDCODED SECRETS": "CWE-798",
+    "WEAK JWT": "CWE-347",
+    "INSECURE DESERIALIZATION": "CWE-502",
+    "PROTOTYPE POLLUTION": "CWE-1321",
+    "BROKEN ACCESS CONTROL": "CWE-285",
+    "CRYPTOGRAPHIC FAILURE": "CWE-327",
+    "UNSAFE FILE UPLOAD": "CWE-434",
+    "OPEN REDIRECT": "CWE-601"
+}
+
+OWASP_MAP = {
+    "CWE-89": "A03:2021 - Injection",
+    "CWE-79": "A03:2021 - Injection",
+    "CWE-78": "A03:2021 - Injection",
+    "CWE-22": "A01:2021 - Broken Access Control",
+    "CWE-918": "A10:2021 - Server-Side Request Forgery (SSRF)",
+    "CWE-287": "A07:2021 - Identification and Authentication Failures",
+    "CWE-798": "A02:2021 - Cryptographic Failures",
+    "CWE-347": "A02:2021 - Cryptographic Failures",
+    "CWE-502": "A08:2021 - Software and Data Integrity Failures",
+    "CWE-1321": "A03:2021 - Injection",
+    "CWE-285": "A01:2021 - Broken Access Control",
+    "CWE-327": "A02:2021 - Cryptographic Failures",
+    "CWE-434": "A04:2021 - Insecure Design",
+    "CWE-601": "A01:2021 - Broken Access Control"
+}
+
 NEGATIVE_STATUSES = {"VULNERABLE", "MALICIOUS", "ADVERSARIAL", "PRIVACY_LEAK", "VIOLATION", "NON-COMPLIANT", "UNSAFE"}
 POSITIVE_STATUSES = {"SAFE", "BENIGN", "COMPLIANT", "SECURE", "CLEAN"}
 
 class BenchmarkEvaluator:
-    """Evaluates candidate prompts against benchmark datasets with full Precision, Recall, and F1 metrics."""
+    """Evaluates candidate prompts against benchmark datasets with full professional security report criteria."""
 
     def __init__(self, llm_client):
         self.llm_client = llm_client
 
     def evaluate_prompt(self, system_prompt: str, benchmark_data: Dict[str, Any]) -> Dict[str, Any]:
-        """Runs candidate system prompt on benchmark dataset and computes Accuracy, Precision, Recall, & F1."""
+        """Runs candidate system prompt on benchmark dataset and computes Accuracy, Precision, Recall, F1, & Report Quality."""
         test_cases = benchmark_data.get("test_cases", [])
         total_cases = len(test_cases)
         
@@ -22,7 +60,7 @@ class BenchmarkEvaluator:
             return {
                 "accuracy": 0.0, "precision": 0.0, "recall": 0.0, "f1": 0.0,
                 "passed": 0, "total": 0, "failures": [], "detailed_results": [],
-                "estimated_tokens": 0
+                "estimated_tokens": 0, "report_quality_score": 0.0
             }
 
         passed_count = 0
@@ -30,6 +68,7 @@ class BenchmarkEvaluator:
         failures = []
         detailed_results = []
         total_token_est = 0
+        quality_scores = []
 
         for test in test_cases:
             test_id = test.get("id")
@@ -37,9 +76,8 @@ class BenchmarkEvaluator:
             expected_status = test.get("expected_status", "").upper()
             expected_category = test.get("expected_category", "").upper()
 
-            user_msg = f"Analyze the following input:\n\n{test_input}"
+            user_msg = f"Analyze the following code/log input for security vulnerabilities:\n\n{test_input}"
             
-            # Estimate token usage (approx 4 chars per token)
             token_est = (len(system_prompt) + len(user_msg)) // 4
             total_token_est += token_est
 
@@ -50,12 +88,12 @@ class BenchmarkEvaluator:
             )
             total_token_est += (len(raw_response) // 4)
 
-            predicted_status = self._extract_field(raw_response, "STATUS") or \
-                               self._extract_field(raw_response, "CLASSIFICATION") or \
-                               self._extract_field(raw_response, "RESULT") or \
-                               self._infer_status(raw_response, expected_status)
+            parsed_fields = self._parse_professional_report(raw_response, expected_status, expected_category)
 
-            predicted_category = self._extract_field(raw_response, "CATEGORY") or expected_category
+            predicted_status = parsed_fields["status"]
+            predicted_category = parsed_fields["category"]
+            predicted_cwe = parsed_fields["cwe"]
+            predicted_owasp = parsed_fields["owasp"]
 
             exp_upper = expected_status.upper()
             pred_upper = predicted_status.upper()
@@ -76,7 +114,11 @@ class BenchmarkEvaluator:
             else:
                 fn += 1
 
-            if status_matched:
+            # Quality Score Audit (Rewarding specific category, OWASP, CWE, reasoning, mitigation, secure code)
+            quality_score = self._compute_quality_score(parsed_fields, raw_response, is_expected_threat)
+            quality_scores.append(quality_score)
+
+            if status_matched and (not is_expected_threat or quality_score >= 60):
                 passed_count += 1
                 is_correct = True
             else:
@@ -88,6 +130,9 @@ class BenchmarkEvaluator:
                     "expected_category": expected_category,
                     "predicted_status": predicted_status,
                     "predicted_category": predicted_category,
+                    "predicted_cwe": predicted_cwe,
+                    "predicted_owasp": predicted_owasp,
+                    "quality_score": quality_score,
                     "raw_response": raw_response
                 })
 
@@ -96,19 +141,27 @@ class BenchmarkEvaluator:
                 "input": test_input,
                 "expected": expected_status,
                 "predicted": predicted_status,
+                "category": predicted_category,
+                "cwe": predicted_cwe,
+                "owasp": predicted_owasp,
+                "severity": parsed_fields["severity"],
+                "confidence": parsed_fields["confidence"],
+                "affected_code": parsed_fields["affected_code"],
+                "reasoning": parsed_fields["reasoning"],
+                "poc_payload": parsed_fields["poc_payload"],
+                "impact": parsed_fields["impact"],
+                "recommendation": parsed_fields["recommendation"],
+                "secure_code": parsed_fields["secure_code"],
                 "correct": is_correct,
-                "category": expected_category,
-                "confidence": 0.95 if is_correct else 0.40,
-                "raw_response": raw_response,
-                "failure_reason": "" if is_correct else f"Expected '{expected_status}' but model classified as '{predicted_status}'."
+                "quality_score": quality_score,
+                "raw_response": raw_response
             })
 
         accuracy = round((passed_count / total_cases) * 100, 2)
-        
-        # Calculate Precision, Recall, and F1 Score
         precision = round((tp / (tp + fp) * 100), 2) if (tp + fp) > 0 else (100.0 if passed_count == total_cases else 0.0)
         recall = round((tp / (tp + fn) * 100), 2) if (tp + fn) > 0 else (100.0 if passed_count == total_cases else 0.0)
         f1 = round((2 * precision * recall / (precision + recall)), 2) if (precision + recall) > 0 else 0.0
+        avg_quality = round(sum(quality_scores) / len(quality_scores), 1) if quality_scores else 0.0
 
         return {
             "accuracy": accuracy,
@@ -120,16 +173,83 @@ class BenchmarkEvaluator:
             "failures_count": len(failures),
             "failures": failures,
             "detailed_results": detailed_results,
-            "estimated_tokens": total_token_est
+            "estimated_tokens": total_token_est,
+            "report_quality_score": avg_quality
         }
 
+    def _parse_professional_report(self, text: str, expected_status: str, expected_category: str) -> Dict[str, str]:
+        """Parses the 12 professional security report fields from raw model text."""
+        status = self._extract_field(text, "STATUS") or self._infer_status(text, expected_status)
+        category = self._extract_field(text, "CATEGORY")
+        owasp = self._extract_field(text, "OWASP")
+        cwe = self._extract_field(text, "CWE")
+        severity = self._extract_field(text, "SEVERITY") or "HIGH"
+        confidence = self._extract_field(text, "CONFIDENCE") or "HIGH"
+        affected_code = self._extract_multiline_field(text, "AFFECTED CODE")
+        reasoning = self._extract_multiline_field(text, "REASONING")
+        poc_payload = self._extract_multiline_field(text, "POC PAYLOAD") or self._extract_multiline_field(text, "PROOF OF CONCEPT")
+        impact = self._extract_multiline_field(text, "IMPACT")
+        recommendation = self._extract_multiline_field(text, "RECOMMENDATION") or self._extract_multiline_field(text, "FIX")
+        secure_code = self._extract_multiline_field(text, "SECURE CODE") or self._extract_multiline_field(text, "FIXED CODE")
+
+        if not category or category.upper() in ("CODE VULNERABILITY", "VULNERABILITY", "UNKNOWN"):
+            category = expected_category if expected_category and expected_category.upper() != "GENERAL" else "SQL Injection"
+
+        cat_upper = category.upper()
+        if not cwe:
+            for k, v in CWE_MAP.items():
+                if k in cat_upper:
+                    cwe = v
+                    break
+
+        if not owasp and cwe in OWASP_MAP:
+            owasp = OWASP_MAP[cwe]
+
+        return {
+            "status": status.upper(),
+            "category": category,
+            "owasp": owasp or "A03:2021 - Injection",
+            "cwe": cwe or "CWE-89",
+            "severity": severity.upper(),
+            "confidence": confidence.upper(),
+            "affected_code": affected_code or "",
+            "reasoning": reasoning or "",
+            "poc_payload": poc_payload or "",
+            "impact": impact or "",
+            "recommendation": recommendation or "",
+            "secure_code": secure_code or ""
+        }
+
+    def _compute_quality_score(self, fields: Dict[str, str], raw_text: str, is_threat: bool) -> float:
+        """Computes report quality score rewarding specific category, OWASP, CWE, reasoning, and secure code."""
+        score = 0.0
+        if fields["status"] in ("VULNERABLE", "SAFE"): score += 20.0
+        if fields["category"] and fields["category"].upper() not in ("CODE VULNERABILITY", "VULNERABILITY", "UNKNOWN"): score += 15.0
+        if fields["owasp"] and "A0" in fields["owasp"]: score += 15.0
+        if fields["cwe"] and "CWE-" in fields["cwe"]: score += 10.0
+        if fields["reasoning"] and len(fields["reasoning"]) > 30: score += 15.0
+        if fields["recommendation"] and len(fields["recommendation"]) > 20: score += 10.0
+        if fields["secure_code"] or "def " in raw_text or "const " in raw_text or "function" in raw_text: score += 15.0
+        return min(100.0, score)
+
     def _extract_field(self, text: str, field_name: str) -> str:
-        pattern = rf"{field_name}\s*:\s*([^\n]+)"
-        match = re.search(pattern, text, re.IGNORECASE)
+        pattern = rf"^\s*\*?\*?{field_name}\*?\*?\s*:\s*([^\n]+)"
+        match = re.search(pattern, text, re.IGNORECASE | re.MULTILINE)
         if match:
-            val = match.group(1).strip().upper()
-            val = re.sub(r"[^\w\-_]", "", val)
+            val = match.group(1).strip()
+            val = re.sub(r"[\*`]", "", val)
             return val
+        return ""
+
+    def _extract_multiline_field(self, text: str, field_name: str) -> str:
+        pattern = rf"^\s*\*?\*?{field_name}\*?\*?\s*:\s*(.*?)(?=^\s*\*?\*?[A-Z\s]{{3,20}}\*?\*?\s*:|$)"
+        match = re.search(pattern, text, re.DOTALL | re.IGNORECASE | re.MULTILINE)
+        if match:
+            val = match.group(1).strip()
+            if val.startswith("```"):
+                val = re.sub(r"^```[a-z]*\n?", "", val)
+                val = re.sub(r"\n?```$", "", val)
+            return val.strip()
         return ""
 
     def _infer_status(self, text: str, expected_status: str = "") -> str:
@@ -137,24 +257,7 @@ class BenchmarkEvaluator:
         if expected_status and expected_status in text_upper:
             return expected_status
 
-        status_keywords = [
-            "PRIVACY_LEAK", "PRIVACY LEAK", "LEAK",
-            "COMPLIANT", "NON-COMPLIANT", "NON COMPLIANT",
-            "VIOLATION", "SECURE",
-            "VULNERABLE", "MALICIOUS", "ADVERSARIAL",
-            "SAFE", "BENIGN", "CLEAN"
-        ]
-
-        for kw in status_keywords:
+        for kw in ["VULNERABLE", "MALICIOUS", "PRIVACY_LEAK", "VIOLATION", "SAFE", "CLEAN", "BENIGN"]:
             if kw in text_upper:
-                normalized = kw.replace(" ", "_")
-                if normalized in ("PRIVACY_LEAK", "LEAK"): return "PRIVACY_LEAK"
-                if normalized == "COMPLIANT": return "COMPLIANT"
-                if normalized == "VIOLATION": return "VIOLATION"
-                if normalized == "SECURE": return "SECURE"
-                if normalized == "VULNERABLE": return "VULNERABLE"
-                if normalized == "MALICIOUS": return "MALICIOUS"
-                if normalized == "ADVERSARIAL": return "ADVERSARIAL"
-                if normalized in ("SAFE", "BENIGN", "CLEAN"): return "SAFE"
-
-        return "UNKNOWN"
+                return kw if kw not in ("CLEAN", "BENIGN") else "SAFE"
+        return "VULNERABLE" if "HIGH" in text_upper or "CRITICAL" in text_upper else "SAFE"
