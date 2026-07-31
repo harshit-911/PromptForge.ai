@@ -141,7 +141,7 @@ OPTIMIZED_PROMPT:
             new_prompt = prompt_match.group(1).strip()
             if new_prompt.startswith('"""') and new_prompt.endswith('"""'):
                 new_prompt = new_prompt[3:-3].strip()
-            if len(new_prompt) >= len(fallback_prompt) * 0.7 or "FINDING" in new_prompt.upper() or "STATUS:" in new_prompt.upper():
+            if len(new_prompt) >= len(fallback_prompt) * 0.8 and ("RULES" in new_prompt.upper() or "FINDING" in new_prompt.upper()):
                 return new_prompt, reasoning
 
         return fallback_prompt, reasoning
