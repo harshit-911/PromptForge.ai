@@ -8,6 +8,8 @@ from meta_agent.llm import GeminiClient
 from meta_agent.evaluator import BenchmarkEvaluator
 from meta_agent.optimizer import MetaAgentOptimizer
 from meta_agent.experiments import ExperimentTracker
+from meta_agent.rollback_manager import RollbackManager
+from meta_agent.memory_manager import MemoryManager
 
 logger = logging.getLogger(__name__)
 
@@ -27,15 +29,14 @@ class OptimizationLoop:
         with open(file_path, "r", encoding="utf-8") as f:
             return json.load(f)
 
-    def run(
-        self,
-        benchmark_name: str,
-        initial_prompt: Optional[str] = None,
-        max_generations: int = 3,
-        callback: Optional[callable] = None
-    ) -> Dict[str, Any]:
-        """Executes reasoning-based prompt optimization loop with adaptive stopping and rollbacks."""
+    def run(self, benchmark_name: str, initial_prompt: Optional[str] = None, max_generations: int = 3) -> Dict[str, Any]:
+        """Executes full autonomous optimization loop over specified benchmark dataset."""
         start_time = time.time()
+
+        # Reset state for fresh optimization run
+        self.optimizer.rollback_manager = RollbackManager()
+        self.optimizer.memory_manager = MemoryManager()
+
         benchmark_data = self.load_benchmark(benchmark_name)
         task_description = benchmark_data.get("task_description", "")
         current_prompt = initial_prompt or benchmark_data.get("seed_prompt", "")
