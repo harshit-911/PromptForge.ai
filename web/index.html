@@ -384,7 +384,18 @@
           </div>
 
           <div class="form-group" style="width: 100%;">
-            <label for="custom-prompt-input" style="font-size:0.88rem; font-weight:700;">Custom Initial System Prompt (Optional)</label>
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+              <label for="custom-prompt-input" style="font-size:0.88rem; font-weight:700;">Custom Initial System Prompt (Optional)</label>
+              <div class="preset-bar" style="margin:0;">
+                <span style="font-size:0.75rem; font-weight:700; color:var(--text-muted); display:flex; align-items:center;">LOAD PRESETS:</span>
+                <button class="preset-btn" onclick="loadControlPanelPreset('owasp')">OWASP Auditor</button>
+                <button class="preset-btn" onclick="loadControlPanelPreset('soc')">SOC Analyst</button>
+                <button class="preset-btn" onclick="loadControlPanelPreset('cve')">MITRE CVE</button>
+                <button class="preset-btn" onclick="loadControlPanelPreset('jailbreak')">DAN Guardrail</button>
+                <button class="preset-btn" onclick="loadControlPanelPreset('pii')">PII Compliance</button>
+                <button class="preset-btn" onclick="loadControlPanelPreset('cloud')">Cloud IAM</button>
+              </div>
+            </div>
             <textarea id="custom-prompt-input" class="code-input" style="min-height: 120px; font-family:'JetBrains Mono', monospace; font-size: 0.92rem; line-height: 1.5; padding: 14px 18px; border-radius: 8px; border: 1px solid var(--border-hairline); width: 100%;" placeholder="Type or paste your custom initial system prompt here to optimize..."></textarea>
           </div>
         </div>
