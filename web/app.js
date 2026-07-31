@@ -1339,6 +1339,34 @@ async function generateAITestInput() {
   }
 }
 
+function auditPlaygroundPrompt() {
+  runPlayground();
+}
+
+function copyText(elementId) {
+  playClickSound();
+  const el = document.getElementById(elementId);
+  if (!el) return;
+  const text = el.value || el.textContent || "";
+  navigator.clipboard.writeText(text).then(() => {
+    logActivity("[COPY]", `Copied content to clipboard.`);
+    alert("Copied to clipboard!");
+  }).catch(() => {
+    // Fallback if clipboard API is restricted
+    const textArea = document.createElement("textarea");
+    textArea.value = text;
+    document.body.appendChild(textArea);
+    textArea.select();
+    document.execCommand("copy");
+    document.body.removeChild(textArea);
+    alert("Copied to clipboard!");
+  });
+}
+
+function copyGeneratorPrompt() {
+  copyText("prompt-optimized");
+}
+
 async function runPlayground() {
   const promptText = document.getElementById("pg-prompt").value;
   const inputText = document.getElementById("pg-input").value;
