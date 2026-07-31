@@ -23,7 +23,7 @@ class RollbackManager:
         """Evaluates metrics and rolls back to best prompt if performance decreased."""
         rolled_back = False
 
-        if current_acc > self.best_accuracy:
+        if current_acc > self.best_accuracy or (current_acc == self.best_accuracy and len(current_prompt) > len(self.best_prompt)):
             self.best_accuracy = current_acc
             self.best_f1 = current_f1
             self.best_prompt = current_prompt
