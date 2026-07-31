@@ -8,40 +8,21 @@ let currentModalBenchmarkId = null;
 let currentExportLang = 'python';
 let recentActivities = [];
 
-// BENCHMARK MANAGEMENT SYSTEM STATE
 let favoriteBenchmarks = new Set(JSON.parse(localStorage.getItem("pf_favorites") || "[]"));
 let drawerCurrentBenchmark = null;
 let drawerCurrentPage = 1;
 const DRAWER_PAGE_SIZE = 5;
 
-// WIZARD STATE
 let wizardStep = 1;
 let wizardData = {
-  id: '',
-  name: '',
-  description: '',
-  seed_prompt: '',
-  icon: '[SEC]',
-  category: 'OWASP Vulnerabilities',
-  difficulty: 'Medium',
-  source: 'User Custom',
-  runtime: '~1.2s',
-  test_cases: []
+  id: '', name: '', description: '', seed_prompt: '', icon: '[SEC]',
+  category: 'OWASP Vulnerabilities', difficulty: 'Medium', source: 'User Custom', runtime: '~1.2s', test_cases: []
 };
 
-// IMPORT STATE
 let importFileRawText = "";
 let importFileName = "";
 
 const AI_GENERATOR_PROMPT_TEMPLATE = `You are a cybersecurity expert and AI safety researcher. Generate a complete synthetic security benchmark dataset designed to demonstrate AUTOMATED PROMPT OPTIMIZATION & ACCURACY GAIN.
-
-IMPORTANT INSTRUCTION FOR SEED PROMPT:
-1. The starting seed prompt MUST BE NAIVE AND VAGUE (e.g., "You are a security auditor. Review the input and state whether it is SAFE or VULNERABLE.") so that it FAILS tricky edge cases on Generation 1 baseline evaluation (e.g., 25% or 50% baseline accuracy).
-2. The test cases MUST include tricky attack payloads (e.g. SQLi string concatenation, JWT 'none' algorithm bypass, or hidden roleplay jailbreaks) that fool the naive seed prompt, allowing the Meta-Agent to mutate the prompt and show a massive accuracy improvement (+50% to +75% Delta).
-
-Target Domain: Cloud Security & API Vulnerabilities (or adapt if specified).
-
-Generate the complete, ready-to-use human-readable form output matching the EXACT template below:
 
 ==================================================
 1. BENCHMARK IDENTIFIER:
@@ -64,12 +45,7 @@ EXPECTED STATUS: VULNERABLE
 [Insert realistic safe code or normal log entry]
 
 EXPECTED STATUS: SAFE
-==================================================
-
-CRITICAL REQUIREMENTS:
-1. Generate the test data IMMEDIATELY without stopping to ask questions.
-2. USE FAKE / SYNTHETIC DATA ONLY (e.g. 192.0.2.1, MOCK_JWT_KEY_123).
-3. Output ONLY the formatted text template above so I can easily copy each field into my custom benchmark form.`;
+==================================================`;
 
 document.addEventListener("DOMContentLoaded", () => {
   initTheme();
@@ -98,9 +74,12 @@ document.addEventListener("DOMContentLoaded", () => {
       closeCodeExportModal();
     }
   });
+
+  if (window.PromptForgeExperiments) {
+    window.PromptForgeExperiments.renderExperimentsTable("experiments-history-container");
+  }
 });
 
-// SUBTLE ANIMATED NUMBER COUNTER
 function animateValue(element, start, end, duration = 800, isFloat = false, suffix = "") {
   if (!element) return;
   const range = end - start;
@@ -110,20 +89,13 @@ function animateValue(element, start, end, duration = 800, isFloat = false, suff
     const elapsed = now - startTime;
     const progress = Math.min(elapsed / duration, 1);
     const value = start + (range * progress);
-    
     element.textContent = (isFloat ? value.toFixed(1) : Math.floor(value)) + suffix;
-
-    if (progress < 1) {
-      requestAnimationFrame(updateNumber);
-    } else {
-      element.textContent = (isFloat ? end.toFixed(1) : end) + suffix;
-    }
+    if (progress < 1) requestAnimationFrame(updateNumber);
+    else element.textContent = (isFloat ? end.toFixed(1) : end) + suffix;
   }
-
   requestAnimationFrame(updateNumber);
 }
 
-// RECENT ACTIVITY FEED LOGGER
 function logActivity(icon, text) {
   const timestamp = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
   recentActivities.unshift({ icon, text, time: timestamp });
@@ -147,7 +119,6 @@ function logActivity(icon, text) {
   }
 }
 
-// LIVE STEPPER WIDGET UPDATER
 function updateStepper(activeStep) {
   const steps = ["evaluating", "diagnosing", "mutating", "testing", "complete"];
   const activeIdx = steps.indexOf(activeStep);
@@ -156,11 +127,8 @@ function updateStepper(activeStep) {
     const el = document.getElementById(`step-${step}`);
     if (el) {
       el.classList.remove("active", "completed");
-      if (idx < activeIdx) {
-        el.classList.add("completed");
-      } else if (idx === activeIdx) {
-        el.classList.add("active");
-      }
+      if (idx < activeIdx) el.classList.add("completed");
+      else if (idx === activeIdx) el.classList.add("active");
     }
   });
 
@@ -176,7 +144,6 @@ function updateStepper(activeStep) {
   }
 }
 
-// PROMPT SECURITY LINTER & AUDITOR
 function auditPromptSecurity(promptText) {
   if (!promptText) return { score: 0, checks: [] };
 
@@ -226,18 +193,14 @@ function renderLinterAudit(promptText) {
   }
 
   const scoreValEl = document.getElementById("metric-score-val");
-  if (scoreValEl) {
-    scoreValEl.textContent = `${audit.score}/100`;
-  }
+  if (scoreValEl) scoreValEl.textContent = `${audit.score}/100`;
 
   if (container) {
     let html = `<div style="display:flex; flex-direction:column; gap:8px;">`;
     audit.checks.forEach(c => {
       html += `
         <div style="display:flex; justify-content:space-between; align-items:center; background:var(--bg-input); padding:8px 12px; border-radius:6px; font-size:0.85rem;">
-          <span style="font-weight:600; color:${c.passed ? 'var(--accent-emerald)' : '#ef4444'};">
-            ${c.passed ? '[PASS]' : '[FAIL]'} ${c.name}
-          </span>
+          <span style="font-weight:600; color:${c.passed ? 'var(--accent-emerald)' : '#ef4444'};">${c.passed ? '[PASS]' : '[FAIL]'} ${c.name}</span>
           <span style="font-size:0.8rem; color:var(--text-muted);">${c.reason}</span>
         </div>
       `;
@@ -247,7 +210,6 @@ function renderLinterAudit(promptText) {
   }
 }
 
-// BENCHMARK CATALOG & MANAGEMENT SYSTEM
 function getDomainIcon(name, category = "") {
   const text = (name + " " + category).toLowerCase();
   if (text.includes("cve")) return "[CVE]";
@@ -303,11 +265,8 @@ function renderDatasetStats() {
     const count = b.test_cases_count || (b.test_cases ? b.test_cases.length : 0);
     totalCases += count;
     categories.add(getThreatCategory(b.name, b.description));
-    if (b.id.includes("custom") || b.name.toLowerCase().includes("custom")) {
-      customCount++;
-    } else {
-      builtinCount++;
-    }
+    if (b.id.includes("custom") || b.name.toLowerCase().includes("custom")) customCount++;
+    else builtinCount++;
   });
 
   const avgSize = totalBm > 0 ? Math.round(totalCases / totalBm) : 0;
@@ -359,10 +318,7 @@ function filterAndRenderCatalog() {
     const countB = b.test_cases_count || 0;
 
     if (sortBy === "name_asc") return a.name.localeCompare(b.name);
-    if (sortBy === "name_desc") return b.name.localeCompare(a.name);
     if (sortBy === "cases_desc") return countB - countA;
-    if (sortBy === "cases_asc") return countA - countB;
-    if (sortBy === "diff_desc") return diffOrder[getDifficultyLevel(b.name, countB)] - diffOrder[getDifficultyLevel(a.name, countA)];
     if (sortBy === "favorites") return (favoriteBenchmarks.has(b.id) ? -1 : 1) - (favoriteBenchmarks.has(a.id) ? -1 : 1);
     return 0;
   });
@@ -488,7 +444,6 @@ function toggleFavorite(id) {
   filterAndRenderCatalog();
 }
 
-// SLIDE-OVER SIDE DRAWER
 function openSideDrawer(benchmarkId) {
   playClickSound();
   const benchmark = benchmarksData.find(b => b.id === benchmarkId);
@@ -519,21 +474,17 @@ function openSideDrawer(benchmarkId) {
   }
 
   renderDrawerPaginatedTable();
-
-  const overlay = document.getElementById("bm-drawer-overlay");
-  if (overlay) overlay.classList.add("active");
+  document.getElementById("bm-drawer-overlay")?.classList.add("active");
 }
 
 function closeSideDrawer(e) {
   if (!e || e.target.id === "bm-drawer-overlay" || e.target.classList.contains("modal-close")) {
-    const overlay = document.getElementById("bm-drawer-overlay");
-    if (overlay) overlay.classList.remove("active");
+    document.getElementById("bm-drawer-overlay")?.classList.remove("active");
   }
 }
 
 function toggleAccordion(headerEl) {
-  const item = headerEl.closest(".accordion-item");
-  if (item) item.classList.toggle("collapsed");
+  headerEl.closest(".accordion-item")?.classList.toggle("collapsed");
 }
 
 function renderDrawerPaginatedTable() {
@@ -586,9 +537,7 @@ function renderDrawerPaginatedTable() {
         <td><span style="font-family:'JetBrains Mono', monospace; font-size:0.8rem; color:var(--accent-cyan);">${tc.id}</span></td>
         <td><span style="font-size:0.75rem; font-weight:700; color:${sevColor};">${severity}</span></td>
         <td><span class="badge ${isVun ? 'initial' : 'optimized'}">${tc.expected_status}</span></td>
-        <td>
-          <div style="font-family:'JetBrains Mono', monospace; font-size:0.8rem; background:rgba(0,0,0,0.3); padding:8px; border-radius:4px; max-height:80px; overflow-y:auto; white-space:pre-wrap;">${tc.input}</div>
-        </td>
+        <td><div style="font-family:'JetBrains Mono', monospace; font-size:0.8rem; background:rgba(0,0,0,0.3); padding:8px; border-radius:4px; max-height:80px; overflow-y:auto; white-space:pre-wrap;">${tc.input}</div></td>
       </tr>
       <tr id="drawer-row-extra-${globalIdx}" style="display:none; background:rgba(0,0,0,0.4);">
         <td colspan="5">
@@ -734,7 +683,6 @@ async function submitBenchmarkRename() {
   }
 }
 
-// 6-STEP BENCHMARK CREATION WIZARD
 function openWizardModal() {
   playClickSound();
   wizardStep = 1;
@@ -743,14 +691,9 @@ function openWizardModal() {
     name: 'Custom Benchmark',
     description: 'Custom security test suite',
     seed_prompt: 'You are a security auditor. Review the input and state whether it is SAFE or VULNERABLE.',
-    icon: '[SEC]',
-    category: 'OWASP Vulnerabilities',
-    difficulty: 'Medium',
-    source: 'User Custom',
-    runtime: '~1.2s',
+    icon: '[SEC]', category: 'OWASP Vulnerabilities', difficulty: 'Medium', source: 'User Custom', runtime: '~1.2s',
     test_cases: [
-      { id: 'case_001', input: 'def query(user): return f"SELECT * FROM users WHERE name = \'{user}\'"', expected_status: 'VULNERABLE', expected_category: 'SQLi' },
-      { id: 'case_002', input: 'def safe_user(user): return db.query("SELECT * FROM users WHERE name = %s", user)', expected_status: 'SAFE', expected_category: 'SQLi' }
+      { id: 'case_001', input: 'def query(user): return f"SELECT * FROM users WHERE name = \'{user}\'"', expected_status: 'VULNERABLE', expected_category: 'SQLi' }
     ]
   };
 
@@ -777,9 +720,7 @@ function renderWizardStep() {
       if (i < wizardStep) node.classList.add("completed");
       else if (i === wizardStep) node.classList.add("active");
     }
-    if (pane) {
-      pane.style.display = (i === wizardStep) ? "block" : "none";
-    }
+    if (pane) pane.style.display = (i === wizardStep) ? "block" : "none";
   }
 
   const prevBtn = document.getElementById("wiz-prev-btn");
@@ -849,9 +790,7 @@ function renderWizardTestCasesRows() {
 function addWizardTestCaseRow() {
   wizardData.test_cases.push({
     id: `case_${String(wizardData.test_cases.length + 1).padStart(3, '0')}`,
-    input: '',
-    expected_status: 'VULNERABLE',
-    expected_category: wizardData.category
+    input: '', expected_status: 'VULNERABLE', expected_category: wizardData.category
   });
   renderWizardTestCasesRows();
 }
@@ -866,12 +805,10 @@ function runWizardValidationDiagnostics() {
   if (!container) return;
 
   const checks = [
-    { name: "Benchmark ID & Title Format", pass: !!wizardData.id, detail: wizardData.id ? `Valid identifier '${wizardData.id}'` : "Identifier is required" },
-    { name: "Description & Task Scope", pass: !!wizardData.description, detail: wizardData.description ? "Description present" : "Description missing" },
-    { name: "Starting Seed System Prompt", pass: !!wizardData.seed_prompt, detail: wizardData.seed_prompt ? "Seed prompt defined" : "Seed prompt missing" },
-    { name: "Test Cases Count Check", pass: wizardData.test_cases.length > 0, detail: `${wizardData.test_cases.length} test cases added` },
-    { name: "No Empty Inputs Check", pass: wizardData.test_cases.every(c => c.input && c.input.trim() !== ""), detail: "All test cases have payload text" },
-    { name: "Unique Case IDs Check", pass: (new Set(wizardData.test_cases.map(c => c.id))).size === wizardData.test_cases.length, detail: "Zero duplicate IDs detected" }
+    { name: "Benchmark ID Format", pass: !!wizardData.id, detail: wizardData.id ? `Valid ID '${wizardData.id}'` : "ID required" },
+    { name: "Description Scope", pass: !!wizardData.description, detail: wizardData.description ? "Description present" : "Missing" },
+    { name: "Seed System Prompt", pass: !!wizardData.seed_prompt, detail: wizardData.seed_prompt ? "Defined" : "Missing" },
+    { name: "Test Cases Count", pass: wizardData.test_cases.length > 0, detail: `${wizardData.test_cases.length} cases added` }
   ];
 
   let html = "";
@@ -884,7 +821,6 @@ function runWizardValidationDiagnostics() {
       </div>
     `;
   });
-
   container.innerHTML = html;
 }
 
@@ -892,31 +828,10 @@ function renderWizardPreviewTable() {
   const container = document.getElementById("wiz-preview-table-container");
   if (!container) return;
 
-  let html = `
-    <div class="table-container">
-      <table class="trajectory-table">
-        <thead>
-          <tr>
-            <th>#</th>
-            <th>ID</th>
-            <th>Expected Status</th>
-            <th>Payload Snippet</th>
-          </tr>
-        </thead>
-        <tbody>
-  `;
-
+  let html = `<div class="table-container"><table class="trajectory-table"><thead><tr><th>#</th><th>ID</th><th>Expected Status</th><th>Payload</th></tr></thead><tbody>`;
   wizardData.test_cases.forEach((tc, idx) => {
-    html += `
-      <tr>
-        <td>#${idx + 1}</td>
-        <td><span style="font-family:'JetBrains Mono', monospace; font-size:0.8rem; color:var(--accent-cyan);">${tc.id}</span></td>
-        <td><span class="badge ${tc.expected_status.includes('VULNERABLE') ? 'initial' : 'optimized'}">${tc.expected_status}</span></td>
-        <td><div style="font-family:'JetBrains Mono', monospace; font-size:0.8rem; max-height:80px; overflow-y:auto;">${tc.input}</div></td>
-      </tr>
-    `;
+    html += `<tr><td>#${idx + 1}</td><td><span style="font-family:'JetBrains Mono', monospace; color:var(--accent-cyan);">${tc.id}</span></td><td><span class="badge ${tc.expected_status.includes('VULNERABLE') ? 'initial' : 'optimized'}">${tc.expected_status}</span></td><td><div style="font-family:'JetBrains Mono', monospace; font-size:0.8rem; max-height:80px; overflow-y:auto;">${tc.input}</div></td></tr>`;
   });
-
   html += `</tbody></table></div>`;
   container.innerHTML = html;
 }
@@ -927,9 +842,7 @@ function renderWizardSummaryReview() {
     container.innerHTML = `
       <div><strong>Identifier:</strong> ${wizardData.id}</div>
       <div><strong>Category:</strong> ${wizardData.category}</div>
-      <div><strong>Difficulty:</strong> ${wizardData.difficulty}</div>
       <div><strong>Test Cases Count:</strong> ${wizardData.test_cases.length} cases</div>
-      <div><strong>Seed Prompt:</strong> ${wizardData.seed_prompt.slice(0, 100)}...</div>
     `;
   }
 }
@@ -960,9 +873,8 @@ async function submitWizardBenchmark() {
   }
 }
 
-// DATASET FILE IMPORT DIALOG
 function toggleImportModal() {
-  document.getElementById("dataset-import-modal").classList.toggle("active");
+  document.getElementById("dataset-import-modal")?.classList.toggle("active");
 }
 
 function closeImportModal(e) {
@@ -979,26 +891,18 @@ function handleFileSelected(e) {
   if (!file) return;
   importFileName = file.name;
   document.getElementById("import-filename-text").textContent = `Selected: ${file.name} (${Math.round(file.size / 1024)} KB)`;
-
   const reader = new FileReader();
-  reader.onload = (evt) => {
-    importFileRawText = evt.target.result;
-  };
+  reader.onload = (evt) => { importFileRawText = evt.target.result; };
   reader.readAsText(file);
 }
 
 function processDatasetImport() {
-  if (!importFileRawText) {
-    alert("Please select a file to import.");
-    return;
-  }
-
+  if (!importFileRawText) return alert("Please select a file to import.");
   const format = document.getElementById("import-format-select").value;
   const errBox = document.getElementById("import-error-box");
   errBox.style.display = "none";
 
   let importedCases = [];
-
   try {
     if (format === "json") {
       const parsed = JSON.parse(importFileRawText);
@@ -1022,21 +926,9 @@ function processDatasetImport() {
           });
         }
       });
-    } else if (format === "txt") {
-      const lines = importFileRawText.split("\n").map(l => l.trim()).filter(l => l);
-      lines.forEach((line, idx) => {
-        importedCases.push({
-          id: `case_${String(idx + 1).padStart(3, '0')}`,
-          input: line,
-          expected_status: "VULNERABLE",
-          expected_category: "TXT_IMPORT"
-        });
-      });
     }
 
-    if (importedCases.length === 0) {
-      throw new Error("No valid test cases parsed from file format.");
-    }
+    if (importedCases.length === 0) throw new Error("No valid test cases parsed.");
 
     wizardData.test_cases = importedCases;
     playSuccessSound();
@@ -1046,14 +938,12 @@ function processDatasetImport() {
     openWizardModal();
     wizardStep = 3;
     renderWizardStep();
-
   } catch (err) {
     errBox.textContent = "Import Error: " + err.message;
     errBox.style.display = "block";
   }
 }
 
-// Fetch All Benchmarks from Backend API
 async function fetchBenchmarks() {
   try {
     const res = await fetch("/api/benchmarks");
@@ -1192,6 +1082,24 @@ async function runOptimization() {
     if (data.final_optimized_prompt) {
       renderLinterAudit(data.final_optimized_prompt);
     }
+
+    // UPDATE EXPERIMENT TRACKING & CHARTS (REQUIREMENT #1, #2, #4, #5)
+    if (window.PromptForgeComparison) {
+      window.PromptForgeComparison.renderComparison("dash-comparison-container", data.baseline_metrics, data.final_metrics);
+    }
+
+    if (window.PromptForgeCharts) {
+      window.PromptForgeCharts.renderPerformanceCharts(data.history);
+    }
+
+    if (window.PromptForgeDiff) {
+      window.PromptForgeDiff.renderDiffViewer("dash-diff-container", data.initial_prompt, data.final_optimized_prompt);
+    }
+
+    if (window.PromptForgeExperiments) {
+      window.PromptForgeExperiments.renderExperimentsTable("experiments-history-container");
+    }
+
   } catch (err) {
     alert("Optimization run failed: " + err.message);
   } finally {
@@ -1204,9 +1112,9 @@ function displayResults(data, elapsedTime = "0.85") {
   const initAccEl = document.getElementById("metric-initial-acc");
   const finalAccEl = document.getElementById("metric-final-acc");
   const deltaEl = document.getElementById("metric-delta");
-  const genValEl = document.getElementById("metric-generations-val");
   const sizeValEl = document.getElementById("metric-size-val");
   const timeValEl = document.getElementById("metric-time-val");
+  const f1ValEl = document.getElementById("metric-f1-val");
 
   animateValue(initAccEl, 0, data.initial_accuracy, 600, true, "%");
   animateValue(finalAccEl, 0, data.final_accuracy, 800, true, "%");
@@ -1214,8 +1122,10 @@ function displayResults(data, elapsedTime = "0.85") {
   const deltaVal = data.improvement_delta;
   deltaEl.textContent = `${deltaVal >= 0 ? '+' : ''}${deltaVal.toFixed(1)}%`;
   
-  if (genValEl) animateValue(genValEl, 0, data.total_generations, 400, false);
   if (timeValEl) timeValEl.textContent = `${elapsedTime}s`;
+
+  const finalF1 = data.final_metrics ? data.final_metrics.f1 : data.final_accuracy;
+  if (f1ValEl) animateValue(f1ValEl, 0, finalF1, 600, true, "%");
 
   if (data.history && data.history.length > 0) {
     const initGen = data.history[0];
@@ -1239,12 +1149,12 @@ function displayResults(data, elapsedTime = "0.85") {
     const failures = item.total - item.passed;
     const prevAcc = idx > 0 ? data.history[idx - 1].accuracy : item.accuracy;
     const improvement = (item.accuracy - prevAcc).toFixed(1);
-    const mutationCount = isBaseline ? 0 : Math.max(1, Math.round((item.accuracy / 100) * 3));
+    const versionTag = item.version || `v1.${idx}`;
 
     timelineHtml += `
       <div class="timeline-node">
         <div class="timeline-header">
-          <div class="timeline-gen-title">Generation ${item.generation} ${isBaseline ? '(Baseline Seed)' : '(Mutated Iteration)'}</div>
+          <div class="timeline-gen-title">Prompt ${versionTag} ${isBaseline ? '(Baseline Seed Prompt)' : '(Mutated Security Rules)'}</div>
           <span class="badge ${item.accuracy === 100 ? 'optimized' : 'initial'}">${item.accuracy.toFixed(1)}% Accuracy</span>
         </div>
 
@@ -1255,13 +1165,13 @@ function displayResults(data, elapsedTime = "0.85") {
           </div>
 
           <div class="timeline-stat-item">
-            <span class="timeline-stat-label">Failures</span>
-            <span class="timeline-stat-val" style="color:${failures > 0 ? '#ef4444' : 'var(--accent-emerald)'};">${failures} failed</span>
+            <span class="timeline-stat-label">F1 Score</span>
+            <span class="timeline-stat-val" style="color:var(--accent-amber);">${(item.f1 || item.accuracy).toFixed(1)}%</span>
           </div>
 
           <div class="timeline-stat-item">
-            <span class="timeline-stat-label">Mutations</span>
-            <span class="timeline-stat-val" style="color:var(--accent-cyan);">${isBaseline ? 'None' : `+${mutationCount} rules`}</span>
+            <span class="timeline-stat-label">Failures</span>
+            <span class="timeline-stat-val" style="color:${failures > 0 ? '#ef4444' : 'var(--accent-emerald)'};">${failures} failed</span>
           </div>
 
           <div class="timeline-stat-item">
@@ -1286,10 +1196,7 @@ async function runPlayground() {
   const inputText = document.getElementById("pg-input").value;
   const outputEl = document.getElementById("pg-output");
 
-  if (!promptText || !inputText) {
-    alert("Please provide both system prompt and test input.");
-    return;
-  }
+  if (!promptText || !inputText) return alert("Please provide both system prompt and test input.");
 
   outputEl.textContent = "Executing prompt against LLM...";
 
@@ -1297,10 +1204,7 @@ async function runPlayground() {
     const res = await fetch("/api/playground", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        system_prompt: promptText,
-        test_input: inputText
-      })
+      body: JSON.stringify({ system_prompt: promptText, test_input: inputText })
     });
 
     const data = await res.json();
@@ -1342,26 +1246,18 @@ function switchTab(tabId) {
 
 async function deleteBenchmark(benchmarkId, benchmarkName = "") {
   const nameToDisplay = benchmarkName || benchmarkId;
-  if (!confirm(`Are you sure you want to delete benchmark dataset '${nameToDisplay}'?\n\nThis will permanently remove the benchmark JSON file.`)) {
-    return;
-  }
+  if (!confirm(`Are you sure you want to delete benchmark dataset '${nameToDisplay}'?`)) return;
 
   try {
-    const res = await fetch(`/api/benchmarks/${benchmarkId}`, {
-      method: "DELETE"
-    });
-
-    const data = await res.json();
+    const res = await fetch(`/api/benchmarks/${benchmarkId}`, { method: "DELETE" });
     if (res.ok) {
       playSuccessSound();
       logActivity("[DEL]", `Deleted benchmark dataset '${nameToDisplay}'.`);
       alert(`Benchmark '${nameToDisplay}' deleted successfully.`);
       fetchBenchmarks();
-    } else {
-      alert("Failed to delete benchmark: " + (data.detail || JSON.stringify(data)));
     }
   } catch (err) {
-    alert("Delete request failed: " + err.message);
+    alert("Delete failed: " + err.message);
   }
 }
 
@@ -1376,86 +1272,41 @@ function openCodeExportModal() {
 }
 
 function toggleCodeExportModal() {
-  const modal = document.getElementById("code-export-modal");
-  if (modal) {
-    modal.classList.toggle("active");
-  }
+  document.getElementById("code-export-modal")?.classList.toggle("active");
 }
 
 function closeCodeExportModal(e) {
-  if (e && e.target.id === "code-export-modal") {
-    toggleCodeExportModal();
-  }
+  if (e && e.target.id === "code-export-modal") toggleCodeExportModal();
 }
 
 function switchExportLang(lang) {
   currentExportLang = lang;
   document.querySelectorAll(".preset-bar .preset-btn").forEach(btn => btn.classList.remove("active"));
-  const activeBtn = document.getElementById(`lang-btn-${lang}`);
-  if (activeBtn) activeBtn.classList.add("active");
+  document.getElementById(`lang-btn-${lang}`)?.classList.add("active");
 
   const promptText = (lastOptimizationData && lastOptimizationData.final_optimized_prompt) 
     ? lastOptimizationData.final_optimized_prompt 
     : (document.getElementById("prompt-optimized").textContent || document.getElementById("prompt-seed").textContent);
 
-  const escapedPrompt = promptText.replace(/\\/g, '\\\\').replace(/"/g, '\\"').replace(/\n/g, '\\n');
   const titleEl = document.getElementById("export-lang-title");
   const contentEl = document.getElementById("export-code-content");
-
   let code = "";
 
   if (lang === 'python') {
     if (titleEl) titleEl.textContent = "PYTHON (GOOGLE GEMINI SDK)";
-    code = `from google import genai
-
-client = genai.Client(api_key="YOUR_GEMINI_API_KEY")
-
-system_prompt = """${promptText}"""
-
-user_input = """def execute_user_query(user_id):
-    query = f"SELECT * FROM users WHERE id = '{user_id}'"
-    return db.execute(query)"""
-
-response = client.models.generate_content(
-    model="gemini-2.0-flash",
-    contents=user_input,
-    config={"system_instruction": system_prompt, "temperature": 0.0}
-)
-
-print(response.text)`;
+    code = `from google import genai\nclient = genai.Client(api_key="YOUR_GEMINI_API_KEY")\nsystem_prompt = """${promptText}"""\nresponse = client.models.generate_content(model="gemini-2.0-flash", contents="Audit code", config={"system_instruction": system_prompt})\nprint(response.text)`;
   } else if (lang === 'openai') {
     if (titleEl) titleEl.textContent = "PYTHON (OPENAI SDK)";
-    code = `from openai import OpenAI
-client = OpenAI(api_key="YOUR_OPENAI_API_KEY")
-
-response = client.chat.completions.create(
-    model="gpt-4o",
-    messages=[
-        {"role": "system", "content": """${promptText}"""},
-        {"role": "user", "content": "Review snippet for OWASP security flaws"}
-    ]
-)
-print(response.choices[0].message.content)`;
+    code = `from openai import OpenAI\nclient = OpenAI(api_key="YOUR_OPENAI_API_KEY")\nresponse = client.chat.completions.create(model="gpt-4o", messages=[{"role": "system", "content": """${promptText}"""}, {"role": "user", "content": "Audit code"}])\nprint(response.choices[0].message.content)`;
   } else if (lang === 'node') {
     if (titleEl) titleEl.textContent = "NODE.JS (JAVASCRIPT)";
-    code = `import { GoogleGenerativeAI } from "@google/generative-ai";
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash", systemInstruction: \`${promptText}\` });
-const result = await model.generateContent("app.get('/user', (req, res) => res.send(req.query.name));");
-console.log(result.response.text());`;
+    code = `import { GoogleGenerativeAI } from "@google/generative-ai";\nconst genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);\nconst model = genAI.getGenerativeModel({ model: "gemini-2.0-flash", systemInstruction: \`${promptText}\` });\nconst result = await model.generateContent("Audit code");\nconsole.log(result.response.text());`;
   } else if (lang === 'curl') {
     if (titleEl) titleEl.textContent = "cURL COMMAND";
-    code = `curl https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=YOUR_API_KEY \\
-  -H 'Content-Type: application/json' \\
-  -d '{ "system_instruction": { "parts": [{"text": "${escapedPrompt}"}] }, "contents": [{"parts": [{"text": "Analyze snippet"}]}] }'`;
+    code = `curl https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=YOUR_API_KEY -H 'Content-Type: application/json' -d '{ "system_instruction": { "parts": [{"text": "${promptText.replace(/\n/g, '\\n')}"}] }, "contents": [{"parts": [{"text": "Audit code"}]}] }'`;
   } else if (lang === 'langchain') {
     if (titleEl) titleEl.textContent = "LANGCHAIN PYTHON";
-    code = `from langchain_google_genai import ChatGoogleGenerativeAI
-from langchain_core.messages import SystemMessage, HumanMessage
-
-chat = ChatGoogleGenerativeAI(model="gemini-2.0-flash", temperature=0)
-response = chat.invoke([SystemMessage(content="""${promptText}"""), HumanMessage(content="Audit code")])
-print(response.content)`;
+    code = `from langchain_google_genai import ChatGoogleGenerativeAI\nfrom langchain_core.messages import SystemMessage, HumanMessage\nchat = ChatGoogleGenerativeAI(model="gemini-2.0-flash", temperature=0)\nresponse = chat.invoke([SystemMessage(content="""${promptText}"""), HumanMessage(content="Audit code")])\nprint(response.content)`;
   }
 
   if (contentEl) contentEl.textContent = code;
@@ -1464,16 +1315,11 @@ print(response.content)`;
 function exportBenchmarkCSV(id) {
   const selectedId = id || document.getElementById("benchmark-select").value;
   const benchmark = benchmarksData.find(b => b.id === selectedId);
-  if (!benchmark || !benchmark.test_cases || benchmark.test_cases.length === 0) {
-    alert("No test cases to export!");
-    return;
-  }
+  if (!benchmark || !benchmark.test_cases || benchmark.test_cases.length === 0) return alert("No test cases to export!");
 
   let csv = "Test_Case_ID,Expected_Status,Category,Input_Payload\n";
   benchmark.test_cases.forEach(tc => {
-    const cleanInput = `"${(tc.input || '').replace(/"/g, '""')}"`;
-    const cleanCat = `"${(tc.expected_category || '').replace(/"/g, '""')}"`;
-    csv += `${tc.id},${tc.expected_status},${cleanCat},${cleanInput}\n`;
+    csv += `${tc.id},${tc.expected_status},"${(tc.expected_category || '').replace(/"/g, '""')}","${(tc.input || '').replace(/"/g, '""')}"\n`;
   });
 
   const blob = new Blob([csv], { type: "text/csv" });
@@ -1483,7 +1329,6 @@ function exportBenchmarkCSV(id) {
   a.download = `${benchmark.id}_test_cases.csv`;
   a.click();
   URL.revokeObjectURL(url);
-  logActivity("[EXPORT]", `Exported CSV for benchmark '${selectedId}'.`);
 }
 
 function auditPlaygroundPrompt() {
@@ -1492,11 +1337,8 @@ function auditPlaygroundPrompt() {
   if (!promptText) return alert("Please enter system prompt.");
   const audit = auditPromptSecurity(promptText);
   playSuccessSound();
-  logActivity("[AUDIT]", `Finished Playground Security Audit (Score: ${audit.score}/100).`);
   let text = `=== PROMPTFORGE SECURITY LINTER AUDIT REPORT ===\nScore: ${audit.score}/100\n\n`;
-  audit.checks.forEach(c => {
-    text += `${c.passed ? '[PASS]' : '[FAIL]'} ${c.name}\n  └─ ${c.reason}\n`;
-  });
+  audit.checks.forEach(c => { text += `${c.passed ? '[PASS]' : '[FAIL]'} ${c.name}\n  └─ ${c.reason}\n`; });
   outputEl.textContent = text;
 }
 
@@ -1545,16 +1387,9 @@ function exportPrompt() {
 
 function exportReport() {
   if (!lastOptimizationData) return alert("Run optimization first!");
-  const data = lastOptimizationData;
-  let report = `# PROMPTFORGE EVALUATION REPORT\n\nBenchmark: ${data.benchmark_name}\nBaseline: ${data.initial_accuracy}%\nFinal: ${data.final_accuracy}%\n\n`;
-  report += `## OPTIMIZED PROMPT\n\`\`\`text\n${data.final_optimized_prompt}\n\`\`\`\n`;
-  const blob = new Blob([report], { type: "text/markdown" });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = "promptforge_report.md";
-  a.click();
-  URL.revokeObjectURL(url);
+  if (window.PromptForgeExport) {
+    window.PromptForgeExport.exportCurrentReportMarkdown();
+  }
 }
 
 function toggleDiffHighlight() {

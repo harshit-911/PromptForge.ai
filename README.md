@@ -1,11 +1,11 @@
-# PromptForge AI: Automated System Prompt Mutation & Refinement Platform
+# PromptForge AI: Automated System Prompt Mutation, Evaluation & Experiment Tracking Platform
 
 [![Python 3.10+](https://img.shields.io/badge/Python-3.10%2B-blue.svg)](https://www.python.org/)
 [![LLM Support](https://img.shields.io/badge/LLM-Gemini%202.0%20%7C%20Ollama%20(Llama%203.2)-orange.svg)](https://ai.google.dev/)
 [![Framework](https://img.shields.io/badge/Framework-FastAPI-emerald.svg)](https://fastapi.tiangolo.com/)
 [![License](https://img.shields.io/badge/License-MIT-purple.svg)](LICENSE)
 
-**PromptForge AI** is an autonomous closed-loop Meta-Agent platform that automatically evaluates, critiques, and mutates LLM system prompts for cybersecurity and AI safety applications (OWASP code auditing, SOC threat log analysis, real CVE records from `cve.org`, and DAN jailbreak defense).
+**PromptForge AI** is an enterprise closed-loop Meta-Agent platform that transforms prompt engineering into a rigorous, automated prompt evaluation and experiment tracking system for cybersecurity and AI safety applications (OWASP code auditing, SOC threat log analysis, real CVE records from `cve.org`, and DAN jailbreak defense).
 
 ---
 
@@ -30,16 +30,35 @@ server logs, and real CVEs.      the wrong answer.              rules until 100%
 
 ---
 
-## 🌟 Key Features
+## 🌟 Professional Features
 
-- **Enterprise AI Security Benchmark Management System**:
-  - **Side-Over Drawer**: Interactive drawer with overview, evaluation criteria, and paginated test case preview tables with expandable payloads.
-  - **6-Step Creation Wizard**: Step-by-step wizard for building, validating, previewing, and publishing custom security benchmark suites.
-  - **Advanced Real-Time Search & Multi-Filters**: Instant client-side filtering by Name, Category, Difficulty, Source, Type, or Favorites (`⭐`).
-  - **Multi-Format Dataset Importer**: Drag-and-drop support for `.json`, `.csv`, and `.txt` datasets with live error diagnostics.
-- **Enterprise 7-Metric KPI Grid**: Baseline Accuracy, Current Accuracy, Accuracy Gain (+Delta %), Current Generation, Benchmark Size, Execution Latency, and Prompt Security Linter Score.
-- **Production Integration Code Exporter**: 1-click code generator for Python (`google-genai`), Python (`openai`), Node.js, cURL, and LangChain.
-- **Dual LLM Provider Support**: Native integration with **Google Gemini API** and **Local Ollama (`llama3.2`)** for 100% offline, $0 cost execution.
+### 1. 🧪 Automated Experiment Tracking
+- Every optimization run automatically creates and persists an **Experiment** record locally.
+- Stores: Experiment ID, Timestamp, Benchmark, Seed Prompt, Final Prompt, LLM Model, Latency, Token Usage, Accuracy, Precision, Recall, F1 Score, Passed Tests, and Failed Tests.
+
+### 2. 📊 Baseline vs. Optimized Comparison
+- BEFORE (`v1.0 Seed`) vs. AFTER (`v1.N Mutated`) side-by-side comparison metrics.
+- Computes real-time Delta gains: e.g. **Accuracy (61% ➔ 92%)**, **Precision (58% ➔ 91%)**, **Recall (60% ➔ 93%)**, and **F1 Score (59% ➔ 92%)**.
+
+### 3. 🏷️ Prompt Version History
+- Version tagging for every mutation step: `v1.0` (Baseline), `v1.1` (Mutation 1), `v1.2` (Mutation 2)...
+- Records prompt text, timestamp, change summary, Meta-Agent reasoning critique, and evaluation metrics per version.
+
+### 4. 🔍 Git-Style Prompt Diff Viewer
+- Side-by-side line diff viewer displaying:
+  - `+ Added instructions` (green line highlight)
+  - `- Removed instructions` (red line highlight)
+  - `~ Unchanged / Modified rules`
+
+### 5. 📈 Performance Dashboard & Charts
+- Zero-dependency SVG chart suite:
+  - **Line Chart**: Accuracy, Precision, Recall, and F1 over prompt versions.
+  - **Bar Chart**: Passed vs. Failed test cases breakdown per iteration.
+  - **Pie Chart**: Error & Threat Categories distribution.
+  - **Trend Chart**: Net optimization progress delta.
+
+### 6. 📄 Multi-Format Report Exporter
+- Export experiment reports instantly as **PDF** (printable HTML), **Markdown** (`.md`), **JSON** (`.json`), or **CSV** (`.csv`).
 
 ---
 
@@ -49,22 +68,30 @@ server logs, and real CVEs.      the wrong answer.              rules until 100%
 PromptForge.ai/
 ├── meta_agent/
 │   ├── benchmarks/               # 13+ Built-in & CVE benchmark JSON datasets
+│   ├── experiments/              # Persisted JSON experiment tracking records
 │   ├── config.py                 # Platform configuration loader
 │   ├── cve_importer.py           # MITRE cvelistV5 JSON dataset parser
-│   ├── evaluator.py              # Multi-metric benchmark evaluator
+│   ├── evaluator.py              # Precision, Recall, F1 & Benchmark evaluator
+│   ├── experiments.py            # Local ExperimentTracker & storage engine
 │   ├── llm.py                    # Dual Gemini API & Local Ollama client wrapper
-│   ├── loop.py                   # Optimization loop orchestrator
+│   ├── loop.py                   # Optimization loop orchestrator with versioning
 │   └── optimizer.py              # Meta-Agent prompt optimizer
 ├── web/
+│   ├── js/                       # Modularized frontend engines
+│   │   ├── charts.js             # SVG Performance & Progress Charts
+│   │   ├── comparison.js         # Baseline vs Optimized Comparison
+│   │   ├── diff.js               # Git-Style Line-by-Line Prompt Diff
+│   │   ├── experiments.js        # Experiment Tracking & History viewer
+│   │   └── export.js             # PDF / Markdown / JSON / CSV Exporter
 │   ├── index.html                # Enterprise Web Dashboard HTML
 │   ├── styles.css                # CSS design system (Dark/Light mode)
-│   └── app.js                    # Web Dashboard JavaScript
+│   └── app.js                    # Main Application Coordinator
 ├── server.py                     # FastAPI REST API server
 ├── main.py                       # CLI Command Line Interface entry point
 ├── test_end_to_end.py            # Automated end-to-end system test suite
 ├── requirements.txt              # Python package dependencies
 ├── .env.example                  # Environment configuration template
-└── PROMPTFORGE_PROJECT_EXPLANATION.txt  # Project architecture explanation
+└── README.md                     # Platform documentation
 ```
 
 ---
