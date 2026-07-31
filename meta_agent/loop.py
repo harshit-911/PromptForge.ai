@@ -83,8 +83,8 @@ class OptimizationLoop:
 
             self.optimizer.memory_manager.record_iteration(step_record)
 
-            # Stopping Condition 1: Optimal 100% Accuracy reached
-            if current_acc == 100.0:
+            # Stopping Condition 1: Optimal 100% Accuracy reached (runs at least 1 mutation pass for short prompts)
+            if current_acc == 100.0 and (gen > 0 or len(current_prompt) > 400):
                 stopping_reason = f"Optimal 100% accuracy reached at version {version_tag}."
                 step_record["optimizer_reasoning"] = stopping_reason
                 step_record["confidence_score"] = 100
