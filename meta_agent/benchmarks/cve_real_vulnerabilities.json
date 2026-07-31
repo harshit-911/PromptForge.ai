@@ -16,7 +16,7 @@
       "category": "Remote Code Execution (RCE) / JNDI Injection",
       "owasp": "A03:2021 - Injection",
       "cwe": "CWE-78",
-      "related_cve": "None"
+      "related_cve": "CVE-2021-44228"
     },
     {
       "id": "CVE-2024-3094",
@@ -25,7 +25,7 @@
       "category": "Supply Chain Backdoor / Authentication Bypass",
       "owasp": "Unspecified OWASP",
       "cwe": "Unspecified CWE",
-      "related_cve": "None"
+      "related_cve": "CVE-2024-3094"
     },
     {
       "id": "CVE-2023-38606",
@@ -34,7 +34,7 @@
       "category": "Kernel Memory Corruption / Privilege Escalation",
       "owasp": "Unspecified OWASP",
       "cwe": "Unspecified CWE",
-      "related_cve": "None"
+      "related_cve": "CVE-2023-38606"
     },
     {
       "id": "CVE-2022-22965",
@@ -43,7 +43,7 @@
       "category": "Class Loader Data Binding / Webshell RCE",
       "owasp": "Unspecified OWASP",
       "cwe": "CWE-78",
-      "related_cve": "None"
+      "related_cve": "CVE-2022-22965"
     },
     {
       "id": "CVE-2023-4863",
@@ -52,7 +52,7 @@
       "category": "Heap Buffer Overflow / Memory Corruption",
       "owasp": "Unspecified OWASP",
       "cwe": "Unspecified CWE",
-      "related_cve": "None"
+      "related_cve": "CVE-2023-4863"
     },
     {
       "id": "CVE-2021-3156",
@@ -61,7 +61,7 @@
       "category": "Local Privilege Escalation (LPE)",
       "owasp": "Unspecified OWASP",
       "cwe": "Unspecified CWE",
-      "related_cve": "None"
+      "related_cve": "CVE-2021-3156"
     },
     {
       "id": "CVE-2021-44228-FIX",
