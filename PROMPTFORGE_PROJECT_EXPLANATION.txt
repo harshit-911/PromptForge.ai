@@ -1,0 +1,125 @@
+================================================================================
+                       PROMPTFORGE AI - PROJECT OVERVIEW
+       Autonomous System Prompt Mutation & Refinement Platform for AI Safety
+================================================================================
+
+1. WHAT IS PROMPTFORGE AI? (THE 1-SENTENCE PITCH)
+--------------------------------------------------------------------------------
+PromptForge AI is an Autonomous System Prompt Optimization & Refinement Platform
+that automatically evaluates, critiques, and rewrites system prompts until they
+reach 100% security accuracy.
+
+PLAIN ENGLISH ANALOGY:
+Imagine writing a system instruction prompt for an AI assistant, like:
+"You are a security auditor. Review the code and state if it is SAFE or VULNERABLE."
+
+If an attacker inputs a sneaky attack payload (like a hidden SQL injection or a 
+DAN jailbreak prompt), the AI gets fooled and gives the wrong answer.
+
+Instead of a human manually spending hours rewriting and tweaking the prompt by 
+trial-and-error, PromptForge AI acts like a Master AI Cyber-Coach:
+  1. It tests your starting prompt against real security attacks.
+  2. It pinpoints exactly why the AI model got fooled.
+  3. It automatically rewrites (mutates) the prompt with un-hackable security 
+     rules until it passes 100% of test cases.
+
+
+2. HOW DOES IT WORK? (THE 3-STEP CLOSED-LOOP META-AGENT ENGINE)
+--------------------------------------------------------------------------------
+PromptForge AI operates on a Closed-Loop Meta-Agent Architecture (inspired by 
+research from Stanford DSPy and MIT TextGrad):
+
+       ┌──────────────────────────────────────────────────────────┐
+       │                   CLOSED-LOOP META-AGENT                 │
+       └────────────────────────────┬─────────────────────────────┘
+                                    │
+    ┌───────────────────────────────┼───────────────────────────────┐
+    ▼                               ▼                               ▼
+STEP 1: EVALUATE                STEP 2: DIAGNOSE                STEP 3: MUTATE
+Run starting seed prompt        Analyze failure reasons         Rewrite system prompt with
+against OWASP vulnerabilities,   where the target LLM gave      strict, un-hackable security
+server logs, and real CVEs.      the wrong answer.              rules until 100% accuracy.
+
+  • STEP 1 - EVALUATE: Evaluates candidate prompts against security datasets 
+    (OWASP Top 10, real CVE records from cve.org, server attack logs).
+  • STEP 2 - DIAGNOSE: The Meta-Agent inspects failure cases and generates a 
+    natural language diagnostic critique explaining why the prompt failed.
+  • STEP 3 - MUTATE: Synthesizes explicit security rules into the system prompt 
+    (e.g., "- MUST verify string formatting in SQL queries") and iterates until 
+    100.0% accuracy is reached.
+
+
+3. TECHNOLOGY STACK & ARCHITECTURE
+--------------------------------------------------------------------------------
+• CORE AI & LLM ENGINE:
+  - Google Gemini 2.0 Flash API (google-genai SDK)
+  - Local Open-Source Ollama Engine (Llama 3.2 via http://127.0.0.1:11434 & CLI)
+  - Fast Local Heuristic Simulator (Zero API rate limits & zero cost fallback)
+
+• BACKEND INFRASTRUCTURE:
+  - Python 3.14 & FastAPI REST API Framework
+  - Official MITRE cvelistV5 JSON Dataset Parser (Parsing cve.org records natively)
+  - Pydantic Data Models & Uvicorn ASGI Server
+
+• FRONTEND UI / UX:
+  - HTML5 & Vanilla CSS Design System (Dark/Light theme switching, Glassmorphic 
+    modals, Custom cyber cursor follower, Micro-animations)
+  - Vanilla JavaScript (ES6+ async/await, Fetch API)
+  - Web Audio API Synthesizer (Real-time zero-latency cyber audio sound FX)
+
+
+4. WHY IS IT USEFUL? (KEY ADVANTAGES)
+--------------------------------------------------------------------------------
+1. AUTOMATED OPTIMIZATION: Eliminates manual trial-and-error prompt engineering.
+2. ADVERSARIAL HARDENING: Injects un-hackable guardrails against attack payloads.
+3. LOCAL MODEL EXECUTION: Run Llama 3.2 via Ollama locally for $0 cloud cost.
+4. 1-CLICK CODE EXPORTER: Instantly generates Python, Node.js, cURL, and LangChain 
+   production code snippets for optimized prompts.
+5. REAL-TIME SECURITY LINTER: Audits any prompt and assigns a 0-100 Security Score.
+
+
+5. COMPLETE PLATFORM FEATURE LIST
+--------------------------------------------------------------------------------
+[DASHBOARD TAB]
+ • Control Center: Benchmark selector, generation count (up to 1,000), custom seed input.
+ • KPI Metrics Grid: Baseline Accuracy (Gen 1), Final Accuracy, and Accuracy Gain (+Delta %).
+ • Real-Time Prompt Security Linter: Audits prompts against 5 core AI safety rules.
+ • Benchmark Test Cases Inspector: Scrollable table displaying input payloads, status 
+   badges, and threat categories.
+ • Side-by-Side Prompts View: Seed Prompt vs. Mutated Prompt with "Highlight Rules".
+ • Trajectory & Diagnostic Log: Full step-by-step evolution and Meta-Agent critiques.
+ • Deploy Code Exporter: Generates Python (Gemini/OpenAI), Node.js, cURL, LangChain code.
+
+[BENCHMARKS CATALOG TAB]
+ • 10+ Pre-built Security Categories: Real CVEs (cve.org), OWASP Audit, Data Privacy/PII, 
+   AI Safety & DAN Jailbreaks, SOC Threat Logs, API Authorization, Cloud IAM/K8s, 
+   Cryptographic Flaws, Software Supply Chain, Financial Fraud/AML.
+ • Interactive Benchmark Cards: Click card to view details modal or expand test cases inline.
+ • Delete Benchmark (✕): Remove any benchmark dataset with one click.
+ • Create Custom Benchmark: Dynamic builder for adding custom security test suites.
+
+[PLAYGROUND TAB]
+ • Live Prompt Execution: Test system prompts live against code snippets or server logs.
+ • Attack Presets: Instant presets for SQLi, XSS, Command Injection, SSH Brute Force, DAN.
+ • Dual Prompt Comparison: Compare Seed vs. Mutated prompt outputs live side-by-side.
+ • Prompt Security Audit: Instant 0-100 score and checklist for any user prompt.
+
+
+6. 1-MINUTE PRESENTATION / DEMO SCRIPT
+--------------------------------------------------------------------------------
+"Hello! This is PromptForge AI.
+
+Writing system prompts for AI security applications is hard—if your prompt is vague, 
+attackers can bypass it using SQL injection, jailbreaks, or server log anomalies.
+
+PromptForge solves this using an Autonomous Meta-Agent Loop. You select a security 
+benchmark—like our official CVE dataset parsed from cve.org or OWASP vulnerabilities—
+and click Optimize.
+
+PromptForge tests the prompt, diagnoses why it failed, and automatically mutates 
+it across generations until it hits 100% accuracy.
+
+Once optimized, you can inspect every test case, run a Real-Time Security Audit, 
+and click 'Deploy Code' to copy production-ready code in Python, Node.js, or LangChain. 
+It even runs offline locally via Ollama & Llama 3.2 with zero API costs!"
+================================================================================

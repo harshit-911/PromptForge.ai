@@ -1,0 +1,20 @@
+{
+  "benchmark_name": "sql_injection_detection",
+  "description": "Tests whether an AI system can correctly distinguish vulnerable SQL query construction from safe parameterized database queries.",
+  "task_description": "Tests whether an AI system can correctly distinguish vulnerable SQL query construction from safe parameterized database queries.",
+  "seed_prompt": "You are a security auditor. Review the provided code snippet and determine whether it is SAFE or VULNERABLE. Briefly explain your reasoning.",
+  "test_cases": [
+    {
+      "id": "case_001",
+      "input": "# Synthetic example\n\nusername = request.form[\"username\"]\npassword = request.form[\"password\"]\n\nquery = (\n    \"SELECT * FROM users WHERE username = '\"\n    + username\n    + \"' AND password = '\"\n    + password\n    + \"';\"\n)\n\ncursor.execute(query)",
+      "expected_status": "VULNERABLE",
+      "expected_category": "CUSTOM"
+    },
+    {
+      "id": "case_002",
+      "input": "# Synthetic example\n\nusername = request.form[\"username\"]\npassword = request.form[\"password\"]\n\nquery = \"SELECT * FROM users WHERE username = %s AND password = %s\"\n\ncursor.execute(query, (username, password))",
+      "expected_status": "SAFE",
+      "expected_category": "CUSTOM"
+    }
+  ]
+}

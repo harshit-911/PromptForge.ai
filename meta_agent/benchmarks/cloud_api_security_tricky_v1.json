@@ -1,0 +1,20 @@
+{
+  "benchmark_name": "cloud_api_security_tricky_v1",
+  "description": "Evaluates an AI security classifier's ability to distinguish safe cloud/API configurations from subtle cloud security and API vulnerability patterns that commonly evade simplistic prompts.",
+  "task_description": "Evaluates an AI security classifier's ability to distinguish safe cloud/API configurations from subtle cloud security and API vulnerability patterns that commonly evade simplistic prompts.",
+  "seed_prompt": "You are a security auditor. Review the input and state whether it is SAFE or VULNERABLE.",
+  "test_cases": [
+    {
+      "id": "case_001",
+      "input": "API Gateway Request Log\n\nPOST /v1/auth/validate HTTP/1.1\n\nAuthorization: Bearer\nHEADER:\n{\n  \"alg\":\"none\",\n  \"typ\":\"JWT\"\n}\n\nPAYLOAD:\n{\n  \"sub\":\"user_1842\",\n  \"role\":\"admin\",\n  \"exp\":1956528000\n}\n\nVerification Result:\nSignature verification skipped because algorithm is \"none\".\nAccess granted.",
+      "expected_status": "VULNERABLE",
+      "expected_category": "CUSTOM"
+    },
+    {
+      "id": "case_002",
+      "input": "Cloud API Authentication Log\n\nPOST /v1/auth/validate\n\nJWT Header:\n{\n  \"alg\":\"RS256\",\n  \"typ\":\"JWT\"\n}\n\nVerification:\n- Signature verified successfully\n- Public key ID: MOCK_JWT_KEY_123\n- Token expiration validated\n- Audience matched\n- Access granted to role \"user\"\n\nSource IP: 192.0.2.42",
+      "expected_status": "SAFE",
+      "expected_category": "CUSTOM"
+    }
+  ]
+}
