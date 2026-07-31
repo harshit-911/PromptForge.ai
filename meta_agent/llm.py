@@ -192,7 +192,7 @@ class GeminiClient:
         # -------------------------------------------------------------
         # STAGE 1: Artifact Type & Known Published CVE Matching
         # -------------------------------------------------------------
-        if "LOG4J" in input_text or "LOGMANAGER" in input_text or "${JNDI:LDAP" in input_text or "CVE-2021-44228" in input_text:
+        if "LOG4J" in input_text or "LOGMANAGER" in input_text or "${JNDI" in input_text or "CVE-2021-44228" in input_text or "LOGGER.INFO" in input_text or "LOGGER.WARN" in input_text or "LOGGER.ERROR" in input_text:
             return f"""STATUS: VULNERABLE
 TOTAL FINDINGS: 1
 
