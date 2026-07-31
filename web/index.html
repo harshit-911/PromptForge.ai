@@ -410,62 +410,62 @@
         </div>
       </div>
 
-      <!-- LIVE OPTIMIZATION STATUS WIDGET -->
-      <div class="stepper-panel">
+      <!-- REASONING OPTIMIZATION PIPELINE STEPPER -->
+      <div class="pipeline-stepper-container" style="margin-bottom:2rem;">
         <div class="stepper-header">
-          <span>REASONING-BASED OPTIMIZATION PIPELINE</span>
-          <span style="font-size:0.75rem; color:var(--text-muted);" id="stepper-status-text">Ready for execution</span>
+          <span style="font-family:'JetBrains Mono', monospace; font-size:0.85rem; font-weight:700; color:var(--text-secondary); text-transform:uppercase; letter-spacing:0.05em;">Reasoning-Based Optimization Pipeline</span>
+          <span class="badge initial" id="stepper-status-badge">READY FOR EXECUTION</span>
         </div>
         <div class="stepper-track">
-          <div class="step-item" id="step-evaluating"><div class="step-dot"></div><span class="step-text">1. Evaluating</span></div>
-          <div class="step-item" id="step-diagnosing"><div class="step-dot"></div><span class="step-text">2. Diagnosing</span></div>
-          <div class="step-item" id="step-mutating"><div class="step-dot"></div><span class="step-text">3. Mutating</span></div>
-          <div class="step-item" id="step-testing"><div class="step-dot"></div><span class="step-text">4. Testing</span></div>
-          <div class="step-item" id="step-complete"><div class="step-dot"></div><span class="step-text">5. Complete</span></div>
+          <div class="step-item" id="step-evaluating"><div class="step-dot"></div><span class="step-text">Evaluating</span></div>
+          <div class="step-item" id="step-diagnosing"><div class="step-dot"></div><span class="step-text">Diagnosing</span></div>
+          <div class="step-item" id="step-mutating"><div class="step-dot"></div><span class="step-text">Mutating</span></div>
+          <div class="step-item" id="step-testing"><div class="step-dot"></div><span class="step-text">Testing</span></div>
+          <div class="step-item" id="step-complete"><div class="step-dot"></div><span class="step-text">Complete</span></div>
         </div>
       </div>
 
       <!-- ENTERPRISE KPI METRICS GRID -->
       <div class="dashboard-grid-7">
         <div class="metric-card-pro" data-tooltip="Initial benchmark accuracy of the seed prompt before optimization">
-          <div class="metric-label-row"><span>BASELINE ACCURACY</span><span class="trend-badge neutral">GEN 1</span></div>
-          <div class="metric-val purple" id="metric-initial-acc">0.0%</div>
-          <div class="metric-sub-row" id="metric-initial-passed">0 / 0 passed</div>
+          <div class="metric-label-row"><span>BASELINE ACCURACY</span><span class="trend-badge neutral">SEED</span></div>
+          <div class="metric-val purple" id="metric-initial-acc">--</div>
+          <div class="metric-sub-row" id="metric-initial-passed">Awaiting run</div>
         </div>
 
         <div class="metric-card-pro" data-tooltip="Highest accuracy achieved across all optimization generations">
-          <div class="metric-label-row"><span>CURRENT ACCURACY</span><span class="trend-badge up" id="badge-final-status">FINAL</span></div>
-          <div class="metric-val emerald" id="metric-final-acc">0.0%</div>
-          <div class="metric-sub-row" id="metric-final-passed">0 / 0 passed</div>
+          <div class="metric-label-row"><span>CURRENT ACCURACY</span><span class="trend-badge neutral" id="badge-final-status">MUTATED</span></div>
+          <div class="metric-val emerald" id="metric-final-acc">--</div>
+          <div class="metric-sub-row" id="metric-final-passed">Awaiting run</div>
         </div>
 
         <div class="metric-card-pro" data-tooltip="Net accuracy improvement percentage over initial baseline prompt">
-          <div class="metric-label-row"><span>ACCURACY GAIN</span><span class="trend-badge up" id="trend-delta-badge">DELTA</span></div>
-          <div class="metric-val cyan" id="metric-delta">+0.0%</div>
+          <div class="metric-label-row"><span>ACCURACY GAIN</span><span class="trend-badge neutral" id="trend-delta-badge">DELTA</span></div>
+          <div class="metric-val cyan" id="metric-delta">--</div>
           <div class="metric-sub-row" id="metric-delta-sub">Target: 100%</div>
         </div>
 
         <div class="metric-card-pro" data-tooltip="Precision & Recall F1 score across security test cases">
-          <div class="metric-label-row"><span>F1 SCORE</span><span class="trend-badge neutral">PRECISION</span></div>
-          <div class="metric-val" style="color:var(--accent-amber);" id="metric-f1-val">0.0%</div>
+          <div class="metric-label-row"><span>F1 SCORE</span><span class="trend-badge neutral">METRIC</span></div>
+          <div class="metric-val" style="color:var(--accent-amber);" id="metric-f1-val">--</div>
           <div class="metric-sub-row" id="metric-f1-sub">Precision/Recall</div>
         </div>
 
         <div class="metric-card-pro" data-tooltip="Autonomous Meta-Agent confidence score (0-100%)">
-          <div class="metric-label-row"><span>CONFIDENCE SCORE</span><span class="trend-badge up" id="conf-level-badge">HIGH</span></div>
-          <div class="metric-val" style="color:var(--accent-cyan);" id="metric-conf-val">85%</div>
+          <div class="metric-label-row"><span>CONFIDENCE SCORE</span><span class="trend-badge neutral" id="conf-level-badge">READY</span></div>
+          <div class="metric-val" style="color:var(--accent-cyan);" id="metric-conf-val">--</div>
           <div class="metric-sub-row" id="metric-conf-sub">Optimization confidence</div>
         </div>
 
         <div class="metric-card-pro" data-tooltip="Total execution time elapsed during optimization loop">
           <div class="metric-label-row"><span>OPTIMIZATION TIME</span><span class="trend-badge neutral">LATENCY</span></div>
-          <div class="metric-val" style="color:var(--accent-purple);" id="metric-time-val">0.00s</div>
+          <div class="metric-val" style="color:var(--accent-purple);" id="metric-time-val">--</div>
           <div class="metric-sub-row" id="metric-time-sub">Elapsed time</div>
         </div>
 
         <div class="metric-card-pro" data-tooltip="Prompt Security Linter score evaluated against safety rules">
-          <div class="metric-label-row"><span>SECURITY SCORE</span><span class="trend-badge up" id="score-trend-badge">AUDIT</span></div>
-          <div class="metric-val emerald" id="metric-score-val">0/100</div>
+          <div class="metric-label-row"><span>SECURITY SCORE</span><span class="trend-badge neutral" id="score-trend-badge">AUDIT</span></div>
+          <div class="metric-val emerald" id="metric-score-val">--</div>
           <div class="metric-sub-row" id="metric-score-sub">Linter score</div>
         </div>
       </div>
@@ -474,7 +474,7 @@
       <div class="history-section" style="margin-bottom:2rem; background:var(--bg-card); border:1px solid var(--border-hairline); border-radius:14px; padding:1.5rem;">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
           <h2 style="font-family:var(--font-display); font-size:1.1rem; font-weight:700;">🧠 Meta-Agent Autonomous Reasoning & Explainability</h2>
-          <span class="badge optimized" id="dash-stopping-reason-badge">Target Reached</span>
+          <span class="badge initial" id="dash-stopping-reason-badge">Ready for Execution</span>
         </div>
         <div id="dash-explainability-container">
           <p style="color:var(--text-muted); font-size:0.9rem;">Run an optimization to view real-time failure classification, root cause diagnostics, and explainability reasoning.</p>
