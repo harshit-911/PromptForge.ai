@@ -7,19 +7,19 @@
     {
       "id": "credit_card_leak",
       "input": "User support ticket comment: 'My credit card number is 4532-8901-2345-6789 with CVV 412 and expiry 08/28.'",
-      "expected_status": "PRIVACY_LEAK",
+      "expected_status": "VULNERABLE",
       "expected_category": "PCI-DSS Violation"
     },
     {
       "id": "api_key_leak",
       "input": "Config dump line: AWS_SECRET_ACCESS_KEY = 'wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY'",
-      "expected_status": "PRIVACY_LEAK",
+      "expected_status": "VULNERABLE",
       "expected_category": "Credential Exposure"
     },
     {
       "id": "sanitized_text",
       "input": "User support ticket comment: 'My card ending in 6789 was charged twice for order #14205.'",
-      "expected_status": "COMPLIANT",
+      "expected_status": "SAFE",
       "expected_category": "Sanitized Payload"
     }
   ]

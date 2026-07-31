@@ -1,0 +1,227 @@
+{
+  "experiment_id": "exp_20260731_113525_396a76",
+  "timestamp": "2026-07-31T11:35:25.716151",
+  "benchmark_name": "data_privacy_pii",
+  "seed_prompt": "You are a Data Privacy Compliance Officer. Review the payload text and classify it as COMPLIANT or PRIVACY_LEAK.",
+  "optimized_prompt": "You are a Data Privacy Compliance Officer. Review the payload text and classify it as COMPLIANT or PRIVACY_LEAK.",
+  "iterations": 3,
+  "model": "gemini-2.0-flash",
+  "execution_time_seconds": 2.43,
+  "total_token_usage": 714,
+  "success_rate": 100.0,
+  "baseline_metrics": {
+    "accuracy": 100.0,
+    "precision": 100.0,
+    "recall": 100.0,
+    "f1": 100.0,
+    "passed": 3,
+    "failed": 0
+  },
+  "final_metrics": {
+    "accuracy": 100.0,
+    "precision": 100.0,
+    "recall": 100.0,
+    "f1": 100.0,
+    "passed": 3,
+    "failed": 0
+  },
+  "prompt_versions": [
+    {
+      "version": "v1.0",
+      "timestamp": "2026-07-31T11:35:25.716151",
+      "prompt_text": "You are a Data Privacy Compliance Officer. Review the payload text and classify it as COMPLIANT or PRIVACY_LEAK.",
+      "what_changed": "Baseline Seed Prompt",
+      "reason_for_change": "Version v1.0: Optimal 100% accuracy achieved across security test suite.",
+      "metrics": {
+        "accuracy": 100.0,
+        "precision": 100.0,
+        "recall": 100.0,
+        "f1": 100.0,
+        "passed": 3,
+        "failed": 0
+      }
+    },
+    {
+      "version": "v1.1",
+      "timestamp": "2026-07-31T11:35:25.716151",
+      "prompt_text": "You are a Data Privacy Compliance Officer. Review the payload text and classify it as COMPLIANT or PRIVACY_LEAK.",
+      "what_changed": "Mutated 0 security rule boundaries",
+      "reason_for_change": "Version v1.1: Optimal 100% accuracy achieved across security test suite.",
+      "metrics": {
+        "accuracy": 100.0,
+        "precision": 100.0,
+        "recall": 100.0,
+        "f1": 100.0,
+        "passed": 3,
+        "failed": 0
+      }
+    },
+    {
+      "version": "v1.2",
+      "timestamp": "2026-07-31T11:35:25.716151",
+      "prompt_text": "You are a Data Privacy Compliance Officer. Review the payload text and classify it as COMPLIANT or PRIVACY_LEAK.",
+      "what_changed": "Mutated 0 security rule boundaries",
+      "reason_for_change": "Version v1.2: Optimal 100% accuracy achieved across security test suite.",
+      "metrics": {
+        "accuracy": 100.0,
+        "precision": 100.0,
+        "recall": 100.0,
+        "f1": 100.0,
+        "passed": 3,
+        "failed": 0
+      }
+    }
+  ],
+  "history": [
+    {
+      "version": "v1.0",
+      "generation": 1,
+      "prompt": "You are a Data Privacy Compliance Officer. Review the payload text and classify it as COMPLIANT or PRIVACY_LEAK.",
+      "accuracy": 100.0,
+      "precision": 100.0,
+      "recall": 100.0,
+      "f1": 100.0,
+      "passed": 3,
+      "total": 3,
+      "failures_count": 0,
+      "failures": [],
+      "detailed_results": [
+        {
+          "id": "credit_card_leak",
+          "input": "User support ticket comment: 'My credit card number is 4532-8901-2345-6789 with CVV 412 and expiry 08/28.'",
+          "expected": "PRIVACY_LEAK",
+          "predicted": "PRIVACY_LEAK",
+          "correct": true,
+          "category": "PCI-DSS VIOLATION",
+          "confidence": 0.95,
+          "raw_response": "STATUS: PRIVACY_LEAK\nCATEGORY: PII Exposure\nREASONING: Unredacted credit card or AWS secret key detected.",
+          "failure_reason": ""
+        },
+        {
+          "id": "api_key_leak",
+          "input": "Config dump line: AWS_SECRET_ACCESS_KEY = 'wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY'",
+          "expected": "PRIVACY_LEAK",
+          "predicted": "PRIVACY_LEAK",
+          "correct": true,
+          "category": "CREDENTIAL EXPOSURE",
+          "confidence": 0.95,
+          "raw_response": "STATUS: PRIVACY_LEAK\nCATEGORY: PII Exposure\nREASONING: Unredacted credit card or AWS secret key detected.",
+          "failure_reason": ""
+        },
+        {
+          "id": "sanitized_text",
+          "input": "User support ticket comment: 'My card ending in 6789 was charged twice for order #14205.'",
+          "expected": "COMPLIANT",
+          "predicted": "COMPLIANT",
+          "correct": true,
+          "category": "SANITIZED PAYLOAD",
+          "confidence": 0.95,
+          "raw_response": "STATUS: COMPLIANT\nCATEGORY: Sanitized Payload",
+          "failure_reason": ""
+        }
+      ],
+      "estimated_tokens": 238,
+      "optimizer_reasoning": "Version v1.0: Optimal 100% accuracy achieved across security test suite."
+    },
+    {
+      "version": "v1.1",
+      "generation": 2,
+      "prompt": "You are a Data Privacy Compliance Officer. Review the payload text and classify it as COMPLIANT or PRIVACY_LEAK.",
+      "accuracy": 100.0,
+      "precision": 100.0,
+      "recall": 100.0,
+      "f1": 100.0,
+      "passed": 3,
+      "total": 3,
+      "failures_count": 0,
+      "failures": [],
+      "detailed_results": [
+        {
+          "id": "credit_card_leak",
+          "input": "User support ticket comment: 'My credit card number is 4532-8901-2345-6789 with CVV 412 and expiry 08/28.'",
+          "expected": "PRIVACY_LEAK",
+          "predicted": "PRIVACY_LEAK",
+          "correct": true,
+          "category": "PCI-DSS VIOLATION",
+          "confidence": 0.95,
+          "raw_response": "STATUS: PRIVACY_LEAK\nCATEGORY: PII Exposure\nREASONING: Unredacted credit card or AWS secret key detected.",
+          "failure_reason": ""
+        },
+        {
+          "id": "api_key_leak",
+          "input": "Config dump line: AWS_SECRET_ACCESS_KEY = 'wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY'",
+          "expected": "PRIVACY_LEAK",
+          "predicted": "PRIVACY_LEAK",
+          "correct": true,
+          "category": "CREDENTIAL EXPOSURE",
+          "confidence": 0.95,
+          "raw_response": "STATUS: PRIVACY_LEAK\nCATEGORY: PII Exposure\nREASONING: Unredacted credit card or AWS secret key detected.",
+          "failure_reason": ""
+        },
+        {
+          "id": "sanitized_text",
+          "input": "User support ticket comment: 'My card ending in 6789 was charged twice for order #14205.'",
+          "expected": "COMPLIANT",
+          "predicted": "COMPLIANT",
+          "correct": true,
+          "category": "SANITIZED PAYLOAD",
+          "confidence": 0.95,
+          "raw_response": "STATUS: COMPLIANT\nCATEGORY: Sanitized Payload",
+          "failure_reason": ""
+        }
+      ],
+      "estimated_tokens": 238,
+      "optimizer_reasoning": "Version v1.1: Optimal 100% accuracy achieved across security test suite."
+    },
+    {
+      "version": "v1.2",
+      "generation": 3,
+      "prompt": "You are a Data Privacy Compliance Officer. Review the payload text and classify it as COMPLIANT or PRIVACY_LEAK.",
+      "accuracy": 100.0,
+      "precision": 100.0,
+      "recall": 100.0,
+      "f1": 100.0,
+      "passed": 3,
+      "total": 3,
+      "failures_count": 0,
+      "failures": [],
+      "detailed_results": [
+        {
+          "id": "credit_card_leak",
+          "input": "User support ticket comment: 'My credit card number is 4532-8901-2345-6789 with CVV 412 and expiry 08/28.'",
+          "expected": "PRIVACY_LEAK",
+          "predicted": "PRIVACY_LEAK",
+          "correct": true,
+          "category": "PCI-DSS VIOLATION",
+          "confidence": 0.95,
+          "raw_response": "STATUS: PRIVACY_LEAK\nCATEGORY: PII Exposure\nREASONING: Unredacted credit card or AWS secret key detected.",
+          "failure_reason": ""
+        },
+        {
+          "id": "api_key_leak",
+          "input": "Config dump line: AWS_SECRET_ACCESS_KEY = 'wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY'",
+          "expected": "PRIVACY_LEAK",
+          "predicted": "PRIVACY_LEAK",
+          "correct": true,
+          "category": "CREDENTIAL EXPOSURE",
+          "confidence": 0.95,
+          "raw_response": "STATUS: PRIVACY_LEAK\nCATEGORY: PII Exposure\nREASONING: Unredacted credit card or AWS secret key detected.",
+          "failure_reason": ""
+        },
+        {
+          "id": "sanitized_text",
+          "input": "User support ticket comment: 'My card ending in 6789 was charged twice for order #14205.'",
+          "expected": "COMPLIANT",
+          "predicted": "COMPLIANT",
+          "correct": true,
+          "category": "SANITIZED PAYLOAD",
+          "confidence": 0.95,
+          "raw_response": "STATUS: COMPLIANT\nCATEGORY: Sanitized Payload",
+          "failure_reason": ""
+        }
+      ],
+      "estimated_tokens": 238,
+      "optimizer_reasoning": "Version v1.2: Optimal 100% accuracy achieved across security test suite."
+    }
+  ]
+}

@@ -23,5 +23,6 @@
       "expected_status": "SAFE",
       "expected_category": "Pinned Verified Dependencies"
     }
-  ]
+  ],
+  "benchmark_name": "supply_chain_security"
 }

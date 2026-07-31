@@ -7,19 +7,19 @@
     {
       "id": "idor_001",
       "input": "GET /api/v1/users/9982/invoice HTTP/1.1\nHost: api.example.com\nAuthorization: Bearer jwt_token_user_1002",
-      "expected_status": "VIOLATION",
+      "expected_status": "VULNERABLE",
       "expected_category": "BOLA / IDOR Vulnerability"
     },
     {
       "id": "missing_token",
       "input": "POST /api/v1/admin/delete_user HTTP/1.1\nHost: api.example.com\nContent-Type: application/json\n\n{\"user_id\": 45}",
-      "expected_status": "VIOLATION",
+      "expected_status": "VULNERABLE",
       "expected_category": "Missing Authentication"
     },
     {
       "id": "valid_auth",
       "input": "GET /api/v1/users/1002/profile HTTP/1.1\nHost: api.example.com\nAuthorization: Bearer jwt_token_user_1002",
-      "expected_status": "SECURE",
+      "expected_status": "SAFE",
       "expected_category": "Valid Authorization"
     }
   ]

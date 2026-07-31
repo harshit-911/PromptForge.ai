@@ -29,5 +29,6 @@
       "expected_status": "SAFE",
       "expected_category": "Bcrypt Salted Work-Factor Hashing"
     }
-  ]
+  ],
+  "benchmark_name": "cryptography_audit"
 }

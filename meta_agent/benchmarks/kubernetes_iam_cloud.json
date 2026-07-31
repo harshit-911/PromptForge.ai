@@ -29,5 +29,6 @@
       "expected_status": "SAFE",
       "expected_category": "Hardened Container Pod Spec"
     }
-  ]
+  ],
+  "benchmark_name": "kubernetes_iam_cloud"
 }

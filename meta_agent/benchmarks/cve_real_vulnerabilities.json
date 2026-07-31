@@ -53,5 +53,6 @@
       "expected_status": "SAFE",
       "expected_category": "Patched Security Release"
     }
-  ]
+  ],
+  "benchmark_name": "cve_real_vulnerabilities"
 }
