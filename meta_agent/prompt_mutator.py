@@ -4,38 +4,48 @@ from typing import Dict, List, Any
 
 logger = logging.getLogger(__name__)
 
-PROFESSIONAL_SCHEMA_DIRECTIVE = """
-REQUIRED PROFESSIONAL SECURITY AUDIT REPORT SCHEMA:
-Every audit response MUST be a complete, multi-section report formatted with the exact headers below. Do NOT use generic labels like "Code Vulnerability". Always specify exact vulnerability names (SQL Injection, XSS, Command Injection, Path Traversal, SSRF, Hardcoded Secret, Weak JWT, etc.).
+MULTI_FINDING_SCHEMA_DIRECTIVE = """
+REQUIRED MULTI-FINDING PROFESSIONAL AUDIT SCHEMA:
+Analyze untrusted input sources, data flows, sensitive sinks, validation, encoding, and authentication.
+If multiple vulnerabilities exist in the code/log (e.g. SQLi + Hardcoded Secret), report ALL of them as separate findings.
 
-STATUS: [VULNERABLE | SAFE]
-CATEGORY: [Specific Vulnerability Name, e.g. SQL Injection, Cross-Site Scripting (XSS), Command Injection]
+CRITICAL CLASSIFICATION RULE FOR RELATED CVE:
+- Generic code snippets (e.g. const query = `SELECT * FROM users WHERE id='${id}'`) MUST map to CATEGORY, OWASP, and CWE only. Set RELATED CVE: None.
+- DO NOT invent or hallucinate a CVE for generic code.
+- Output a published CVE (e.g. CVE-2021-44228) ONLY if a specific vulnerable product, library version, or documented CVE exploit is explicitly identified.
+
+STATUS: [SAFE | VULNERABLE]
+TOTAL FINDINGS: [Number of findings, e.g. 1, 2, 3]
+
+----------------------------------
+Finding #1
+
+CATEGORY: [Specific Vulnerability Name, e.g. SQL Injection, Cross-Site Scripting (XSS), Command Injection, Log4Shell]
 OWASP: [e.g. A03:2021 - Injection | A01:2021 - Broken Access Control | A10:2021 - SSRF]
 CWE: [e.g. CWE-89 | CWE-79 | CWE-78 | CWE-22 | CWE-918 | CWE-798]
+RELATED CVE: [None | CVE-XXXX-YYYY (ONLY if documented product CVE applies)]
 SEVERITY: [CRITICAL | HIGH | MEDIUM | LOW | NONE]
 CONFIDENCE: [HIGH | MEDIUM | LOW]
 
 AFFECTED CODE:
-[Highlight the exact vulnerable line(s) of code or log snippet]
+[Highlight exact vulnerable code line(s)]
 
 REASONING:
-[Provide a detailed technical explanation of why the vulnerability exists, how untrusted input reaches the sink, and how controls are bypassed]
-
-POC PAYLOAD:
-[Provide a safe, educational proof-of-concept payload snippet e.g. ' OR '1'='1 or ../../etc/passwd]
+[Detailed data flow analysis explaining source, sink, and why validation is missing]
 
 IMPACT:
-- Bulleted list of security impacts (e.g. Database exfiltration, Remote Code Execution, Authentication Bypass)
+- Bulleted list of security impacts (e.g. Database exfiltration, Remote Code Execution)
 
 RECOMMENDATION:
-[Actionable mitigation steps and remediation guidelines]
+[Actionable remediation steps]
 
 SECURE CODE:
-[Provide complete, drop-in fixed code snippet demonstrating parameterized queries, input sanitization, or secure controls]
+[Drop-in fixed code snippet demonstrating parameterized queries or secure controls]
+----------------------------------
 """
 
 class PromptMutator:
-    """Applies targeted mutation operations enforcing professional CodeQL/Snyk-grade report schemas."""
+    """Applies targeted mutation operations enforcing multi-finding, distinct CWE/OWASP/CVE audit schemas."""
 
     def mutate_prompt(
         self,
@@ -44,7 +54,7 @@ class PromptMutator:
         generation: int,
         status_options_str: str = "VULNERABLE | SAFE"
     ) -> Dict[str, Any]:
-        """Applies targeted mutation operations enforcing 12-section professional report schema."""
+        """Applies targeted mutation operations enforcing multi-finding, non-hallucinated CVE report schema."""
         mutations_applied = []
         lines = [l.strip() for l in current_prompt.split("\n") if l.strip()]
 
@@ -52,7 +62,7 @@ class PromptMutator:
         in_rules = False
 
         for line in lines:
-            if "CRITICAL SECURITY RULES" in line.upper() or "REQUIRED PROFESSIONAL SECURITY AUDIT" in line.upper():
+            if "CRITICAL SECURITY RULES" in line.upper() or "REQUIRED MULTI-FINDING" in line.upper() or "CLASSIFICATION RULE FOR RELATED CVE" in line.upper():
                 in_rules = True
             if not in_rules:
                 base_lines.append(line)
@@ -79,15 +89,15 @@ class PromptMutator:
                 "rule": r["rule_text"]
             })
 
-        # Operation 3: REORDER_INSTRUCTIONS & Professional Audit Schema
+        # Operation 3: REORDER_INSTRUCTIONS & Multi-Finding Schema
         mutations_applied.append({
             "operation": "REORDER_INSTRUCTIONS",
-            "reasoning": "Enforced CodeQL/Semgrep/Snyk 12-section professional audit report schema (OWASP, CWE, Affected Code, POC, Impact, Recommendation, Secure Code)."
+            "reasoning": "Enforced multi-finding schema, distinct CWE/OWASP classification, and zero-hallucination RELATED CVE rules (RELATED CVE: None for generic code)."
         })
 
         rules_block = (
-            "CRITICAL SECURITY RULES & PROFESSIONAL REPORT SCHEMA:\n"
-            + PROFESSIONAL_SCHEMA_DIRECTIVE.strip() + "\n\n"
+            "CRITICAL SECURITY RULES & MULTI-FINDING AUDIT SCHEMA:\n"
+            + MULTI_FINDING_SCHEMA_DIRECTIVE.strip() + "\n\n"
             "ADDITIONAL DOMAIN RULES:\n" + "\n".join(new_rule_texts)
         )
 

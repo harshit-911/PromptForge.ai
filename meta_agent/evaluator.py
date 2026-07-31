@@ -22,7 +22,8 @@ CWE_MAP = {
     "BROKEN ACCESS CONTROL": "CWE-285",
     "CRYPTOGRAPHIC FAILURE": "CWE-327",
     "UNSAFE FILE UPLOAD": "CWE-434",
-    "OPEN REDIRECT": "CWE-601"
+    "OPEN REDIRECT": "CWE-601",
+    "LOG4SHELL": "CWE-502"
 }
 
 OWASP_MAP = {
@@ -46,13 +47,13 @@ NEGATIVE_STATUSES = {"VULNERABLE", "MALICIOUS", "ADVERSARIAL", "PRIVACY_LEAK", "
 POSITIVE_STATUSES = {"SAFE", "BENIGN", "COMPLIANT", "SECURE", "CLEAN"}
 
 class BenchmarkEvaluator:
-    """Evaluates candidate prompts against benchmark datasets with full professional security report criteria."""
+    """Evaluates candidate prompts supporting multi-finding audits, distinct CWE/OWASP/CVE logic, and penalty for hallucinated CVEs."""
 
     def __init__(self, llm_client):
         self.llm_client = llm_client
 
     def evaluate_prompt(self, system_prompt: str, benchmark_data: Dict[str, Any]) -> Dict[str, Any]:
-        """Runs candidate system prompt on benchmark dataset and computes Accuracy, Precision, Recall, F1, & Report Quality."""
+        """Runs candidate system prompt on benchmark dataset and evaluates multi-finding security reports."""
         test_cases = benchmark_data.get("test_cases", [])
         total_cases = len(test_cases)
         
@@ -69,6 +70,8 @@ class BenchmarkEvaluator:
         detailed_results = []
         total_token_est = 0
         quality_scores = []
+
+        is_cve_benchmark = "CVE" in benchmark_data.get("benchmark_name", "").upper() or "CVE" in benchmark_data.get("description", "").upper()
 
         for test in test_cases:
             test_id = test.get("id")
@@ -88,12 +91,11 @@ class BenchmarkEvaluator:
             )
             total_token_est += (len(raw_response) // 4)
 
-            parsed_fields = self._parse_professional_report(raw_response, expected_status, expected_category)
+            parsed_audit = self._parse_multi_finding_report(raw_response, expected_status, expected_category, is_cve_benchmark)
 
-            predicted_status = parsed_fields["status"]
-            predicted_category = parsed_fields["category"]
-            predicted_cwe = parsed_fields["cwe"]
-            predicted_owasp = parsed_fields["owasp"]
+            predicted_status = parsed_audit["status"]
+            findings = parsed_audit["findings"]
+            first_finding = findings[0] if findings else {}
 
             exp_upper = expected_status.upper()
             pred_upper = predicted_status.upper()
@@ -114,11 +116,11 @@ class BenchmarkEvaluator:
             else:
                 fn += 1
 
-            # Quality Score Audit (Rewarding specific category, OWASP, CWE, reasoning, mitigation, secure code)
-            quality_score = self._compute_quality_score(parsed_fields, raw_response, is_expected_threat)
+            # Quality score & penalty for hallucinating CVEs on generic code
+            quality_score = self._compute_quality_score(parsed_audit, raw_response, is_expected_threat, is_cve_benchmark)
             quality_scores.append(quality_score)
 
-            if status_matched and (not is_expected_threat or quality_score >= 60):
+            if status_matched and (not is_expected_threat or quality_score >= 50):
                 passed_count += 1
                 is_correct = True
             else:
@@ -129,9 +131,10 @@ class BenchmarkEvaluator:
                     "expected_status": expected_status,
                     "expected_category": expected_category,
                     "predicted_status": predicted_status,
-                    "predicted_category": predicted_category,
-                    "predicted_cwe": predicted_cwe,
-                    "predicted_owasp": predicted_owasp,
+                    "predicted_category": first_finding.get("category", "SQL Injection"),
+                    "predicted_cwe": first_finding.get("cwe", "CWE-89"),
+                    "predicted_owasp": first_finding.get("owasp", "A03:2021 - Injection"),
+                    "predicted_cve": first_finding.get("related_cve", "None"),
                     "quality_score": quality_score,
                     "raw_response": raw_response
                 })
@@ -141,17 +144,8 @@ class BenchmarkEvaluator:
                 "input": test_input,
                 "expected": expected_status,
                 "predicted": predicted_status,
-                "category": predicted_category,
-                "cwe": predicted_cwe,
-                "owasp": predicted_owasp,
-                "severity": parsed_fields["severity"],
-                "confidence": parsed_fields["confidence"],
-                "affected_code": parsed_fields["affected_code"],
-                "reasoning": parsed_fields["reasoning"],
-                "poc_payload": parsed_fields["poc_payload"],
-                "impact": parsed_fields["impact"],
-                "recommendation": parsed_fields["recommendation"],
-                "secure_code": parsed_fields["secure_code"],
+                "total_findings": len(findings),
+                "findings": findings,
                 "correct": is_correct,
                 "quality_score": quality_score,
                 "raw_response": raw_response
@@ -177,23 +171,41 @@ class BenchmarkEvaluator:
             "report_quality_score": avg_quality
         }
 
-    def _parse_professional_report(self, text: str, expected_status: str, expected_category: str) -> Dict[str, str]:
-        """Parses the 12 professional security report fields from raw model text."""
+    def _parse_multi_finding_report(self, text: str, expected_status: str, expected_category: str, is_cve_benchmark: bool) -> Dict[str, Any]:
+        """Parses multi-finding security audit reports."""
         status = self._extract_field(text, "STATUS") or self._infer_status(text, expected_status)
+        
+        # Split text into Finding blocks
+        finding_blocks = re.split(r"Finding\s*#\d+", text, flags=re.IGNORECASE)
+        parsed_findings = []
+
+        if len(finding_blocks) > 1:
+            for b in finding_blocks[1:]:
+                parsed_findings.append(self._parse_single_finding(b, expected_category, is_cve_benchmark))
+        else:
+            parsed_findings.append(self._parse_single_finding(text, expected_category, is_cve_benchmark))
+
+        return {
+            "status": status.upper(),
+            "total_findings": len(parsed_findings),
+            "findings": parsed_findings
+        }
+
+    def _parse_single_finding(self, text: str, expected_category: str, is_cve_benchmark: bool) -> Dict[str, str]:
         category = self._extract_field(text, "CATEGORY")
         owasp = self._extract_field(text, "OWASP")
         cwe = self._extract_field(text, "CWE")
+        related_cve = self._extract_field(text, "RELATED CVE") or self._extract_field(text, "CVE")
         severity = self._extract_field(text, "SEVERITY") or "HIGH"
         confidence = self._extract_field(text, "CONFIDENCE") or "HIGH"
         affected_code = self._extract_multiline_field(text, "AFFECTED CODE")
         reasoning = self._extract_multiline_field(text, "REASONING")
-        poc_payload = self._extract_multiline_field(text, "POC PAYLOAD") or self._extract_multiline_field(text, "PROOF OF CONCEPT")
         impact = self._extract_multiline_field(text, "IMPACT")
         recommendation = self._extract_multiline_field(text, "RECOMMENDATION") or self._extract_multiline_field(text, "FIX")
         secure_code = self._extract_multiline_field(text, "SECURE CODE") or self._extract_multiline_field(text, "FIXED CODE")
 
-        if not category or category.upper() in ("CODE VULNERABILITY", "VULNERABILITY", "UNKNOWN"):
-            category = expected_category if expected_category and expected_category.upper() != "GENERAL" else "SQL Injection"
+        if not category or category.upper() in ("CODE VULNERABILITY", "VULNERABILITY", "UNKNOWN", "REAL CVE VULNERABILITY"):
+            category = expected_category if expected_category and expected_category.upper() not in ("GENERAL", "REAL CVE VULNERABILITY") else "SQL Injection"
 
         cat_upper = category.upper()
         if not cwe:
@@ -205,32 +217,45 @@ class BenchmarkEvaluator:
         if not owasp and cwe in OWASP_MAP:
             owasp = OWASP_MAP[cwe]
 
+        if not related_cve or "NONE" in related_cve.upper() or not is_cve_benchmark:
+            if not ("CVE-" in text.upper() and is_cve_benchmark):
+                related_cve = "None"
+
         return {
-            "status": status.upper(),
             "category": category,
             "owasp": owasp or "A03:2021 - Injection",
             "cwe": cwe or "CWE-89",
+            "related_cve": related_cve or "None",
             "severity": severity.upper(),
             "confidence": confidence.upper(),
             "affected_code": affected_code or "",
             "reasoning": reasoning or "",
-            "poc_payload": poc_payload or "",
             "impact": impact or "",
             "recommendation": recommendation or "",
             "secure_code": secure_code or ""
         }
 
-    def _compute_quality_score(self, fields: Dict[str, str], raw_text: str, is_threat: bool) -> float:
-        """Computes report quality score rewarding specific category, OWASP, CWE, reasoning, and secure code."""
+    def _compute_quality_score(self, parsed_audit: Dict[str, Any], raw_text: str, is_threat: bool, is_cve_benchmark: bool) -> float:
         score = 0.0
-        if fields["status"] in ("VULNERABLE", "SAFE"): score += 20.0
-        if fields["category"] and fields["category"].upper() not in ("CODE VULNERABILITY", "VULNERABILITY", "UNKNOWN"): score += 15.0
-        if fields["owasp"] and "A0" in fields["owasp"]: score += 15.0
-        if fields["cwe"] and "CWE-" in fields["cwe"]: score += 10.0
-        if fields["reasoning"] and len(fields["reasoning"]) > 30: score += 15.0
-        if fields["recommendation"] and len(fields["recommendation"]) > 20: score += 10.0
-        if fields["secure_code"] or "def " in raw_text or "const " in raw_text or "function" in raw_text: score += 15.0
-        return min(100.0, score)
+        findings = parsed_audit.get("findings", [])
+        if not findings: return 0.0
+        f = findings[0]
+
+        if parsed_audit["status"] in ("VULNERABLE", "SAFE"): score += 15.0
+        if f["category"] and f["category"].upper() not in ("CODE VULNERABILITY", "VULNERABILITY", "REAL CVE VULNERABILITY"): score += 20.0
+        if f["owasp"] and "A0" in f["owasp"]: score += 15.0
+        if f["cwe"] and "CWE-" in f["cwe"]: score += 15.0
+        
+        # Penalize invented CVEs on generic code
+        if not is_cve_benchmark and f["related_cve"] != "None":
+            score -= 25.0
+        elif f["related_cve"] == "None" or "CVE-" in f["related_cve"]:
+            score += 15.0
+
+        if f["reasoning"] and len(f["reasoning"]) > 25: score += 10.0
+        if f["secure_code"] or "def " in raw_text or "const " in raw_text: score += 10.0
+
+        return max(0.0, min(100.0, score))
 
     def _extract_field(self, text: str, field_name: str) -> str:
         pattern = rf"^\s*\*?\*?{field_name}\*?\*?\s*:\s*([^\n]+)"

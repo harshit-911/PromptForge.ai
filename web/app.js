@@ -1192,15 +1192,15 @@ function renderProfessionalSecurityReportCard(text) {
 
   const escapeHtml = (str) => (str || "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 
-  const extract = (field) => {
+  const extract = (block, field) => {
     const reg = new RegExp("^\\s*\\*?\\*?" + field + "\\*?\\*?\\s*:\\s*([^\\n]+)", "im");
-    const m = text.match(reg);
+    const m = block.match(reg);
     return m ? m[1].replace(/[\*`]/g, '').trim() : "";
   };
 
-  const extractBlock = (field) => {
+  const extractBlock = (blockText, field) => {
     const reg = new RegExp("^\\s*\\*?\\*?" + field + "\\*?\\*?\\s*:\\s*(.*?)(?=^\\s*\\*?\\*?[A-Z\\s]{3,20}\\*?\\*?\\s*:|$)", "ims");
-    const m = text.match(reg);
+    const m = blockText.match(reg);
     if (m) {
       let val = m[1].trim();
       val = val.replace(/^```[a-z]*\n?/, '').replace(/\n?```$/, '');
@@ -1209,79 +1209,82 @@ function renderProfessionalSecurityReportCard(text) {
     return "";
   };
 
-  const status = extract("STATUS") || "VULNERABLE";
-  const category = extract("CATEGORY") || "SQL Injection";
-  const owasp = extract("OWASP") || "A03:2021 - Injection";
-  const cwe = extract("CWE") || "CWE-89";
-  const severity = extract("SEVERITY") || "HIGH";
-  const confidence = extract("CONFIDENCE") || "HIGH";
-  const affectedCode = extractBlock("AFFECTED CODE");
-  const reasoning = extractBlock("REASONING");
-  const pocPayload = extractBlock("POC PAYLOAD") || extractBlock("PROOF OF CONCEPT");
-  const impact = extractBlock("IMPACT");
-  const recommendation = extractBlock("RECOMMENDATION") || extractBlock("FIX");
-  const secureCode = extractBlock("SECURE CODE") || extractBlock("FIXED CODE");
+  const overallStatus = extract(text, "STATUS") || "VULNERABLE";
+  const isVuln = overallStatus.includes("VULN") || overallStatus.includes("MALIC");
 
-  const isVuln = status.includes("VULN") || status.includes("MALIC");
-  const sevColor = severity === "CRITICAL" ? "#ef4444" : (severity === "HIGH" ? "#f59e0b" : "var(--accent-emerald)");
+  // Split into Finding blocks
+  const findingBlocks = text.split(/Finding\s*#\d+/i);
+  const blocksToProcess = findingBlocks.length > 1 ? findingBlocks.slice(1) : [text];
 
   let html = `
-    <div class="security-report-card">
-      <div class="report-header-banner">
-        <div class="report-title-group">
-          <span class="badge ${isVuln ? 'initial' : 'optimized'}">${status}</span>
-          <span class="report-vuln-name">${category}</span>
-          <span class="chip-owasp">${owasp}</span>
-          <span class="chip-cwe">${cwe}</span>
-        </div>
-        <div style="display:flex; gap:8px;">
-          <span style="font-size:0.8rem; font-weight:700; color:${sevColor};">SEVERITY: ${severity}</span>
-          <span style="font-size:0.8rem; font-weight:700; color:var(--accent-cyan);">CONFIDENCE: ${confidence}</span>
+    <div style="display:flex; flex-direction:column; gap:1.25rem;">
+      <div style="display:flex; justify-content:space-between; align-items:center; background:var(--bg-card); padding:12px 18px; border-radius:10px; border:1px solid var(--border-hairline);">
+        <div style="display:flex; align-items:center; gap:10px;">
+          <span class="badge ${isVuln ? 'initial' : 'optimized'}">${overallStatus}</span>
+          <span style="font-family:var(--font-display); font-weight:700; font-size:1rem; color:var(--text-primary);">SECURITY AUDIT REPORT (${blocksToProcess.length} FINDING${blocksToProcess.length > 1 ? 'S' : ''})</span>
         </div>
       </div>
   `;
 
-  if (affectedCode) {
-    html += `
-      <div class="report-section-title"><span>⚠️ AFFECTED CODE LINE(S)</span></div>
-      <div class="code-block-affected">${escapeHtml(affectedCode)}</div>
-    `;
-  }
+  blocksToProcess.forEach((bText, idx) => {
+    const category = extract(bText, "CATEGORY") || "SQL Injection";
+    const owasp = extract(bText, "OWASP") || "A03:2021 - Injection";
+    const cwe = extract(bText, "CWE") || "CWE-89";
+    const relatedCve = extract(bText, "RELATED CVE") || extract(bText, "CVE") || "None";
+    const severity = extract(bText, "SEVERITY") || "HIGH";
+    const confidence = extract(bText, "CONFIDENCE") || "HIGH";
+    const affectedCode = extractBlock(bText, "AFFECTED CODE");
+    const reasoning = extractBlock(bText, "REASONING");
+    const impact = extractBlock(bText, "IMPACT");
+    const recommendation = extractBlock(bText, "RECOMMENDATION") || extractBlock(bText, "FIX");
+    const secureCode = extractBlock(bText, "SECURE CODE") || extractBlock(bText, "FIXED CODE");
 
-  if (reasoning) {
-    html += `
-      <div class="report-section-title"><span>🔍 TECHNICAL REASONING & ROOT CAUSE</span></div>
-      <div style="background:var(--bg-input); padding:12px; border-radius:8px; font-size:0.9rem; line-height:1.6; color:var(--text-secondary);">${escapeHtml(reasoning)}</div>
-    `;
-  }
+    const hasCve = relatedCve && !relatedCve.toUpperCase().includes("NONE") && relatedCve.toUpperCase().includes("CVE-");
+    const sevColor = severity === "CRITICAL" ? "#ef4444" : (severity === "HIGH" ? "#f59e0b" : "var(--accent-emerald)");
 
-  if (pocPayload) {
     html += `
-      <div class="report-section-title"><span>🧪 PROOF OF CONCEPT (POC) PAYLOAD</span></div>
-      <div class="poc-payload-box">${escapeHtml(pocPayload)}</div>
-    `;
-  }
+      <div class="security-report-card">
+        <div class="report-header-banner">
+          <div class="report-title-group">
+            <span style="font-family:var(--font-mono); font-weight:700; font-size:0.85rem; color:var(--accent-cyan);">Finding #${idx + 1}</span>
+            <span class="report-vuln-name">${escapeHtml(category)}</span>
+            <span class="chip-cwe">${escapeHtml(cwe)}</span>
+            <span class="chip-owasp">${escapeHtml(owasp)}</span>
+            ${hasCve ? `<span class="chip-cwe" style="background:rgba(239, 68, 68, 0.15); color:#ef4444; border-color:rgba(239, 68, 68, 0.3);">${escapeHtml(relatedCve)}</span>` : '<span style="font-size:0.75rem; color:var(--text-muted); padding:3px 8px; border:1px solid var(--border-hairline); border-radius:12px;">RELATED CVE: None</span>'}
+          </div>
+          <div style="display:flex; gap:12px; align-items:center;">
+            <span style="font-size:0.8rem; font-weight:700; color:${sevColor};">SEVERITY: ${severity}</span>
+            <span style="font-size:0.8rem; font-weight:700; color:var(--accent-cyan);">CONFIDENCE: ${confidence}</span>
+          </div>
+        </div>
 
-  if (impact) {
-    html += `
-      <div class="report-section-title"><span>💥 SECURITY IMPACT</span></div>
-      <div class="report-impact-list">${escapeHtml(impact)}</div>
-    `;
-  }
+        ${affectedCode ? `
+          <div class="report-section-title"><span>⚠️ AFFECTED CODE LINE(S)</span></div>
+          <div class="code-block-affected">${escapeHtml(affectedCode)}</div>
+        ` : ''}
 
-  if (recommendation) {
-    html += `
-      <div class="report-section-title"><span>🛡️ REMEDIATION & MITIGATION STEPS</span></div>
-      <div style="background:var(--bg-input); padding:12px; border-radius:8px; font-size:0.88rem; color:var(--text-primary); line-height:1.6;">${escapeHtml(recommendation)}</div>
-    `;
-  }
+        ${reasoning ? `
+          <div class="report-section-title"><span>🔍 TECHNICAL REASONING & ROOT CAUSE</span></div>
+          <div style="background:var(--bg-input); padding:12px; border-radius:8px; font-size:0.9rem; line-height:1.6; color:var(--text-secondary);">${escapeHtml(reasoning)}</div>
+        ` : ''}
 
-  if (secureCode) {
-    html += `
-      <div class="report-section-title"><span>✅ SECURE DROP-IN REPLACEMENT CODE</span></div>
-      <div class="code-block-secure">${escapeHtml(secureCode)}</div>
+        ${impact ? `
+          <div class="report-section-title"><span>💥 SECURITY IMPACT</span></div>
+          <div class="report-impact-list">${escapeHtml(impact)}</div>
+        ` : ''}
+
+        ${recommendation ? `
+          <div class="report-section-title"><span>🛡️ REMEDIATION & MITIGATION STEPS</span></div>
+          <div style="background:var(--bg-input); padding:12px; border-radius:8px; font-size:0.88rem; color:var(--text-primary); line-height:1.6;">${escapeHtml(recommendation)}</div>
+        ` : ''}
+
+        ${secureCode ? `
+          <div class="report-section-title"><span>✅ SECURE DROP-IN REPLACEMENT CODE</span></div>
+          <div class="code-block-secure">${escapeHtml(secureCode)}</div>
+        ` : ''}
+      </div>
     `;
-  }
+  });
 
   html += `</div>`;
   return html;
