@@ -148,21 +148,28 @@ function auditPromptSecurity(promptText) {
   if (!promptText) return { score: 0, checks: [] };
   const upper = promptText.upper ? promptText.upper() : String(promptText).toUpperCase();
   const checks = [
-    { name: "Explicit Output Format Enforcement", passed: upper.includes("STATUS:") || upper.includes("FORMAT") || upper.includes("SAFE OR VULNERABLE") || upper.includes("CATEGORY:"), reason: upper.includes("STATUS:") ? "Enforces strict key-value response schema (STATUS:, CATEGORY:)." : "Missing explicit response format guidelines." },
-    { name: "Anti-Jailbreak Safety Guardrail", passed: upper.includes("RULE") || upper.includes("DO NOT") || upper.includes("MUST") || upper.includes("CRITICAL") || upper.includes("IGNORE"), reason: upper.includes("MUST") ? "Includes un-hackable MUST/DO NOT directive boundaries." : "Lacks explicit boundary rules against adversarial manipulation." },
-    { name: "Role & Security Auditor Definition", passed: upper.includes("SECURITY") || upper.includes("AUDITOR") || upper.includes("ANALYST") || upper.includes("GUARDRAIL") || upper.includes("SPECIALIST"), reason: upper.includes("AUDITOR") || upper.includes("ANALYST") ? "Clearly defines persona domain boundaries." : "Vague or missing role definition." },
-    { name: "Synthetic & Safe Data Requirement", passed: upper.includes("SYNTHETIC") || upper.includes("FAKE") || upper.includes("MOCK") || upper.includes("PRIVACY") || upper.includes("REDACT"), reason: upper.includes("SYNTHETIC") || upper.includes("REDACT") ? "Mandates synthetic or redacted data in evaluations." : "No explicit synthetic data directive." },
-    { name: "Zero-Trust Fallback Rule", passed: upper.includes("IF") || upper.includes("DEFAULT") || upper.includes("OTHERWISE") || upper.includes("UNLESS"), reason: upper.includes("IF") || upper.includes("UNLESS") ? "Provides zero-trust fallback handling for edge cases." : "Missing explicit default fallback condition." }
+    { name: "Explicit Output Schema Enforcement", passed: upper.includes("STATUS:") || upper.includes("CATEGORY:") || upper.includes("FORMAT") || upper.includes("SAFE OR VULNERABLE"), reason: upper.includes("STATUS:") ? "Enforces strict key-value response schema." : "Missing explicit response format guidelines." },
+    { name: "Anti-Jailbreak Guardrails", passed: upper.includes("MUST") || upper.includes("CRITICAL") || upper.includes("RULES") || upper.includes("DO NOT") || upper.includes("INSTRUCTION"), reason: upper.includes("MUST") ? "Includes un-hackable MUST/DO NOT directive boundaries." : "Lacks explicit boundary rules against adversarial manipulation." },
+    { name: "Role & Persona Definition", passed: upper.includes("SECURITY") || upper.includes("AUDITOR") || upper.includes("ANALYST") || upper.includes("SPECIALIST") || upper.includes("GUARDRAIL"), reason: upper.includes("AUDITOR") || upper.includes("ANALYST") ? "Clearly defines persona domain boundaries." : "Vague or missing role definition." },
+    { name: "OWASP & CWE Security Taxonomy", passed: upper.includes("OWASP") || upper.includes("CWE") || upper.includes("CVE") || upper.includes("VULNERABILITY") || upper.includes("TAXONOMY"), reason: upper.includes("CWE") || upper.includes("OWASP") ? "Mandates standard security risk classification." : "No explicit taxonomy mapping guidelines." },
+    { name: "Zero-Trust Fallback Rule", passed: upper.includes("IF") || upper.includes("UNLESS") || upper.includes("DEFAULT") || upper.includes("OTHERWISE") || upper.includes("RELATED CVE"), reason: upper.includes("IF") || upper.includes("RELATED CVE") ? "Provides zero-trust fallback handling for edge cases." : "Missing explicit default fallback condition." }
   ];
   const passedCount = checks.filter(c => c.passed).length;
   const score = Math.round((passedCount / checks.length) * 100);
   return { score, checks };
 }
 
-function renderLinterAudit(promptText) {
-  const audit = auditPromptSecurity(promptText);
+function renderLinterAudit(promptText, isIdle = false) {
   const scoreValEl = document.getElementById("metric-score-val");
+  const scoreSubEl = document.getElementById("metric-score-sub");
+  if (isIdle || !promptText) {
+    if (scoreValEl) scoreValEl.textContent = "--";
+    if (scoreSubEl) scoreSubEl.textContent = "Awaiting run";
+    return;
+  }
+  const audit = auditPromptSecurity(promptText);
   if (scoreValEl) scoreValEl.textContent = `${audit.score}/100`;
+  if (scoreSubEl) scoreSubEl.textContent = audit.score >= 80 ? "High Quality Spec" : "Basic Seed Prompt";
 }
 
 function getDomainIcon(name, category = "") {
@@ -943,7 +950,7 @@ function onBenchmarkChange() {
     animateValue(sizeValEl, 0, totalCases, 500, false);
   }
 
-  renderLinterAudit(benchmark.seed_prompt);
+  renderLinterAudit(benchmark.seed_prompt, true);
 
   const container = document.getElementById("selected-benchmark-cases-container");
   const countBadge = document.getElementById("tc-count-badge");
