@@ -137,11 +137,12 @@ OPTIMIZED_PROMPT:
 
         reasoning = reasoning_match.group(1).strip() if reasoning_match else "Synthesized structured security guidelines to resolve misclassifications."
         
-        if prompt_match and len(prompt_match.group(1).strip()) > 30:
+        if prompt_match:
             new_prompt = prompt_match.group(1).strip()
             if new_prompt.startswith('"""') and new_prompt.endswith('"""'):
                 new_prompt = new_prompt[3:-3].strip()
-            return new_prompt, reasoning
+            if len(new_prompt) >= len(fallback_prompt) * 0.7 or "FINDING" in new_prompt.upper() or "STATUS:" in new_prompt.upper():
+                return new_prompt, reasoning
 
         return fallback_prompt, reasoning
 
