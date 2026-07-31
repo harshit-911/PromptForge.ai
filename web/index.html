@@ -666,7 +666,8 @@
         <div class="form-group"><label>Test Input</label><textarea id="pg-input" class="code-input" placeholder="Paste code/log..."></textarea></div>
       </div>
 
-      <div style="margin-top: 1.5rem; display: flex; justify-content: flex-end; gap: 10px;">
+      <div style="margin-top: 1.5rem; display: flex; justify-content: flex-end; gap: 10px; flex-wrap: wrap;">
+        <button class="copy-btn" style="color:var(--accent-purple); border-color:rgba(168, 85, 247, 0.3);" onclick="generateAITestInput()">[AI] Auto-Generate Test Input</button>
         <button class="copy-btn" onclick="auditPlaygroundPrompt()">Run Security Audit</button>
         <button class="copy-btn" onclick="comparePlayground()">Compare Seed vs. Mutated Live</button>
         <button class="btn-primary" onclick="runPlayground()">Execute Prompt ➔</button>

@@ -1307,6 +1307,38 @@ function renderProfessionalSecurityReportCard(textOrObj) {
   return html;
 }
 
+async function generateAITestInput() {
+  const promptText = document.getElementById("pg-prompt").value;
+  const inputEl = document.getElementById("pg-input");
+
+  if (!promptText) {
+    alert("Please enter a System Prompt first before generating AI test input.");
+    return;
+  }
+
+  const originalText = inputEl.value;
+  inputEl.value = "AI is generating realistic test input snippet...";
+
+  try {
+    const res = await fetch("/api/generate-test-input", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ system_prompt: promptText })
+    });
+
+    const data = await res.json();
+    if (data.test_input) {
+      inputEl.value = data.test_input;
+      logActivity("[AI]", "Generated AI test input for Playground evaluation.");
+    } else {
+      inputEl.value = originalText;
+    }
+  } catch (err) {
+    alert("Error generating test input: " + err.message);
+    inputEl.value = originalText;
+  }
+}
+
 async function runPlayground() {
   const promptText = document.getElementById("pg-prompt").value;
   const inputText = document.getElementById("pg-input").value;

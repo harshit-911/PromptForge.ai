@@ -186,6 +186,9 @@ class GeminiClient:
 
     def _simulate_fallback(self, prompt: str, system_instruction: Optional[str] = None) -> str:
         """Two-Stage Semantic SAST Analysis Engine matching APIs, Frameworks, and Published CVEs."""
+        if "GENERATE TEST INPUT" in prompt.upper() or (system_instruction and "GENERATE A REALISTIC VULNERABLE" in system_instruction.upper()):
+            return "const query = `SELECT * FROM users WHERE name = '${req.query.user}'`; // Unsanitized input concatenation"
+
         if "Analyze the following input:\n\n" in prompt:
             input_text = prompt.split("Analyze the following input:\n\n", 1)[1].upper()
         else:

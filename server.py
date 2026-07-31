@@ -1,5 +1,6 @@
 import os
 import json
+import re
 import logging
 from pathlib import Path
 from fastapi import FastAPI, HTTPException, Query
@@ -160,6 +161,30 @@ def run_playground(req: PlaygroundRequest):
         return {"output": response_text, "parsed_audit": parsed_audit}
     except Exception as e:
         logger.error(f"Playground execution failed: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+class GenerateInputRequest(BaseModel):
+    system_prompt: str
+    category: Optional[str] = "vulnerability"
+
+@app.post("/api/generate-test-input")
+def generate_test_input(req: GenerateInputRequest):
+    try:
+        gen_prompt = (
+            "Generate a realistic vulnerable code snippet, CVE advisory log, or benign application snippet "
+            "suitable for testing a security auditor prompt. Provide ONLY the target code or log text without any "
+            "markdown backticks, quotes, or conversational explanations."
+        )
+        snippet = llm_client.generate_text(
+            prompt=f"System Auditor Prompt:\n{req.system_prompt}\n\nGenerate test input:",
+            system_instruction=gen_prompt,
+            temperature=0.7
+        )
+        clean_snippet = re.sub(r"^```[a-z]*\n?", "", snippet.strip(), flags=re.IGNORECASE)
+        clean_snippet = re.sub(r"\n?```$", "", clean_snippet.strip())
+        return {"test_input": clean_snippet}
+    except Exception as e:
+        logger.error(f"Failed to generate test input: {e}")
         raise HTTPException(status_code=500, detail=str(e))
 
 # EXPERIMENT TRACKING & REPORT EXPORT ENDPOINTS (REQUIREMENT #1, #7)
