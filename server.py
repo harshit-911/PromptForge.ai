@@ -128,13 +128,38 @@ def run_optimization(req: OptimizationRequest):
 def run_playground(req: PlaygroundRequest):
     try:
         user_msg = f"Analyze the following input:\n\n{req.test_input}"
+
+        print("\n" + "="*70)
+        print("=== 1. SYSTEM PROMPT SENT TO GEMINI ===")
+        print(req.system_prompt)
+        print("="*70)
+
+        print("\n" + "="*70)
+        print("=== 2. USER PROMPT SENT TO GEMINI ===")
+        print(user_msg)
+        print("="*70)
+
         response_text = llm_client.generate_text(
             prompt=user_msg,
             system_instruction=req.system_prompt,
             temperature=0.0
         )
-        return {"output": response_text}
+
+        print("\n" + "="*70)
+        print("=== 3. RAW GEMINI RESPONSE BEFORE PARSING ===")
+        print(response_text)
+        print("="*70)
+
+        parsed_audit = evaluator._parse_multi_finding_report(response_text, "VULNERABLE", "", False, req.test_input)
+
+        print("\n" + "="*70)
+        print("=== 4. PARSED REPORT JSON ===")
+        print(json.dumps(parsed_audit, indent=2))
+        print("="*70 + "\n")
+
+        return {"output": response_text, "parsed_audit": parsed_audit}
     except Exception as e:
+        logger.error(f"Playground execution failed: {e}")
         raise HTTPException(status_code=500, detail=str(e))
 
 # EXPERIMENT TRACKING & REPORT EXPORT ENDPOINTS (REQUIREMENT #1, #7)

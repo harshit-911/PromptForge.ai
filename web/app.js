@@ -1227,12 +1227,12 @@ function renderProfessionalSecurityReportCard(text) {
   `;
 
   blocksToProcess.forEach((bText, idx) => {
-    const category = extract(bText, "CATEGORY") || "SQL Injection";
-    const owasp = extract(bText, "OWASP") || "A03:2021 - Injection";
-    const cwe = extract(bText, "CWE") || "CWE-89";
+    const category = extract(bText, "CATEGORY") || "Unspecified Vulnerability";
+    const owasp = extract(bText, "OWASP") || "Unspecified OWASP";
+    const cwe = extract(bText, "CWE") || "Unspecified CWE";
     const relatedCve = extract(bText, "RELATED CVE") || extract(bText, "CVE") || "None";
-    const severity = extract(bText, "SEVERITY") || "HIGH";
-    const confidence = extract(bText, "CONFIDENCE") || "HIGH";
+    const severity = extract(bText, "SEVERITY") || "MEDIUM";
+    const confidence = extract(bText, "CONFIDENCE") || "MEDIUM";
     const affectedCode = extractBlock(bText, "AFFECTED CODE");
     const reasoning = extractBlock(bText, "REASONING");
     const impact = extractBlock(bText, "IMPACT");

@@ -216,7 +216,7 @@ class BenchmarkEvaluator:
             elif "SELECT" in in_upper or "DB.QUERY" in in_upper:
                 category = "SQL Injection"
             else:
-                category = expected_category if expected_category and expected_category.upper() not in ("GENERAL", "REAL CVE VULNERABILITY") else "Log4Shell"
+                category = expected_category if expected_category and expected_category.upper() not in ("GENERAL", "REAL CVE VULNERABILITY") else "Unspecified Vulnerability"
 
         cat_upper = category.upper()
         if not cwe:
@@ -240,8 +240,8 @@ class BenchmarkEvaluator:
 
         return {
             "category": category,
-            "owasp": owasp or "A03:2021 - Injection",
-            "cwe": cwe or "CWE-89",
+            "owasp": owasp or "Unspecified OWASP",
+            "cwe": cwe or "Unspecified CWE",
             "related_cve": related_cve or "None",
             "severity": severity.upper(),
             "confidence": confidence.upper(),
