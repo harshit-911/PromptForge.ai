@@ -54,7 +54,7 @@ document.addEventListener("DOMContentLoaded", () => {
   initSoundFX();
   initKeyboardShortcuts();
 
-  logActivity("[SYSTEM]", "System initialized. Platform active.");
+  logActivity("[SYSTEM]", "Reasoning-based autonomous optimization platform active.");
 
   if (sessionStorage.getItem("hasEntered")) {
     document.getElementById("intro-screen")?.classList.add("exiting");
@@ -135,7 +135,7 @@ function updateStepper(activeStep) {
   const statusText = document.getElementById("stepper-status-text");
   if (statusText) {
     if (activeStep === "complete") {
-      statusText.textContent = "[OK] Optimization completed successfully";
+      statusText.textContent = "[OK] Autonomous reasoning optimization completed";
       statusText.style.color = "var(--accent-emerald)";
     } else {
       statusText.textContent = `Running step ${activeIdx + 1}/5: ${activeStep.toUpperCase()}...`;
@@ -146,68 +146,23 @@ function updateStepper(activeStep) {
 
 function auditPromptSecurity(promptText) {
   if (!promptText) return { score: 0, checks: [] };
-
   const upper = promptText.upper ? promptText.upper() : String(promptText).toUpperCase();
   const checks = [
-    {
-      name: "Explicit Output Format Enforcement",
-      passed: upper.includes("STATUS:") || upper.includes("FORMAT") || upper.includes("SAFE OR VULNERABLE") || upper.includes("CATEGORY:"),
-      reason: upper.includes("STATUS:") ? "Enforces strict key-value response schema (STATUS:, CATEGORY:)." : "Missing explicit response format guidelines."
-    },
-    {
-      name: "Anti-Jailbreak Safety Guardrail",
-      passed: upper.includes("RULE") || upper.includes("DO NOT") || upper.includes("MUST") || upper.includes("CRITICAL") || upper.includes("IGNORE"),
-      reason: upper.includes("MUST") ? "Includes un-hackable MUST/DO NOT directive boundaries." : "Lacks explicit boundary rules against adversarial manipulation."
-    },
-    {
-      name: "Role & Security Auditor Definition",
-      passed: upper.includes("SECURITY") || upper.includes("AUDITOR") || upper.includes("ANALYST") || upper.includes("GUARDRAIL") || upper.includes("SPECIALIST"),
-      reason: upper.includes("AUDITOR") || upper.includes("ANALYST") ? "Clearly defines persona domain boundaries." : "Vague or missing role definition."
-    },
-    {
-      name: "Synthetic & Safe Data Requirement",
-      passed: upper.includes("SYNTHETIC") || upper.includes("FAKE") || upper.includes("MOCK") || upper.includes("PRIVACY") || upper.includes("REDACT"),
-      reason: upper.includes("SYNTHETIC") || upper.includes("REDACT") ? "Mandates synthetic or redacted data in evaluations." : "No explicit synthetic data directive."
-    },
-    {
-      name: "Zero-Trust Fallback Rule",
-      passed: upper.includes("IF") || upper.includes("DEFAULT") || upper.includes("OTHERWISE") || upper.includes("UNLESS"),
-      reason: upper.includes("IF") || upper.includes("UNLESS") ? "Provides zero-trust fallback handling for edge cases." : "Missing explicit default fallback condition."
-    }
+    { name: "Explicit Output Format Enforcement", passed: upper.includes("STATUS:") || upper.includes("FORMAT") || upper.includes("SAFE OR VULNERABLE") || upper.includes("CATEGORY:"), reason: upper.includes("STATUS:") ? "Enforces strict key-value response schema (STATUS:, CATEGORY:)." : "Missing explicit response format guidelines." },
+    { name: "Anti-Jailbreak Safety Guardrail", passed: upper.includes("RULE") || upper.includes("DO NOT") || upper.includes("MUST") || upper.includes("CRITICAL") || upper.includes("IGNORE"), reason: upper.includes("MUST") ? "Includes un-hackable MUST/DO NOT directive boundaries." : "Lacks explicit boundary rules against adversarial manipulation." },
+    { name: "Role & Security Auditor Definition", passed: upper.includes("SECURITY") || upper.includes("AUDITOR") || upper.includes("ANALYST") || upper.includes("GUARDRAIL") || upper.includes("SPECIALIST"), reason: upper.includes("AUDITOR") || upper.includes("ANALYST") ? "Clearly defines persona domain boundaries." : "Vague or missing role definition." },
+    { name: "Synthetic & Safe Data Requirement", passed: upper.includes("SYNTHETIC") || upper.includes("FAKE") || upper.includes("MOCK") || upper.includes("PRIVACY") || upper.includes("REDACT"), reason: upper.includes("SYNTHETIC") || upper.includes("REDACT") ? "Mandates synthetic or redacted data in evaluations." : "No explicit synthetic data directive." },
+    { name: "Zero-Trust Fallback Rule", passed: upper.includes("IF") || upper.includes("DEFAULT") || upper.includes("OTHERWISE") || upper.includes("UNLESS"), reason: upper.includes("IF") || upper.includes("UNLESS") ? "Provides zero-trust fallback handling for edge cases." : "Missing explicit default fallback condition." }
   ];
-
   const passedCount = checks.filter(c => c.passed).length;
   const score = Math.round((passedCount / checks.length) * 100);
-
   return { score, checks };
 }
 
 function renderLinterAudit(promptText) {
   const audit = auditPromptSecurity(promptText);
-  const badgeEl = document.getElementById("linter-score-badge");
-  const container = document.getElementById("linter-audit-results");
-
-  if (badgeEl) {
-    badgeEl.textContent = `SCORE: ${audit.score}/100`;
-    badgeEl.className = `badge ${audit.score >= 80 ? 'optimized' : 'initial'}`;
-  }
-
   const scoreValEl = document.getElementById("metric-score-val");
   if (scoreValEl) scoreValEl.textContent = `${audit.score}/100`;
-
-  if (container) {
-    let html = `<div style="display:flex; flex-direction:column; gap:8px;">`;
-    audit.checks.forEach(c => {
-      html += `
-        <div style="display:flex; justify-content:space-between; align-items:center; background:var(--bg-input); padding:8px 12px; border-radius:6px; font-size:0.85rem;">
-          <span style="font-weight:600; color:${c.passed ? 'var(--accent-emerald)' : '#ef4444'};">${c.passed ? '[PASS]' : '[FAIL]'} ${c.name}</span>
-          <span style="font-size:0.8rem; color:var(--text-muted);">${c.reason}</span>
-        </div>
-      `;
-    });
-    html += `</div>`;
-    container.innerHTML = html;
-  }
 }
 
 function getDomainIcon(name, category = "") {
@@ -313,7 +268,6 @@ function filterAndRenderCatalog() {
   });
 
   filtered.sort((a, b) => {
-    const diffOrder = { "Easy": 1, "Medium": 2, "Hard": 3, "Expert": 4 };
     const countA = a.test_cases_count || 0;
     const countB = b.test_cases_count || 0;
 
@@ -1044,7 +998,7 @@ async function runOptimization() {
   const startTime = performance.now();
 
   runBtn.disabled = true;
-  runBtn.innerHTML = "<span>PromptForge Optimizing...</span>";
+  runBtn.innerHTML = "<span>Reasoning Optimizing...</span>";
 
   updateStepper("evaluating");
   setTimeout(() => updateStepper("diagnosing"), 400);
@@ -1075,7 +1029,7 @@ async function runOptimization() {
 
     updateStepper("complete");
     playSuccessSound();
-    logActivity("[OPT]", `Optimization complete across ${data.total_generations} generations in ${elapsedTime}s.`);
+    logActivity("[OPT]", `Reasoning optimization finished: ${data.stopping_reason}`);
 
     displayResults(data, elapsedTime);
 
@@ -1083,7 +1037,6 @@ async function runOptimization() {
       renderLinterAudit(data.final_optimized_prompt);
     }
 
-    // UPDATE EXPERIMENT TRACKING & CHARTS (REQUIREMENT #1, #2, #4, #5)
     if (window.PromptForgeComparison) {
       window.PromptForgeComparison.renderComparison("dash-comparison-container", data.baseline_metrics, data.final_metrics);
     }
@@ -1104,7 +1057,7 @@ async function runOptimization() {
     alert("Optimization run failed: " + err.message);
   } finally {
     runBtn.disabled = false;
-    runBtn.innerHTML = "<span>Run PromptForge Optimization ➔</span>";
+    runBtn.innerHTML = "<span>Run Autonomous Optimization ➔</span>";
   }
 }
 
@@ -1115,6 +1068,9 @@ function displayResults(data, elapsedTime = "0.85") {
   const sizeValEl = document.getElementById("metric-size-val");
   const timeValEl = document.getElementById("metric-time-val");
   const f1ValEl = document.getElementById("metric-f1-val");
+  const confValEl = document.getElementById("metric-conf-val");
+  const confBadgeEl = document.getElementById("conf-level-badge");
+  const stopBadgeEl = document.getElementById("dash-stopping-reason-badge");
 
   animateValue(initAccEl, 0, data.initial_accuracy, 600, true, "%");
   animateValue(finalAccEl, 0, data.final_accuracy, 800, true, "%");
@@ -1126,6 +1082,18 @@ function displayResults(data, elapsedTime = "0.85") {
 
   const finalF1 = data.final_metrics ? data.final_metrics.f1 : data.final_accuracy;
   if (f1ValEl) animateValue(f1ValEl, 0, finalF1, 600, true, "%");
+
+  const confScore = data.final_confidence_score || 85;
+  const confLevel = data.final_confidence_level || "High";
+  if (confValEl) animateValue(confValEl, 0, confScore, 500, false, "%");
+  if (confBadgeEl) {
+    confBadgeEl.textContent = confLevel.toUpperCase();
+    confBadgeEl.className = `trend-badge ${confScore >= 80 ? 'up' : 'neutral'}`;
+  }
+
+  if (stopBadgeEl) {
+    stopBadgeEl.textContent = data.stopping_reason || "Optimization Complete";
+  }
 
   if (data.history && data.history.length > 0) {
     const initGen = data.history[0];
@@ -1139,9 +1107,52 @@ function displayResults(data, elapsedTime = "0.85") {
   document.getElementById("prompt-optimized").textContent = data.final_optimized_prompt;
   document.getElementById("pg-prompt").value = data.final_optimized_prompt;
 
+  // Render Explainability & Reasoning Dashboard Panel
+  const explainContainer = document.getElementById("dash-explainability-container");
+  if (explainContainer && data.history) {
+    let explainHtml = `<div style="display:flex; flex-direction:column; gap:1.25rem;">`;
+
+    data.history.forEach((genData, idx) => {
+      const exp = genData.explainability || {};
+      const version = genData.version || `v1.${idx}`;
+      const rootCauses = genData.root_causes || [];
+      const rules = genData.generated_rules || [];
+      const mutations = genData.mutations_applied || [];
+
+      explainHtml += `
+        <div style="background:var(--bg-input); padding:1rem; border-radius:10px; border:1px solid var(--border-hairline);">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+            <span style="font-family:'JetBrains Mono', monospace; font-weight:700; color:var(--accent-cyan); font-size:0.9rem;">Prompt Version ${version}</span>
+            <span style="font-size:0.8rem; font-weight:700; color:var(--accent-emerald);">Accuracy: ${genData.accuracy}% (F1: ${(genData.f1 || genData.accuracy).toFixed(1)}%)</span>
+          </div>
+
+          <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px; margin-bottom:10px;">
+            <div style="background:var(--bg-card); padding:8px; border-radius:6px;">
+              <div style="font-size:0.75rem; color:var(--text-muted); font-weight:700; text-transform:uppercase;">What Changed?</div>
+              <div style="font-size:0.82rem; color:var(--text-primary); margin-top:2px;">${exp.what_changed || 'Synthesized security directives.'}</div>
+            </div>
+            <div style="background:var(--bg-card); padding:8px; border-radius:6px;">
+              <div style="font-size:0.75rem; color:var(--text-muted); font-weight:700; text-transform:uppercase;">Why Changed?</div>
+              <div style="font-size:0.82rem; color:var(--text-secondary); margin-top:2px;">${exp.why_changed || genData.optimizer_reasoning || 'Eliminated failure categories.'}</div>
+            </div>
+            <div style="background:var(--bg-card); padding:8px; border-radius:6px;">
+              <div style="font-size:0.75rem; color:var(--text-muted); font-weight:700; text-transform:uppercase;">Failures Motivated</div>
+              <div style="display:flex; gap:4px; flex-wrap:wrap; margin-top:4px;">
+                ${(exp.failures_motivated || ['Missing Rule']).map(f => `<span class="chip-cat" style="font-size:0.7rem;">${f}</span>`).join('')}
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+    });
+
+    explainHtml += `</div>`;
+    explainContainer.innerHTML = explainHtml;
+  }
+
+  // Timeline
   const timelineEl = document.getElementById("history-timeline");
   timelineEl.innerHTML = "";
-
   let timelineHtml = `<div class="vertical-timeline">`;
 
   data.history.forEach((item, idx) => {
@@ -1159,29 +1170,14 @@ function displayResults(data, elapsedTime = "0.85") {
         </div>
 
         <div class="timeline-stats-grid">
-          <div class="timeline-stat-item">
-            <span class="timeline-stat-label">Accuracy</span>
-            <span class="timeline-stat-val" style="color:var(--accent-emerald);">${item.accuracy.toFixed(1)}%</span>
-          </div>
-
-          <div class="timeline-stat-item">
-            <span class="timeline-stat-label">F1 Score</span>
-            <span class="timeline-stat-val" style="color:var(--accent-amber);">${(item.f1 || item.accuracy).toFixed(1)}%</span>
-          </div>
-
-          <div class="timeline-stat-item">
-            <span class="timeline-stat-label">Failures</span>
-            <span class="timeline-stat-val" style="color:${failures > 0 ? '#ef4444' : 'var(--accent-emerald)'};">${failures} failed</span>
-          </div>
-
-          <div class="timeline-stat-item">
-            <span class="timeline-stat-label">Improvement</span>
-            <span class="timeline-stat-val" style="color:var(--accent-emerald);">${isBaseline ? '0.0%' : `+${improvement}%`}</span>
-          </div>
+          <div class="timeline-stat-item"><span class="timeline-stat-label">Accuracy</span><span class="timeline-stat-val" style="color:var(--accent-emerald);">${item.accuracy.toFixed(1)}%</span></div>
+          <div class="timeline-stat-item"><span class="timeline-stat-label">F1 Score</span><span class="timeline-stat-val" style="color:var(--accent-amber);">${(item.f1 || item.accuracy).toFixed(1)}%</span></div>
+          <div class="timeline-stat-item"><span class="timeline-stat-label">Failures</span><span class="timeline-stat-val" style="color:${failures > 0 ? '#ef4444' : 'var(--accent-emerald)'};">${failures} failed</span></div>
+          <div class="timeline-stat-item"><span class="timeline-stat-label">Improvement</span><span class="timeline-stat-val" style="color:var(--accent-emerald);">${isBaseline ? '0.0%' : `+${improvement}%`}</span></div>
         </div>
 
         <div style="font-size:0.85rem; color:var(--text-secondary); line-height:1.5; background:var(--bg-card); padding:10px; border-radius:6px; border:1px solid var(--border-hairline);">
-          ${item.optimizer_reasoning ? '<strong>Meta-Agent Critique:</strong> ' + item.optimizer_reasoning : '<em>Baseline seed evaluation without mutated security rules.</em>'}
+          ${item.optimizer_reasoning ? '<strong>Meta-Agent Reasoning:</strong> ' + item.optimizer_reasoning : '<em>Baseline seed evaluation without mutated security rules.</em>'}
         </div>
       </div>
     `;

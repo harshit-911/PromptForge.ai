@@ -1,99 +1,141 @@
 import re
 import logging
-from typing import Dict, List, Any
+from typing import Dict, List, Any, Optional
+
+from meta_agent.failure_classifier import FailureClassifier
+from meta_agent.root_cause_analyzer import RootCauseAnalyzer
+from meta_agent.rule_generator import RuleGenerator
+from meta_agent.prompt_mutator import PromptMutator
+from meta_agent.memory_manager import MemoryManager
+from meta_agent.rollback_manager import RollbackManager
 
 logger = logging.getLogger(__name__)
 
 class MetaAgentOptimizer:
-    """Meta-Agent that analyzes evaluation failures and mutates prompts to improve performance."""
+    """Reasoning-based autonomous optimization engine that learns from failure root causes."""
 
     def __init__(self, llm_client):
         self.llm_client = llm_client
+        self.classifier = FailureClassifier()
+        self.root_cause_analyzer = RootCauseAnalyzer()
+        self.rule_generator = RuleGenerator()
+        self.mutator = PromptMutator()
+        self.memory_manager = MemoryManager()
+        self.rollback_manager = RollbackManager()
 
-    def optimize_prompt(self, current_prompt: str, task_description: str, eval_results: Dict[str, Any], generation: int) -> Dict[str, Any]:
-        """Generates an optimized candidate prompt based on failure analysis."""
+    def optimize_prompt(
+        self,
+        current_prompt: str,
+        task_description: str,
+        eval_results: Dict[str, Any],
+        generation: int
+    ) -> Dict[str, Any]:
+        """Executes full reasoning pipeline: Classify ➔ Root Cause ➔ Rule Gen ➔ Targeted Mutation ➔ Memory Check."""
         failures = eval_results.get("failures", [])
         accuracy = eval_results.get("accuracy", 0.0)
 
-        # If perfect accuracy, return current prompt
-        if not failures or accuracy == 100.0:
-            return {
-                "optimized_prompt": current_prompt,
-                "reasoning": f"Generation {generation}: Perfect accuracy (100%) achieved. Prompt optimal.",
-                "changes_made": ["No modifications required."]
-            }
+        # 1. Step 1: Failure Classification
+        classified_failures = self.classifier.classify_all(failures, current_prompt)
 
-        # Collect unique expected statuses for this benchmark
+        # 2. Step 2: Root Cause Analysis
+        root_causes = self.root_cause_analyzer.analyze_root_causes(classified_failures, current_prompt)
+
+        # 3. Step 3: Structured Improvement Rule Generation
+        proposed_rules = self.rule_generator.generate_rules(root_causes)
+
+        # 4. Step 4: Memory Check (Filter out previously failed rules)
+        filtered_rules = self.memory_manager.filter_failed_rules(proposed_rules)
+
         expected_statuses = list(set([f.get("expected_status", "").upper() for f in failures if f.get("expected_status")]))
         status_options_str = " | ".join(expected_statuses) if expected_statuses else "VULNERABLE | SAFE"
 
-        # Build failure diagnostic context
+        # 5. Step 5: Target Prompt Mutation
+        mutation_result = self.mutator.mutate_prompt(
+            current_prompt=current_prompt,
+            generated_rules=filtered_rules,
+            generation=generation,
+            status_options_str=status_options_str
+        )
+
+        # 6. Step 6: LLM Metaprompt Synthesis & Critique
         failure_summary = []
-        for i, fail in enumerate(failures, 1):
+        for i, fail in enumerate(failures[:5], 1):
             failure_summary.append(
                 f"Failure #{i}:\n"
-                f"- Input Code/Log: {fail['input'][:200]}...\n"
-                f"- Expected Status: {fail['expected_status']}\n"
-                f"- Predicted Status: {fail['predicted_status']}\n"
-                f"- Raw LLM Output: {fail['raw_response']}\n"
+                f"- Input Code/Log: {fail['input'][:150]}...\n"
+                f"- Expected: {fail['expected_status']} | Predicted: {fail['predicted_status']}\n"
             )
-        
         failures_text = "\n".join(failure_summary)
 
-        meta_instruction = (
-            "You are an expert AI Safety & Meta-Prompt Engineer. Your role is to automatically optimize "
-            "system prompts for LLMs carrying out safety and security analysis."
-        )
-
         meta_prompt = f"""
-TASK DESCRIPTION:
-{task_description}
+TASK DESCRIPTION: {task_description}
 
-CURRENT SYSTEM PROMPT (Generation {generation}):
-\"\"\"
+CURRENT PROMPT (Generation {generation}):
 {current_prompt}
-\"\"\"
 
-PERFORMANCE ACCURACY: {accuracy}% ({eval_results['passed']}/{eval_results['total']} test cases passed)
+ACCURACY: {accuracy}% ({eval_results['passed']}/{eval_results['total']} passed)
 
-FAILED TEST CASES & MISCLASSIFICATIONS:
-{failures_text}
+IDENTIFIED FAILURE ROOT CAUSES:
+{json_dumps_clean(root_causes)}
 
-INSTRUCTIONS FOR META-AGENT:
-1. Analyze why the current prompt failed on the above test cases.
-2. Formulate a new, significantly improved SYSTEM PROMPT that resolves these failure cases while maintaining general accuracy.
-3. Always require the target model to output strict structured headers matching the task domain:
-   STATUS: [{status_options_str}]
-   CATEGORY: [Vulnerability / Threat / Attack Type]
-   SEVERITY: [CRITICAL | HIGH | MEDIUM | LOW | NONE]
-   REASONING: [Brief technical explanation]
+PROPOSED REUSABLE RULES:
+{json_dumps_clean(filtered_rules)}
+
+INSTRUCTIONS:
+Refine the system prompt by incorporating these rules into an un-hackable security directive.
 
 OUTPUT FORMAT:
-REASONING: <Explain what went wrong and how you fixed it>
+REASONING: <Concise explanation of root cause fix>
 OPTIMIZED_PROMPT:
-<Provide the exact text of the new system prompt here>
+<Exact prompt text>
 """
 
-        raw_meta_response = self.llm_client.generate_text(
-            prompt=meta_prompt,
-            system_instruction=meta_instruction,
-            temperature=0.3
-        )
+        try:
+            raw_meta_response = self.llm_client.generate_text(
+                prompt=meta_prompt,
+                system_instruction="You are an expert autonomous Prompt Engineer.",
+                temperature=0.2
+            )
+            parsed_prompt, reasoning = self._parse_meta_response(raw_meta_response, mutation_result["mutated_prompt"])
+        except Exception as e:
+            logger.warning(f"Meta-Agent LLM fallback: {e}")
+            parsed_prompt = mutation_result["mutated_prompt"]
+            reasoning = f"Generation {generation}: Applied {len(filtered_rules)} targeted security rules to eliminate failure categories."
 
-        optimized_prompt, reasoning = self._parse_meta_response(raw_meta_response, current_prompt, failures, generation, status_options_str)
+        # Compute Confidence Score (0 - 100%)
+        confidence_score, confidence_level = self.calculate_confidence(accuracy, len(failures), len(filtered_rules))
 
-        return {
-            "optimized_prompt": optimized_prompt,
-            "reasoning": reasoning,
-            "raw_response": raw_meta_response
+        explainability = {
+            "what_changed": f"Applied {len(mutation_result['mutations_applied'])} targeted mutation operations.",
+            "why_changed": reasoning,
+            "failures_motivated": [rc["category"] for rc in root_causes[:3]],
+            "confidence_score": confidence_score,
+            "confidence_level": confidence_level
         }
 
-    def _parse_meta_response(self, text: str, fallback_prompt: str, failures: List[Dict[str, Any]], generation: int, status_options_str: str) -> tuple[str, str]:
-        """Parses the Meta-Agent's reasoning and mutated system prompt."""
+        return {
+            "optimized_prompt": parsed_prompt,
+            "reasoning": reasoning,
+            "classified_failures": classified_failures,
+            "root_causes": root_causes,
+            "generated_rules": filtered_rules,
+            "mutations_applied": mutation_result["mutations_applied"],
+            "explainability": explainability,
+            "confidence_score": confidence_score,
+            "confidence_level": confidence_level
+        }
+
+    def calculate_confidence(self, accuracy: float, failures_count: int, rules_count: int) -> tuple[int, str]:
+        """Calculates an optimization confidence score (0-100% and High/Medium/Low)."""
+        score = Math_clamp(int(accuracy * 0.5 + (10 - min(10, failures_count)) * 3 + rules_count * 5), 35, 100)
+        level = "High" if score >= 80 else ("Medium" if score >= 60 else "Low")
+        return score, level
+
+    def _parse_meta_response(self, text: str, fallback_prompt: str) -> tuple[str, str]:
         reasoning_match = re.search(r"REASONING:\s*(.*?)(?=OPTIMIZED_PROMPT:|$)", text, re.DOTALL | re.IGNORECASE)
         prompt_match = re.search(r"OPTIMIZED_PROMPT:\s*(.*)", text, re.DOTALL | re.IGNORECASE)
 
-        reasoning = reasoning_match.group(1).strip() if reasoning_match else "Meta-Agent synthesized targeted security guidelines to resolve misclassifications."
+        reasoning = reasoning_match.group(1).strip() if reasoning_match else "Synthesized structured security guidelines to resolve misclassifications."
         
         if prompt_match and len(prompt_match.group(1).strip()) > 30:
             new_prompt = prompt_match.group(1).strip()
@@ -101,22 +143,11 @@ OPTIMIZED_PROMPT:
                 new_prompt = new_prompt[3:-3].strip()
             return new_prompt, reasoning
 
-        # Smart domain-aware incremental prompt mutation logic
-        base_prompt = fallback_prompt.split("\n\nCRITICAL SECURITY RULES:")[0].strip()
-        
-        rules = [
-          "CRITICAL SECURITY RULES & ANALYSIS GUIDELINES:",
-          "1. Output exact formatted response:",
-          f"   STATUS: {status_options_str}",
-          "   CATEGORY: <Specific Vulnerability or Threat Category>",
-          "   SEVERITY: CRITICAL / HIGH / MEDIUM / LOW / NONE",
-          "   REASONING: <Technical Explanation>",
-          "2. AUDIT RULE: Carefully analyze inputs for security vulnerability patterns including string concatenation SQLi, XSS, unescaped OS system commands, path traversal, and SSRF.",
-          "3. STRICT EVALUATION: Ensure edge cases and indirect input parameters are strictly validated against safety guidelines."
-        ]
+        return fallback_prompt, reasoning
 
-        if generation >= 2:
-            rules.append("4. ADVANCED AUDIT RULE: Inspect indirect parameter sanitization. Mark any unvalidated input passed to system calls as VULNERABLE.")
+def Math_clamp(val, min_val, max_val):
+    return max(min_val, min(val, max_val))
 
-        augmented_prompt = base_prompt + "\n\n" + "\n".join(rules)
-        return augmented_prompt, f"Generation {generation}: Identified failure patterns. Synthesized structured classification rules and domain guardrails."
+def json_dumps_clean(obj):
+    import json
+    return json.dumps(obj, indent=2)

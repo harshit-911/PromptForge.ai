@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>PromptForge AI | Autonomous Prompt Evaluation & Experiment Tracking Platform</title>
-  <link rel="stylesheet" href="/static/styles.css?v=9">
+  <title>PromptForge AI | Autonomous Reasoning-Based Prompt Engineering Platform</title>
+  <link rel="stylesheet" href="/static/styles.css?v=10">
 </head>
 <body>
 
@@ -41,7 +41,7 @@
     </div>
   </div>
 
-  <!-- EXPERIMENT DETAIL MODAL DIALOG (REQUIREMENT #1, #2, #4, #5, #7) -->
+  <!-- EXPERIMENT DETAIL MODAL DIALOG -->
   <div id="experiment-detail-modal" class="modal-overlay" onclick="PromptForgeExperiments.closeExperimentDetail()">
     <div class="modal-content" style="max-width: 900px; max-height: 90vh; overflow-y: auto;" onclick="event.stopPropagation()">
       <div class="modal-header">
@@ -52,7 +52,6 @@
         <button class="modal-close" onclick="PromptForgeExperiments.closeExperimentDetail()">✕</button>
       </div>
 
-      <!-- Export Report Buttons -->
       <div style="display:flex; gap:10px; margin-bottom:1.5rem; flex-wrap:wrap;">
         <span style="font-size:0.8rem; font-weight:700; color:var(--text-muted); display:flex; align-items:center;">EXPORT REPORT:</span>
         <button class="copy-btn" onclick="PromptForgeExport.exportExperiment(document.getElementById('exp-drawer-id').textContent, 'pdf')">PDF Report</button>
@@ -61,13 +60,11 @@
         <button class="copy-btn" onclick="PromptForgeExport.exportExperiment(document.getElementById('exp-drawer-id').textContent, 'csv')">CSV</button>
       </div>
 
-      <!-- BEFORE vs AFTER Comparison Grid -->
       <div class="history-section" style="margin-bottom:1.5rem;">
         <h3 style="font-family:var(--font-display); font-size:1rem; margin-bottom:1rem;">BEFORE vs AFTER Comparison Metrics</h3>
         <div id="exp-comparison-container"></div>
       </div>
 
-      <!-- Git-Style Prompt Diff Viewer -->
       <div class="history-section" style="margin-bottom:1.5rem;">
         <h3 style="font-family:var(--font-display); font-size:1rem; margin-bottom:1rem;">Line-by-Line Prompt Diff (v1.0 Seed ➔ Final Mutated)</h3>
         <div id="exp-diff-container"></div>
@@ -79,7 +76,7 @@
     </div>
   </div>
 
-  <!-- SLIDE-OVER SIDE DRAWER FOR BENCHMARK DETAILS & PAGINATED DATASET PREVIEW -->
+  <!-- SLIDE-OVER SIDE DRAWER FOR BENCHMARK DETAILS -->
   <div id="bm-drawer-overlay" class="side-drawer-overlay" onclick="closeSideDrawer(event)">
     <div class="side-drawer" onclick="event.stopPropagation()">
       <div class="drawer-header">
@@ -95,30 +92,14 @@
 
       <div class="drawer-body">
         <div class="accordion-item">
-          <div class="accordion-header" onclick="toggleAccordion(this)">
-            <span>Overview & Security Specifications</span>
-            <span>▼</span>
-          </div>
+          <div class="accordion-header" onclick="toggleAccordion(this)"><span>Overview & Security Specifications</span><span>▼</span></div>
           <div class="accordion-content">
             <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem; margin-bottom:1rem;">
-              <div>
-                <span style="font-size:0.75rem; color:var(--text-muted); text-transform:uppercase; font-weight:700;">Threat Category</span>
-                <div id="drawer-cat" style="font-family:var(--font-display); font-weight:700; color:var(--text-primary); margin-top:2px;">-</div>
-              </div>
-              <div>
-                <span style="font-size:0.75rem; color:var(--text-muted); text-transform:uppercase; font-weight:700;">Dataset Source</span>
-                <div id="drawer-source" style="font-family:var(--font-display); font-weight:700; color:var(--accent-cyan); margin-top:2px;">-</div>
-              </div>
-              <div>
-                <span style="font-size:0.75rem; color:var(--text-muted); text-transform:uppercase; font-weight:700;">Difficulty Level</span>
-                <div id="drawer-diff" style="margin-top:2px;">-</div>
-              </div>
-              <div>
-                <span style="font-size:0.75rem; color:var(--text-muted); text-transform:uppercase; font-weight:700;">Estimated Runtime</span>
-                <div id="drawer-runtime" style="font-family:var(--font-mono); font-size:0.9rem; color:var(--accent-purple); margin-top:2px;">~1.2s</div>
-              </div>
+              <div><span style="font-size:0.75rem; color:var(--text-muted); text-transform:uppercase; font-weight:700;">Threat Category</span><div id="drawer-cat" style="font-family:var(--font-display); font-weight:700; color:var(--text-primary); margin-top:2px;">-</div></div>
+              <div><span style="font-size:0.75rem; color:var(--text-muted); text-transform:uppercase; font-weight:700;">Dataset Source</span><div id="drawer-source" style="font-family:var(--font-display); font-weight:700; color:var(--accent-cyan); margin-top:2px;">-</div></div>
+              <div><span style="font-size:0.75rem; color:var(--text-muted); text-transform:uppercase; font-weight:700;">Difficulty Level</span><div id="drawer-diff" style="margin-top:2px;">-</div></div>
+              <div><span style="font-size:0.75rem; color:var(--text-muted); text-transform:uppercase; font-weight:700;">Estimated Runtime</span><div id="drawer-runtime" style="font-family:var(--font-mono); font-size:0.9rem; color:var(--accent-purple); margin-top:2px;">~1.2s</div></div>
             </div>
-
             <div>
               <span style="font-size:0.75rem; color:var(--text-muted); text-transform:uppercase; font-weight:700; display:block; margin-bottom:6px;">Supported Models</span>
               <div id="drawer-models" style="display:flex; gap:6px; flex-wrap:wrap;">
@@ -131,10 +112,7 @@
         </div>
 
         <div class="accordion-item">
-          <div class="accordion-header" onclick="toggleAccordion(this)">
-            <span>Seed System Prompt & Evaluation Criteria</span>
-            <span>▼</span>
-          </div>
+          <div class="accordion-header" onclick="toggleAccordion(this)"><span>Seed System Prompt & Evaluation Criteria</span><span>▼</span></div>
           <div class="accordion-content">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
               <span style="font-size:0.75rem; color:var(--text-muted); font-weight:700;">SEED PROMPT (NAIVE BASELINE)</span>
@@ -145,10 +123,7 @@
         </div>
 
         <div class="accordion-item">
-          <div class="accordion-header" onclick="toggleAccordion(this)">
-            <span>Dataset Test Cases Preview (<span id="drawer-tc-count">0</span> Cases)</span>
-            <span>▼</span>
-          </div>
+          <div class="accordion-header" onclick="toggleAccordion(this)"><span>Dataset Test Cases Preview (<span id="drawer-tc-count">0</span> Cases)</span><span>▼</span></div>
           <div class="accordion-content">
             <div id="drawer-preview-table-container"></div>
             <div class="pagination-bar">
@@ -345,7 +320,7 @@
   <!-- STREAMLINED ENTRANCE ANIMATION & INTRO OVERLAY -->
   <div id="intro-screen">
     <h1 class="intro-title">PromptForge AI</h1>
-    <p class="intro-desc">Autonomous System Prompt Mutation, Evaluation & Experiment Tracking Platform.</p>
+    <p class="intro-desc">Autonomous Reasoning-Based System Prompt Engineering, Evaluation & Experiment Tracking Platform.</p>
 
     <button class="btn-enter" onclick="enterPlatform()">
       <span>Enter PromptForge Platform</span>
@@ -379,11 +354,10 @@
   <main>
     <!-- TAB 1: DASHBOARD -->
     <div id="tab-dashboard" class="tab-content active">
-      <!-- Hero Title Section -->
       <div class="hero-section" style="display:flex; justify-content:space-between; align-items:flex-end;">
         <div>
-          <h1 class="hero-title">Automated Prompt Evaluation Platform</h1>
-          <p class="hero-sub">A closed-loop evaluation & experiment tracking engine that automatically tests, critiques, and mutates system prompts.</p>
+          <h1 class="hero-title">Reasoning-Based Prompt Optimization Engine</h1>
+          <p class="hero-sub">An autonomous reasoning meta-agent that classifies failure root causes, generates targeted improvement rules, and mutates system prompts.</p>
         </div>
         <div style="display:flex; gap:10px;">
           <button class="copy-btn" onclick="openCodeExportModal()">Deploy Code</button>
@@ -394,7 +368,7 @@
 
       <!-- Command Control Center -->
       <div class="control-panel">
-        <div class="panel-header"><span>PROMPTFORGE OPTIMIZATION CONTROL CENTER</span></div>
+        <div class="panel-header"><span>PROMPTFORGE REASONING CONTROL CENTER</span></div>
         
         <div class="control-grid" style="margin-bottom: 1.5rem;">
           <div class="form-group" style="flex: 1; min-width: 250px;">
@@ -418,7 +392,7 @@
             <span>Shortcut: Press <strong>Cmd + Enter</strong> (or <strong>Ctrl + Enter</strong>) to run.</span>
           </div>
           <button class="btn-primary" onclick="runOptimization()">
-            <span>Run PromptForge Optimization ➔</span>
+            <span>Run Autonomous Optimization ➔</span>
           </button>
         </div>
       </div>
@@ -426,7 +400,7 @@
       <!-- LIVE OPTIMIZATION STATUS WIDGET -->
       <div class="stepper-panel">
         <div class="stepper-header">
-          <span>LIVE OPTIMIZATION ENGINE PIPELINE</span>
+          <span>REASONING-BASED OPTIMIZATION PIPELINE</span>
           <span style="font-size:0.75rem; color:var(--text-muted);" id="stepper-status-text">Ready for execution</span>
         </div>
         <div class="stepper-track">
@@ -438,7 +412,7 @@
         </div>
       </div>
 
-      <!-- ENTERPRISE 7 KPI METRICS GRID -->
+      <!-- ENTERPRISE KPI METRICS GRID -->
       <div class="dashboard-grid-7">
         <div class="metric-card-pro" data-tooltip="Initial benchmark accuracy of the seed prompt before optimization">
           <div class="metric-label-row"><span>BASELINE ACCURACY</span><span class="trend-badge neutral">GEN 1</span></div>
@@ -464,10 +438,10 @@
           <div class="metric-sub-row" id="metric-f1-sub">Precision/Recall</div>
         </div>
 
-        <div class="metric-card-pro" data-tooltip="Total security test cases evaluated in selected benchmark">
-          <div class="metric-label-row"><span>BENCHMARK SIZE</span><span class="trend-badge neutral">SUITE</span></div>
-          <div class="metric-val" style="color:var(--text-primary);" id="metric-size-val">0</div>
-          <div class="metric-sub-row" id="metric-size-sub">Test cases</div>
+        <div class="metric-card-pro" data-tooltip="Autonomous Meta-Agent confidence score (0-100%)">
+          <div class="metric-label-row"><span>CONFIDENCE SCORE</span><span class="trend-badge up" id="conf-level-badge">HIGH</span></div>
+          <div class="metric-val" style="color:var(--accent-cyan);" id="metric-conf-val">85%</div>
+          <div class="metric-sub-row" id="metric-conf-sub">Optimization confidence</div>
         </div>
 
         <div class="metric-card-pro" data-tooltip="Total execution time elapsed during optimization loop">
@@ -483,13 +457,24 @@
         </div>
       </div>
 
-      <!-- FEATURE 2: BASELINE vs OPTIMIZED COMPARISON SECTION (REQUIREMENT #2) -->
+      <!-- EXPLAINABILITY & REASONING PANEL (REQUIREMENT #8, #9) -->
+      <div class="history-section" style="margin-bottom:2rem; background:var(--bg-card); border:1px solid var(--border-hairline); border-radius:14px; padding:1.5rem;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
+          <h2 style="font-family:var(--font-display); font-size:1.1rem; font-weight:700;">🧠 Meta-Agent Autonomous Reasoning & Explainability</h2>
+          <span class="badge optimized" id="dash-stopping-reason-badge">Target Reached</span>
+        </div>
+        <div id="dash-explainability-container">
+          <p style="color:var(--text-muted); font-size:0.9rem;">Run an optimization to view real-time failure classification, root cause diagnostics, and explainability reasoning.</p>
+        </div>
+      </div>
+
+      <!-- BASELINE vs OPTIMIZED COMPARISON SECTION -->
       <div class="history-section" style="margin-bottom:2rem;">
         <h2 style="font-family:var(--font-display); font-size:1.1rem; font-weight:700; margin-bottom:1rem;">BEFORE vs AFTER Experiment Metrics (Baseline Seed ➔ Final Mutated)</h2>
         <div id="dash-comparison-container"></div>
       </div>
 
-      <!-- FEATURE 5: PERFORMANCE CHARTS DASHBOARD (REQUIREMENT #5) -->
+      <!-- PERFORMANCE CHARTS DASHBOARD -->
       <div class="history-section" style="margin-bottom:2rem;">
         <h2 style="font-family:var(--font-display); font-size:1.1rem; font-weight:700; margin-bottom:1.25rem;">Performance Dashboard (Accuracy, Precision, Recall, F1, & Passed/Failed)</h2>
         <div style="display:grid; grid-template-columns:1fr 1fr; gap:1.5rem; margin-bottom:1.5rem;">
@@ -514,13 +499,13 @@
         </div>
       </div>
 
-      <!-- FEATURE 4: GIT-STYLE PROMPT DIFF VIEWER (REQUIREMENT #4) -->
+      <!-- GIT-STYLE PROMPT DIFF VIEWER -->
       <div class="history-section" style="margin-bottom:2rem;">
         <h2 style="font-family:var(--font-display); font-size:1.1rem; font-weight:700; margin-bottom:1rem;">Line-by-Line Prompt Diff Viewer (v1.0 Seed ➔ v1.N Final Mutated)</h2>
         <div id="dash-diff-container"></div>
       </div>
 
-      <!-- FEATURE 6: DETAILED TEST RESULTS INSPECTOR (REQUIREMENT #6) -->
+      <!-- DETAILED TEST RESULTS INSPECTOR -->
       <div class="history-section" style="margin-bottom:2rem;">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 1rem;">
           <h2 style="font-family: var(--font-display); font-size: 1.1rem; font-weight: 700;">Detailed Test Cases Inspector (<span id="tc-count-badge">0</span> test cases)</h2>
@@ -556,7 +541,7 @@
         </div>
       </div>
 
-      <!-- OPTIMIZATION PROGRESS VERTICAL TIMELINE & RECENT ACTIVITY FEED GRID -->
+      <!-- OPTIMIZATION PROGRESS VERTICAL TIMELINE -->
       <div style="display:grid; grid-template-columns: 2fr 1fr; gap: 1.75rem; margin-bottom: 2rem;">
         <div class="history-section">
           <h2 style="font-family: var(--font-display); font-size: 1.1rem; font-weight: 700; margin-bottom: 1.25rem;">Optimization Progress Timeline</h2>
@@ -572,7 +557,7 @@
       </div>
     </div>
 
-    <!-- TAB 2: EXPERIMENTS & TRACKING (REQUIREMENT #1) -->
+    <!-- TAB 2: EXPERIMENTS & TRACKING -->
     <div id="tab-experiments" class="tab-content">
       <div class="hero-section" style="display:flex; justify-content:space-between; align-items:flex-end;">
         <div>
@@ -683,12 +668,11 @@
 
   <footer>PromptForge AI Platform • Powered by Google Gemini API & FastAPI</footer>
 
-  <!-- Modularized Frontend Scripts -->
-  <script src="/static/js/charts.js?v=9"></script>
-  <script src="/static/js/diff.js?v=9"></script>
-  <script src="/static/js/comparison.js?v=9"></script>
-  <script src="/static/js/experiments.js?v=9"></script>
-  <script src="/static/js/export.js?v=9"></script>
-  <script src="/static/app.js?v=9"></script>
+  <script src="/static/js/charts.js?v=10"></script>
+  <script src="/static/js/diff.js?v=10"></script>
+  <script src="/static/js/comparison.js?v=10"></script>
+  <script src="/static/js/experiments.js?v=10"></script>
+  <script src="/static/js/export.js?v=10"></script>
+  <script src="/static/app.js?v=10"></script>
 </body>
 </html>
