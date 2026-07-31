@@ -8,8 +8,10 @@ load_dotenv(dotenv_path=env_path)
 
 class Config:
     GEMINI_API_KEY: str = os.getenv("GEMINI_API_KEY", "")
-    TARGET_MODEL_NAME: str = os.getenv("TARGET_MODEL_NAME", "gemini-2.0-flash")
-    META_MODEL_NAME: str = os.getenv("META_MODEL_NAME", "gemini-2.0-flash")
+    TARGET_MODEL_NAME: str = os.getenv("TARGET_MODEL_NAME", "llama3.2")
+    META_MODEL_NAME: str = os.getenv("META_MODEL_NAME", "llama3.2")
+    LLM_PROVIDER: str = os.getenv("LLM_PROVIDER", "ollama")
+    OLLAMA_HOST: str = os.getenv("OLLAMA_HOST", "http://127.0.0.1:11434")
     
     DEFAULT_GENERATIONS: int = 3
     DEFAULT_TEMPERATURE: float = 0.2
