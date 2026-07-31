@@ -370,20 +370,22 @@
       <div class="control-panel">
         <div class="panel-header"><span>PROMPTFORGE REASONING CONTROL CENTER</span></div>
         
-        <div class="control-grid" style="margin-bottom: 1.5rem;">
-          <div class="form-group" style="flex: 1; min-width: 250px;">
-            <label for="benchmark-select">Select Security Benchmark Suite</label>
-            <select id="benchmark-select" onchange="onBenchmarkChange()"></select>
-          </div>
-          
-          <div class="form-group" style="max-width: 160px;">
-            <label for="generations-input">Generations</label>
-            <input type="number" id="generations-input" min="1" max="1000" value="3">
+        <div class="control-grid-pro" style="margin-bottom: 1.5rem;">
+          <div style="display:grid; grid-template-columns: 2fr 1fr; gap: 1.5rem; width: 100%; margin-bottom: 1rem;">
+            <div class="form-group">
+              <label for="benchmark-select" style="font-size:0.88rem; font-weight:700;">Select Security Benchmark Suite</label>
+              <select id="benchmark-select" style="height:52px; font-size:1rem; font-weight:600;" onchange="onBenchmarkChange()"></select>
+            </div>
+            
+            <div class="form-group">
+              <label for="generations-input" style="font-size:0.88rem; font-weight:700;">Generations</label>
+              <input type="number" id="generations-input" min="1" max="1000" value="3" style="height:52px; font-size:1rem; font-weight:600;">
+            </div>
           </div>
 
-          <div class="form-group" style="flex: 2; min-width: 320px;">
-            <label for="custom-prompt-input">Custom Starting Prompt (Optional)</label>
-            <input type="text" id="custom-prompt-input" placeholder="Type your own seed prompt here to optimize...">
+          <div class="form-group" style="width: 100%;">
+            <label for="custom-prompt-input" style="font-size:0.88rem; font-weight:700;">Custom Initial System Prompt (Optional)</label>
+            <textarea id="custom-prompt-input" class="code-input" style="min-height: 120px; font-family:'JetBrains Mono', monospace; font-size: 0.92rem; line-height: 1.5; padding: 14px 18px; border-radius: 8px; border: 1px solid var(--border-hairline); width: 100%;" placeholder="Type or paste your custom initial system prompt here to optimize..."></textarea>
           </div>
         </div>
 
@@ -391,7 +393,7 @@
           <div style="font-size:0.85rem; color:var(--text-muted);">
             <span>Shortcut: Press <strong>Cmd + Enter</strong> (or <strong>Ctrl + Enter</strong>) to run.</span>
           </div>
-          <button class="btn-primary" onclick="runOptimization()">
+          <button class="btn-primary" style="padding:16px 36px; font-size:1rem;" onclick="runOptimization()">
             <span>Run Autonomous Optimization ➔</span>
           </button>
         </div>
