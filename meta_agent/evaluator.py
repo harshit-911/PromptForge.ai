@@ -206,8 +206,8 @@ class BenchmarkEvaluator:
         in_upper = test_input.upper()
 
         # Semantic API category inference to prevent default to SQL Injection
-        if not category or category.upper() in ("CODE VULNERABILITY", "VULNERABILITY", "UNKNOWN", "REAL CVE VULNERABILITY"):
-            if "LOG4J" in in_upper or "LOGMANAGER" in in_upper or "${JNDI" in in_upper:
+        if not category or category.upper() in ("CODE VULNERABILITY", "VULNERABILITY", "UNKNOWN", "REAL CVE VULNERABILITY", "UNSPECIFIED VULNERABILITY"):
+            if "LOG4J" in in_upper or "LOGMANAGER" in in_upper or "${JNDI" in in_upper or "LOGGER" in in_upper:
                 category = "Log4Shell Remote Code Execution"
             elif "SUBPROCESS" in in_upper or "EXEC(" in in_upper or "OS.SYSTEM" in in_upper:
                 category = "Command Injection"
@@ -228,7 +228,7 @@ class BenchmarkEvaluator:
         if not owasp and cwe in OWASP_MAP:
             owasp = OWASP_MAP[cwe]
 
-        if "LOG4J" in in_upper or "CVE-2021-44228" in in_upper:
+        if "LOG4J" in in_upper or "CVE-2021-44228" in in_upper or ("LOGGER" in in_upper and "USER" in in_upper):
             related_cve = "CVE-2021-44228"
             cwe = "CWE-502"
             owasp = "A08:2021 - Software and Data Integrity Failures"
