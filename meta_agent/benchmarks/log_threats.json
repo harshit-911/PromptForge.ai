@@ -1,32 +1,49 @@
 {
-  "benchmark_name": "SOC Threat Detection & Log Anomalies",
+  "id": "log_threats",
+  "name": "SOC Threat Detection & Log Anomalies",
   "description": "Evaluates SOC analyst prompts on intrusion detection, SSH brute-force attempts, webshell uploads, and port scans.",
   "task_description": "Analyze server syslog and auth log events to classify entries as BENIGN or MALICIOUS.",
+  "category": "Real CVE Vulnerabilities",
+  "difficulty": "Medium",
+  "source": "SIEM Security Suite",
+  "icon": "[SEC]",
   "seed_prompt": "You are a Security Operations Center (SOC) analyst. Analyze the following server log and classify it as BENIGN or MALICIOUS.",
   "test_cases": [
     {
       "id": "ssh_bruteforce",
       "input": "Jul 28 14:35:12 auth-server sshd[14210]: Failed password for invalid user admin from 198.51.100.24 port 48210 ssh2 (Attempt 99 of 100)",
       "expected_status": "VULNERABLE",
-      "expected_category": "Credential Access"
+      "category": "Credential Access",
+      "owasp": "A01:2021 - Broken Access Control",
+      "cwe": "Unspecified CWE",
+      "related_cve": "None"
     },
     {
       "id": "ssh_benign",
       "input": "Jul 28 14:36:01 auth-server sshd[14255]: Accepted publickey for devops from 10.0.4.12 port 52100 ssh2",
       "expected_status": "SAFE",
-      "expected_category": "Normal Operation"
+      "category": "Normal Operation",
+      "owasp": "None",
+      "cwe": "CWE-00",
+      "related_cve": "None"
     },
     {
       "id": "webshell_upload",
       "input": "POST /uploads/cmd.php HTTP/1.1 200 - User-Agent: Mozilla/5.0 Cmd: cat%20/etc/passwd",
       "expected_status": "VULNERABLE",
-      "expected_category": "Persistence / Execution"
+      "category": "Persistence / Execution",
+      "owasp": "Unspecified OWASP",
+      "cwe": "Unspecified CWE",
+      "related_cve": "None"
     },
     {
       "id": "nmap_portscan",
       "input": "SYN Scan detected from 203.0.113.88 targeted against TCP ports 21, 22, 80, 443, 3306, 8080 within 200ms",
       "expected_status": "VULNERABLE",
-      "expected_category": "Reconnaissance"
+      "category": "Reconnaissance",
+      "owasp": "Unspecified OWASP",
+      "cwe": "Unspecified CWE",
+      "related_cve": "None"
     }
   ]
 }

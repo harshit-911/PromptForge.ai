@@ -3,32 +3,47 @@
   "name": "Cloud IAM & Kubernetes Infrastructure Security",
   "description": "Evaluates system prompts on identifying misconfigured Cloud IAM roles, exposed Kubernetes Kubelet endpoints, and unencrypted S3 bucket policies.",
   "task_description": "Analyze Cloud/Kubernetes infrastructure configuration files and classify as SAFE or VULNERABLE.",
+  "category": "Cloud & Infrastructure",
+  "difficulty": "Hard",
+  "source": "Cloud Audit Suite",
+  "icon": "[SEC]",
   "seed_prompt": "You are a Cloud Security Infrastructure Auditor. Review the YAML or JSON configuration snippet below and state whether it is SAFE or VULNERABLE.",
   "test_cases": [
     {
       "id": "K8S-001",
       "input": "apiVersion: v1\nkind: Pod\nmetadata:\n  name: admin-pod\nspec:\n  containers:\n  - name: app\n    image: nginx:latest\n    securityContext:\n      privileged: true\n      hostNetwork: true\n      hostPID: true",
       "expected_status": "VULNERABLE",
-      "expected_category": "Kubernetes Privilege Escalation / Privileged Container"
+      "category": "Kubernetes Privilege Escalation / Privileged Container",
+      "owasp": "Unspecified OWASP",
+      "cwe": "Unspecified CWE",
+      "related_cve": "None"
     },
     {
       "id": "AWS-IAM-001",
       "input": "{\n  \"Version\": \"2012-10-17\",\n  \"Statement\": [\n    {\n      \"Effect\": \"Allow\",\n      \"Action\": \"*\",\n      \"Resource\": \"*\"\n    }\n  ]\n}",
       "expected_status": "VULNERABLE",
-      "expected_category": "Wildcard IAM Policy Over-Privilege"
+      "category": "Wildcard IAM Policy Over-Privilege",
+      "owasp": "Unspecified OWASP",
+      "cwe": "Unspecified CWE",
+      "related_cve": "None"
     },
     {
       "id": "S3-SEC-001",
       "input": "{\n  \"Version\": \"2012-10-17\",\n  \"Statement\": [\n    {\n      \"Sid\": \"PublicReadGetObject\",\n      \"Effect\": \"Allow\",\n      \"Principal\": \"*\",\n      \"Action\": \"s3:GetObject\",\n      \"Resource\": \"arn:aws:s3:::customer-db-backups/*\"\n    }\n  ]\n}",
       "expected_status": "VULNERABLE",
-      "expected_category": "Public Bucket Exposure"
+      "category": "Public Bucket Exposure",
+      "owasp": "Unspecified OWASP",
+      "cwe": "Unspecified CWE",
+      "related_cve": "None"
     },
     {
       "id": "K8S-SAFE-001",
       "input": "apiVersion: v1\nkind: Pod\nmetadata:\n  name: secure-app\nspec:\n  containers:\n  - name: app\n    image: nginx:1.25-alpine\n    securityContext:\n      allowPrivilegeEscalation: false\n      readOnlyRootFilesystem: true\n      runAsNonRoot: true\n      runAsUser: 10001",
       "expected_status": "SAFE",
-      "expected_category": "Hardened Container Pod Spec"
+      "category": "Hardened Container Pod Spec",
+      "owasp": "None",
+      "cwe": "CWE-00",
+      "related_cve": "None"
     }
-  ],
-  "benchmark_name": "kubernetes_iam_cloud"
+  ]
 }

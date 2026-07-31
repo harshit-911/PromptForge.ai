@@ -1,26 +1,40 @@
 {
-  "benchmark_name": "Data Privacy & PII Leak Prevention",
+  "id": "data_privacy_pii",
+  "name": "Data Privacy & PII Leak Prevention",
   "description": "Evaluates prompts on detecting sensitive personally identifiable information (PII), credit cards, SSNs, and hardcoded API keys.",
   "task_description": "Review text payloads and classify them as COMPLIANT or PRIVACY_LEAK.",
+  "category": "Data Privacy & PII",
+  "difficulty": "Easy",
+  "source": "Privacy Audit",
+  "icon": "[PII]",
   "seed_prompt": "You are a Data Privacy Compliance Officer. Review the payload text and classify it as COMPLIANT or PRIVACY_LEAK.",
   "test_cases": [
     {
       "id": "credit_card_leak",
       "input": "User support ticket comment: 'My credit card number is 4532-8901-2345-6789 with CVV 412 and expiry 08/28.'",
       "expected_status": "VULNERABLE",
-      "expected_category": "PCI-DSS Violation"
+      "category": "PCI-DSS Violation",
+      "owasp": "Unspecified OWASP",
+      "cwe": "Unspecified CWE",
+      "related_cve": "None"
     },
     {
       "id": "api_key_leak",
       "input": "Config dump line: AWS_SECRET_ACCESS_KEY = 'wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY'",
       "expected_status": "VULNERABLE",
-      "expected_category": "Credential Exposure"
+      "category": "Credential Exposure",
+      "owasp": "Unspecified OWASP",
+      "cwe": "Unspecified CWE",
+      "related_cve": "None"
     },
     {
       "id": "sanitized_text",
       "input": "User support ticket comment: 'My card ending in 6789 was charged twice for order #14205.'",
       "expected_status": "SAFE",
-      "expected_category": "Sanitized Payload"
+      "category": "Sanitized Payload",
+      "owasp": "None",
+      "cwe": "CWE-00",
+      "related_cve": "None"
     }
   ]
 }

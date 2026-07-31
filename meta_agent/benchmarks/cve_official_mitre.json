@@ -1,81 +1,121 @@
 {
   "id": "cve_official_mitre",
-  "benchmark_name": "Official MITRE CVE Dataset (cvelistV5)",
+  "name": "Official MITRE CVE Dataset (cvelistV5)",
   "description": "Real-world Common Vulnerabilities and Exposures (CVE) parsed directly from the local cvelistV5-main repository.",
   "task_description": "Analyze official cve.org technical vulnerability records and classify as SAFE or VULNERABLE.",
+  "category": "Real CVE Vulnerabilities",
+  "difficulty": "Hard",
+  "source": "MITRE cve.org",
+  "icon": "[CVE]",
   "seed_prompt": "You are a Senior Vulnerability Security Auditor. Review the official cve.org record below and state whether it is SAFE or VULNERABLE.",
   "test_cases": [
     {
       "id": "CVE-2004-2758",
       "input": "Official MITRE cve.org Record (CVE-2004-2758):\nMultiple unspecified vulnerabilities in the H.323 protocol implementation for Sun SunForum 3.2 and 3D 1.0 allow remote attackers to cause a denial of service (segmentation fault and process crash), as demonstrated by the NISCC/OUSPG PROTOS test suite for the H.225 protocol.",
       "expected_status": "VULNERABLE",
-      "expected_category": "General Vulnerability Disclosure"
+      "category": "General Vulnerability Disclosure",
+      "owasp": "Unspecified OWASP",
+      "cwe": "Unspecified CWE",
+      "related_cve": "None"
     },
     {
       "id": "CVE-2004-2308",
       "input": "Official MITRE cve.org Record (CVE-2004-2308):\nCross-site scripting (XSS) vulnerability in cPanel 9.1.0 and possibly earlier allows remote attackers to inject arbitrary web script or HTML via the dir parameter in dohtaccess.html.",
       "expected_status": "VULNERABLE",
-      "expected_category": "Cross-Site Scripting (XSS)"
+      "category": "Cross-Site Scripting (XSS)",
+      "owasp": "A03:2021 - Injection",
+      "cwe": "CWE-79",
+      "related_cve": "None"
     },
     {
       "id": "CVE-2004-2021",
       "input": "Official MITRE cve.org Record (CVE-2004-2021):\nDirectory traversal vulnerability in file_manager.php in osCommerce 2.2 allows remote attackers to view arbitrary files via a .. (dot dot) in the filename argument.",
       "expected_status": "VULNERABLE",
-      "expected_category": "Directory Traversal"
+      "category": "Directory Traversal",
+      "owasp": "Unspecified OWASP",
+      "cwe": "Unspecified CWE",
+      "related_cve": "None"
     },
     {
       "id": "CVE-2004-2471",
       "input": "Official MITRE cve.org Record (CVE-2004-2471):\nSQL injection vulnerability in the sloth TCL script in QuoteEngine before 1.2.0 allow remote attackers to execute arbitrary SQL commands via unknown vectors.",
       "expected_status": "VULNERABLE",
-      "expected_category": "SQL Injection (SQLi)"
+      "category": "SQL Injection (SQLi)",
+      "owasp": "A03:2021 - Injection",
+      "cwe": "CWE-89",
+      "related_cve": "None"
     },
     {
       "id": "CVE-2004-2164",
       "input": "Official MITRE cve.org Record (CVE-2004-2164):\nshoprestoreorder.asp in VP-ASP 5.0 does not close the database connection when a user restores a previous order, which allows remote attackers to cause a denial of service (connection consumption).",
       "expected_status": "VULNERABLE",
-      "expected_category": "General Vulnerability Disclosure"
+      "category": "General Vulnerability Disclosure",
+      "owasp": "Unspecified OWASP",
+      "cwe": "Unspecified CWE",
+      "related_cve": "None"
     },
     {
       "id": "CVE-2004-2534",
       "input": "Official MITRE cve.org Record (CVE-2004-2534):\nFastream NETFile Server 7.1.2 does not properly handle keep-alive connection timeouts and does not close the connection after a HEAD request, which allows remote attackers to perform a denial of service (connection consumption) by sending a large number HTTP HEAD requests.",
       "expected_status": "VULNERABLE",
-      "expected_category": "General Vulnerability Disclosure"
+      "category": "General Vulnerability Disclosure",
+      "owasp": "Unspecified OWASP",
+      "cwe": "Unspecified CWE",
+      "related_cve": "None"
     },
     {
       "id": "CVE-2004-2426",
       "input": "Official MITRE cve.org Record (CVE-2004-2426):\nDirectory traversal vulnerability in Axis Network Camera 2.40 and earlier, and Video Server 3.12 and earlier, allows remote attackers to bypass authentication via a ..  (dot dot) in an HTTP POST request to ServerManager.srv, then use these privileges to conduct other activities, such as modifying files using editcgi.cgi.",
       "expected_status": "VULNERABLE",
-      "expected_category": "Directory Traversal"
+      "category": "Directory Traversal",
+      "owasp": "Unspecified OWASP",
+      "cwe": "Unspecified CWE",
+      "related_cve": "None"
     },
     {
       "id": "CVE-2004-2076",
       "input": "Official MITRE cve.org Record (CVE-2004-2076):\nCross-site scripting (XSS) vulnerability in search.php for Jelsoft vBulletin 3.0.0 RC4 allows remote attackers to inject arbitrary web script or HTML via the query parameter.",
       "expected_status": "VULNERABLE",
-      "expected_category": "Cross-Site Scripting (XSS)"
+      "category": "Cross-Site Scripting (XSS)",
+      "owasp": "A03:2021 - Injection",
+      "cwe": "CWE-79",
+      "related_cve": "None"
     },
     {
       "id": "CVE-2004-2563",
       "input": "Official MITRE cve.org Record (CVE-2004-2563):\nSerena TeamTrack 6.1.1 allows remote attackers to obtain sensitive information such as user names, versions, and database information, and conduct cross-site scripting (XSS) attacks, via a direct request to tmtrack.dll with modified LoginPage and Template parameters.",
       "expected_status": "VULNERABLE",
-      "expected_category": "Cross-Site Scripting (XSS)"
+      "category": "Cross-Site Scripting (XSS)",
+      "owasp": "A03:2021 - Injection",
+      "cwe": "CWE-79",
+      "related_cve": "None"
     },
     {
       "id": "CVE-2004-2099",
       "input": "Official MITRE cve.org Record (CVE-2004-2099):\nBuffer overflow in Need for Speed Hot Pursuit 2.0 client (NFSHP2), version 242 and earlier, allows remote attackers (servers) to execute arbitrary code via long (1) gamename, (2) gamever, (3) hostname, (4) gametype, (5) mapname or (6) gamemode commands.",
       "expected_status": "VULNERABLE",
-      "expected_category": "Buffer Overflow / Memory Corruption"
+      "category": "Buffer Overflow / Memory Corruption",
+      "owasp": "Unspecified OWASP",
+      "cwe": "Unspecified CWE",
+      "related_cve": "None"
     },
     {
       "id": "CVE-2004-2133",
       "input": "Official MITRE cve.org Record (CVE-2004-2133):\nCertain third-party packages for CVSup 16.1h, such as SuSE Linux, contain untrusted paths in the ELF RPATH fields of certain executables, which could allow local users to execute arbitrary code by causing cvsup to link against malicious libraries that are created in world-writable directories such as /usr/src/packages.",
       "expected_status": "VULNERABLE",
-      "expected_category": "General Vulnerability Disclosure"
+      "category": "General Vulnerability Disclosure",
+      "owasp": "Unspecified OWASP",
+      "cwe": "Unspecified CWE",
+      "related_cve": "None"
     },
     {
       "id": "CVE-2004-2719",
       "input": "Official MITRE cve.org Record (CVE-2004-2719):\nBuffer overflow in the UrlToLocal function in PunyLib.dll of Foxmail 5.0.300 allows remote attackers to execute arbitrary code via a mail message with a long From field, a different issue than CVE-2005-0339.",
       "expected_status": "VULNERABLE",
-      "expected_category": "Buffer Overflow / Memory Corruption"
+      "category": "Buffer Overflow / Memory Corruption",
+      "owasp": "Unspecified OWASP",
+      "cwe": "Unspecified CWE",
+      "related_cve": "None"
     }
   ]
 }

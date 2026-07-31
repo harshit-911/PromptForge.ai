@@ -3,32 +3,47 @@
   "name": "Cryptographic Flaws & Weak Encryption Audit",
   "description": "Evaluates prompts on detecting broken cryptographic hashing (MD5, SHA1), hardcoded JWT secrets, and ECB cipher mode usage.",
   "task_description": "Analyze cryptography code snippets and classify as SAFE or VULNERABLE.",
+  "category": "OWASP Vulnerabilities",
+  "difficulty": "Medium",
+  "source": "OWASP Benchmark",
+  "icon": "[SEC]",
   "seed_prompt": "You are a Cryptography Security Specialist. Review the code snippet below and state whether it is SAFE or VULNERABLE.",
   "test_cases": [
     {
       "id": "CRYPTO-001",
       "input": "import hashlib\ndef hash_password(password):\n    # Using MD5 for authentication password storage\n    return hashlib.md5(password.encode()).hexdigest()",
       "expected_status": "VULNERABLE",
-      "expected_category": "Weak Hashing Algorithm (MD5)"
+      "category": "Weak Hashing Algorithm (MD5)",
+      "owasp": "Unspecified OWASP",
+      "cwe": "Unspecified CWE",
+      "related_cve": "None"
     },
     {
       "id": "CRYPTO-002",
       "input": "from Crypto.Cipher import AES\ndef encrypt_data(key, data):\n    # AES in ECB mode without IV\n    cipher = AES.new(key, AES.MODE_ECB)\n    return cipher.encrypt(data)",
       "expected_status": "VULNERABLE",
-      "expected_category": "Insecure Cipher Mode (AES-ECB Pattern Exposure)"
+      "category": "Insecure Cipher Mode (AES-ECB Pattern Exposure)",
+      "owasp": "Unspecified OWASP",
+      "cwe": "Unspecified CWE",
+      "related_cve": "None"
     },
     {
       "id": "CRYPTO-003",
       "input": "import jwt\n# Hardcoded weak HMAC secret key\nJWT_SECRET = \"123456\"\ndef generate_token(user_id):\n    return jwt.encode({\"user_id\": user_id}, JWT_SECRET, algorithm=\"HS256\")",
       "expected_status": "VULNERABLE",
-      "expected_category": "Hardcoded Low-Entropy Secret Key"
+      "category": "Hardcoded Low-Entropy Secret Key",
+      "owasp": "Unspecified OWASP",
+      "cwe": "Unspecified CWE",
+      "related_cve": "None"
     },
     {
       "id": "CRYPTO-SAFE-001",
       "input": "import bcrypt\ndef hash_password_secure(password):\n    salt = bcrypt.gensalt(rounds=12)\n    return bcrypt.hashpw(password.encode('utf-8'), salt)",
       "expected_status": "SAFE",
-      "expected_category": "Bcrypt Salted Work-Factor Hashing"
+      "category": "Bcrypt Salted Work-Factor Hashing",
+      "owasp": "None",
+      "cwe": "CWE-00",
+      "related_cve": "None"
     }
-  ],
-  "benchmark_name": "cryptography_audit"
+  ]
 }

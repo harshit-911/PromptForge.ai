@@ -3,26 +3,38 @@
   "name": "Supply Chain & Package Dependency Security",
   "description": "Evaluates prompts on detecting malicious npm/PyPI packages, unpinned dependencies, and typosquatting attacks.",
   "task_description": "Analyze package manifest files and dependency locks to classify as SAFE or VULNERABLE.",
+  "category": "Supply Chain Security",
+  "difficulty": "Medium",
+  "source": "Software Supply Chain",
+  "icon": "[SEC]",
   "seed_prompt": "You are a Software Supply Chain Auditor. Review the dependency configuration file below and state whether it is SAFE or VULNERABLE.",
   "test_cases": [
     {
       "id": "SUPPLY-001",
       "input": "// package.json snippet\n{\n  \"dependencies\": {\n    \"express\": \"*\",\n    \"flatmap-stream\": \"0.1.1\",\n    \"event-stream\": \"3.3.6\"\n  }\n}",
       "expected_status": "VULNERABLE",
-      "expected_category": "Compromised Malicious Dependency / Unpinned Version"
+      "category": "Compromised Malicious Dependency / Unpinned Version",
+      "owasp": "Unspecified OWASP",
+      "cwe": "Unspecified CWE",
+      "related_cve": "None"
     },
     {
       "id": "SUPPLY-002",
       "input": "# requirements.txt snippet\nreqeusts==2.31.0\nreqests-oauthlib==1.3.1\ncolorama==0.4.6",
       "expected_status": "VULNERABLE",
-      "expected_category": "Typosquatting Package Substitution (reqeusts vs requests)"
+      "category": "Typosquatting Package Substitution (reqeusts vs requests)",
+      "owasp": "Unspecified OWASP",
+      "cwe": "Unspecified CWE",
+      "related_cve": "None"
     },
     {
       "id": "SUPPLY-SAFE-001",
       "input": "// package.json snippet\n{\n  \"dependencies\": {\n    \"express\": \"4.19.2\",\n    \"helmet\": \"7.1.0\"\n  }\n}",
       "expected_status": "SAFE",
-      "expected_category": "Pinned Verified Dependencies"
+      "category": "Pinned Verified Dependencies",
+      "owasp": "None",
+      "cwe": "CWE-00",
+      "related_cve": "None"
     }
-  ],
-  "benchmark_name": "supply_chain_security"
+  ]
 }

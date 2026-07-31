@@ -3,26 +3,38 @@
   "name": "Financial Fraud & AML Transaction Audit",
   "description": "Evaluates prompts on detecting rapid-fire wire transfer velocity spikes, structured structuring (smurfing), and Account Takeover (ATO) pattern anomalies.",
   "task_description": "Analyze financial transaction logs and classify as BENIGN or MALICIOUS.",
+  "category": "Financial Security",
+  "difficulty": "Hard",
+  "source": "FinTech Compliance",
+  "icon": "[SEC]",
   "seed_prompt": "You are a Financial Anti-Money Laundering (AML) Compliance Specialist. Review the transaction log below and state whether it is BENIGN or MALICIOUS.",
   "test_cases": [
     {
       "id": "AML-001",
       "input": "Transaction Batch Log (Account #94821):\n14:00:01 - Transfer $9,950 to Offshore Account #401 (San Jose, CR)\n14:00:45 - Transfer $9,950 to Offshore Account #402 (San Jose, CR)\n14:01:30 - Transfer $9,950 to Offshore Account #403 (San Jose, CR)\n(Total: $29,850 structured right below $10k CTR reporting threshold)",
       "expected_status": "VULNERABLE",
-      "expected_category": "Structuring (Smurfing) / CTR Threshold Avoidance"
+      "category": "Structuring (Smurfing) / CTR Threshold Avoidance",
+      "owasp": "Unspecified OWASP",
+      "cwe": "Unspecified CWE",
+      "related_cve": "None"
     },
     {
       "id": "ATO-001",
       "input": "User Session Event Log (User: sarah_corporate):\n14:10:00 - Password Reset requested from IP 198.51.100.4 (Nigeria)\n14:10:30 - Password Reset completed\n14:11:00 - Wire Transfer $150,000 initiated to newly added beneficiary",
       "expected_status": "VULNERABLE",
-      "expected_category": "Account Takeover (ATO) & Fraudulent Wire Transfer"
+      "category": "Account Takeover (ATO) & Fraudulent Wire Transfer",
+      "owasp": "Unspecified OWASP",
+      "cwe": "Unspecified CWE",
+      "related_cve": "None"
     },
     {
       "id": "FIN-SAFE-001",
       "input": "Transaction Log (Account #10042):\n09:30:15 - Point of Sale purchase $42.50 at Whole Foods Market (Chicago, IL)\n09:30:16 - 2FA authentication verified via registered mobile device",
       "expected_status": "SAFE",
-      "expected_category": "Standard Authenticated Consumer Purchase"
+      "category": "Standard Authenticated Consumer Purchase",
+      "owasp": "None",
+      "cwe": "CWE-00",
+      "related_cve": "None"
     }
-  ],
-  "benchmark_name": "financial_fraud_aml"
+  ]
 }
