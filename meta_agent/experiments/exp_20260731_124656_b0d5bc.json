@@ -1,0 +1,620 @@
+{
+  "experiment_id": "exp_20260731_124656_b0d5bc",
+  "timestamp": "2026-07-31T12:46:56.736507",
+  "benchmark_name": "vulnerability_audit",
+  "seed_prompt": "You are a code security auditor.",
+  "optimized_prompt": "You are a Senior Vulnerability Security Auditor. Review the official CVE technical record or code snippet below and state whether it is SAFE or VULNERABLE.",
+  "iterations": 2,
+  "model": "llama3.2",
+  "execution_time_seconds": 169.49,
+  "total_token_usage": 7349,
+  "success_rate": 50.0,
+  "baseline_metrics": {
+    "accuracy": 83.33,
+    "precision": 100.0,
+    "recall": 80.0,
+    "f1": 88.89,
+    "passed": 5,
+    "failed": 1
+  },
+  "final_metrics": {
+    "accuracy": 50.0,
+    "precision": 75.0,
+    "recall": 60.0,
+    "f1": 66.67,
+    "passed": 3,
+    "failed": 3
+  },
+  "prompt_versions": [
+    {
+      "version": "v1.0",
+      "timestamp": "2026-07-31T12:46:56.736507",
+      "prompt_text": "You are a code security auditor.",
+      "what_changed": "Baseline Seed Prompt",
+      "reason_for_change": "**\nThe proposed rule \"RULE_001\" addresses the root cause of incorrect formatting by adding a multi-finding schema to the output. This ensures that the generated prompts adhere to a standardized format, reducing the likelihood of misinterpretation and improving overall accuracy.\n\n**",
+      "metrics": {
+        "accuracy": 83.33,
+        "precision": 100.0,
+        "recall": 80.0,
+        "f1": 88.89,
+        "passed": 5,
+        "failed": 1
+      }
+    },
+    {
+      "version": "v1.1",
+      "timestamp": "2026-07-31T12:46:56.736507",
+      "prompt_text": "**\n\nYou are a code security auditor.\nAnalyze source code snippets and classify them as SAFE or VULNERABLE with high precision.\nUse the following schema for your output:\n+ STATUS\n+ TOTAL FINDINGS\n+ For each Finding #N, include:\n  - CATEGORY\n  - OWASP\n  - CWE\n  - RELATED CVE\n  - SEVERITY\n  - CONFIDENCE\n  - AFFECTED CODE\n  - REASONING\n  - IMPACT\n  - RECOMMENDATION\n  - SECURE CODE\n\n**ACCURACY TARGET:** 95.00%\n\nBy incorporating this refined prompt, we aim to improve accuracy and reduce the likelihood of 'Incorrect Formatting' failure patterns.",
+      "what_changed": "Mutated 3 security rule boundaries",
+      "reason_for_change": "Synthesized structured security guidelines to resolve misclassifications.",
+      "metrics": {
+        "accuracy": 50.0,
+        "precision": 75.0,
+        "recall": 60.0,
+        "f1": 66.67,
+        "passed": 3,
+        "failed": 3
+      }
+    }
+  ],
+  "history": [
+    {
+      "version": "v1.0",
+      "generation": 1,
+      "prompt": "You are a code security auditor.",
+      "accuracy": 83.33,
+      "precision": 100.0,
+      "recall": 80.0,
+      "f1": 88.89,
+      "passed": 5,
+      "total": 6,
+      "failures_count": 1,
+      "failures": [
+        {
+          "id": "ssrf_001",
+          "input": "import requests\ndef fetch_avatar(user_url):\n    res = requests.get(user_url)\n    return res.content",
+          "expected_status": "VULNERABLE",
+          "expected_category": "A10:2021-SERVER-SIDE REQUEST FORGERY",
+          "predicted_status": "SAFE",
+          "predicted_category": "A10:2021-SERVER-SIDE REQUEST FORGERY",
+          "predicted_cwe": "CWE-918",
+          "predicted_owasp": "A10:2021 - Server-Side Request Forgery (SSRF)",
+          "predicted_cve": "None",
+          "quality_score": 75.0,
+          "raw_response": "**Security Vulnerability Analysis**\n\nThe provided code is designed to fetch an avatar image from a given user URL using the `requests` library. However, there are several potential security vulnerabilities that need to be addressed:\n\n### 1. **Insecure Direct Object Reference (IDOR)**\n\nThe `user_url` parameter is not validated or sanitized, which could lead to an IDOR vulnerability. An attacker could manipulate the `user_url` to access unauthorized avatar images.\n\n**Recommendation:** Validate and sanitize the `user_url` parameter using a whitelist of allowed URLs.\n\n### 2. **Information Disclosure**\n\nThe code returns the entire response content (`res.content`) without any filtering or sanitization. This could potentially disclose sensitive information about the server, such as error messages or internal data.\n\n**Recommendation:** Only return the avatar image data (e.g., `res.content.decode('utf-8')` if it's a binary image) and filter out any unnecessary data.\n\n### 3. **Error Handling**\n\nThe code does not handle errors properly. If an exception occurs during the request, it will be propagated up the call stack without any indication of what went wrong.\n\n**Recommendation:** Implement proper error handling using try-except blocks to catch specific exceptions and return a meaningful error message or response.\n\n### 4. **Content-Type Header**\n\nThe code does not check the `Content-Type` header of the response, which could indicate that the server is serving sensitive data (e.g., JSON) instead of an image.\n\n**Recommendation:** Check the `Content-Type` header and only process the response as an image if it's a valid image type (e.g., `image/jpeg`, `image/png`).\n\nHere's an updated version of the code that addresses these security vulnerabilities:\n```python\nimport requests\n\ndef fetch_avatar(user_url):\n    try:\n        res = requests.get(user_url)\n        res.raise_for_status()  # Raise an exception for HTTP errors\n        if not res.headers['Content-Type'].startswith('image/'):\n            raise ValueError(\"Invalid image type\")\n        return res.content.decode('utf-8') if 'binary' in str(res) else res.content\n    except requests.exceptions.RequestException as e:\n        return f\"Error fetching avatar: {e}\"\n```\nNote that this is just a basic example, and you should consider additional security measures depending on your specific use case."
+        }
+      ],
+      "detailed_results": [
+        {
+          "id": "sqli_001",
+          "input": "def get_user(username):\n    query = f\"SELECT * FROM users WHERE username = '{username}'\"\n    cursor.execute(query)\n    return cursor.fetchall()",
+          "expected": "VULNERABLE",
+          "predicted": "MALICIOUS",
+          "total_findings": 1,
+          "findings": [
+            {
+              "category": "SQL Injection",
+              "owasp": "A03:2021 - Injection",
+              "cwe": "CWE-89",
+              "related_cve": "None",
+              "severity": "HIGH",
+              "confidence": "HIGH",
+              "affected_code": "",
+              "reasoning": "",
+              "impact": "",
+              "recommendation": "",
+              "secure_code": ""
+            }
+          ],
+          "correct": true,
+          "quality_score": 75.0,
+          "raw_response": "**Security Vulnerability Analysis**\n\nThe provided code is a simple SQL query to retrieve user data based on the `username` parameter. However, it has several security vulnerabilities that can be exploited by an attacker.\n\n### 1. **SQL Injection**\n\nThe most significant vulnerability in this code is the use of string formatting (`f-string`) to construct the SQL query. This allows an attacker to inject malicious SQL code by providing a specially crafted `username` value.\n\n**Example Attack:**\n```python\nusername = \"Robert'); DROP TABLE users; --\"\n```\nThis would result in the following SQL query:\n```sql\nSELECT * FROM users WHERE username = 'Robert'); DROP TABLE users; --'\n```\nWhich would execute the malicious SQL code, dropping the `users` table.\n\n### 2. **Lack of Input Validation**\n\nThe code does not validate the input `username`. This means that an attacker could provide a very long or specially crafted string as input, potentially leading to a denial-of-service (DoS) attack or other issues.\n\n**Example Attack:**\n```python\nusername = \"a\" * 1000  # Very long string\n```\nThis would result in the database attempting to execute a query with an excessively large `username` value.\n\n### 3. **No Error Handling**\n\nThe code does not handle errors that may occur during the execution of the SQL query. This means that if an error occurs, it will be silently ignored, potentially leading to unexpected behavior or security issues.\n\n**Example Attack:**\n```python\nusername = \"Robert'); DROP TABLE users; --\"\ncursor.execute(query)\n# Assume an error occurs due to the malicious input\n```\nIn this case, the error would not be handled properly, and the database would continue to execute the query with the malicious input.\n\n### Recommendations\n\nTo address these security vulnerabilities, consider the following recommendations:\n\n1. **Use parameterized queries**: Instead of using string formatting, use parameterized queries to separate the SQL code from the user input.\n```python\nquery = \"SELECT * FROM users WHERE username = %s\"\ncursor.execute(query, (username,))\n```\n2. **Validate and sanitize input**: Validate the `username` input to ensure it meets certain criteria (e.g., length, format). Sanitize the input to prevent any malicious characters from being injected into the SQL query.\n```python\nimport re\n\ndef validate_username(username):\n    if not re.match(r\"[a-zA-Z0-9_]+\", username):\n        raise ValueError(\"Invalid username\")\n\nusername = \"Robert\"\nvalidate_username(username)\n```\n3. **Implement error handling**: Handle errors that may occur during the execution of the SQL query to prevent unexpected behavior or security issues.\n```python\ntry:\n    cursor.execute(query)\nexcept Exception as e:\n    # Log and handle the error properly\n    logging.error(f\"Error executing query: {e}\")\n```\nBy addressing these security vulnerabilities, you can significantly improve the security and reliability of your database queries."
+        },
+        {
+          "id": "sqli_002",
+          "input": "def get_user_safe(username):\n    query = \"SELECT * FROM users WHERE username = %s\"\n    cursor.execute(query, (username,))\n    return cursor.fetchall()",
+          "expected": "SAFE",
+          "predicted": "SAFE",
+          "total_findings": 1,
+          "findings": [
+            {
+              "category": "SQL Injection",
+              "owasp": "A03:2021 - Injection",
+              "cwe": "CWE-89",
+              "related_cve": "None",
+              "severity": "HIGH",
+              "confidence": "HIGH",
+              "affected_code": "",
+              "reasoning": "",
+              "impact": "",
+              "recommendation": "",
+              "secure_code": ""
+            }
+          ],
+          "correct": true,
+          "quality_score": 90.0,
+          "raw_response": "**Security Vulnerability Analysis**\n\nThe provided code is a simple SQL query to retrieve user data based on the `username` parameter. However, there are several security vulnerabilities present in this code:\n\n### 1. **SQL Injection**\n\nThe code uses string formatting (`%s`) to insert the `username` parameter into the SQL query. This makes it vulnerable to SQL injection attacks.\n\n**Example Attack:**\n```sql\n' OR '1'='1\n```\nThis would result in a successful query, even if the username is not found:\n```sql\nSELECT * FROM users WHERE username = '' OR '1'='1'\n```\n### 2. **Lack of Input Validation**\n\nThe code does not validate the input `username` parameter. This could lead to issues such as:\n\n*   **SQL Injection**: If the input is not properly sanitized, an attacker could inject malicious SQL code.\n*   **Data Corruption**: If the input is not validated, it may cause data corruption or unexpected behavior.\n\n### 3. **Lack of Error Handling**\n\nThe code does not handle errors that may occur during the execution of the query. This could lead to:\n\n*   **Crash**: The application may crash if an error occurs.\n*   **Data Loss**: If an error occurs, the data may be lost or corrupted.\n\n**Recommendations:**\n\n1.  **Use Parameterized Queries with Named Parameters**:\n    Instead of using string formatting (`%s`), use parameterized queries with named parameters to prevent SQL injection attacks.\n    ```python\nquery = \"SELECT * FROM users WHERE username = :username\"\ncursor.execute(query, {\"username\": username})\n```\n2.  **Validate Input Parameters**:\n    Validate the input `username` parameter to ensure it meets the expected format and length.\n    ```python\nif not isinstance(username, str) or len(username.strip()) == 0:\n    raise ValueError(\"Invalid username\")\n```\n3.  **Implement Error Handling**:\n    Handle errors that may occur during query execution to prevent crashes and data loss.\n    ```python\ntry:\n    cursor.execute(query, (username,))\nexcept Exception as e:\n    logging.error(f\"Error executing query: {e}\")\n    # Handle error or raise a custom exception\n```\n### Updated Code:\n\n```python\ndef get_user_safe(username):\n    if not isinstance(username, str) or len(username.strip()) == 0:\n        raise ValueError(\"Invalid username\")\n\n    query = \"SELECT * FROM users WHERE username = :username\"\n    try:\n        cursor.execute(query, {\"username\": username})\n        return cursor.fetchall()\n    except Exception as e:\n        logging.error(f\"Error executing query: {e}\")\n        # Handle error or raise a custom exception\n```\nBy following these recommendations and updating the code accordingly, you can significantly improve the security of your application."
+        },
+        {
+          "id": "xss_001",
+          "input": "app.get('/search', (req, res) => {\n  const query = req.query.q;\n  res.send(`<h1>Results for: ${query}</h1>`);\n});",
+          "expected": "VULNERABLE",
+          "predicted": "VULNERABLE",
+          "total_findings": 1,
+          "findings": [
+            {
+              "category": "A03:2021-INJECTION",
+              "owasp": "Unspecified OWASP",
+              "cwe": "Unspecified CWE",
+              "related_cve": "None",
+              "severity": "HIGH",
+              "confidence": "HIGH",
+              "affected_code": "",
+              "reasoning": "",
+              "impact": "",
+              "recommendation": "** Use parameterized queries or prepared statements to prevent XSS vulnerabilities.",
+              "secure_code": ""
+            }
+          ],
+          "correct": true,
+          "quality_score": 60.0,
+          "raw_response": "**Security Vulnerability Analysis**\n\nThe provided code is a simple web server endpoint that accepts a search query as a GET parameter (`q`) and returns the query as an HTML heading. While this may seem harmless, there are several security vulnerabilities present in this code:\n\n### 1. **SQL Injection (Not applicable)**\n\nSince this is a GET request with no database interaction, SQL injection is not a concern.\n\n### 2. **Cross-Site Scripting (XSS)**\n\nThe query parameter `q` is directly inserted into the HTML response without any sanitization or escaping. This makes it vulnerable to XSS attacks. An attacker could inject malicious JavaScript code by crafting a carefully designed query string, potentially leading to:\n\n*   Malicious content injection\n*   Session hijacking\n*   Data theft\n\n**Recommendation:** Use parameterized queries or prepared statements to prevent XSS vulnerabilities.\n\n### 3. **Information Disclosure**\n\nThe response includes the original query value in plain text (`<h1>Results for: ${query}</h1>`). This could potentially reveal sensitive information about the user's search query, such as personal data or confidential keywords.\n\n**Recommendation:** Remove or sanitize the query parameter from the response to prevent information disclosure.\n\n### 4. **Input Validation**\n\nThe code does not validate the input query parameter (`q`). This makes it vulnerable to:\n\n*   **Empty input**: An attacker could exploit an empty query string to cause unexpected behavior.\n*   **Special characters**: Malicious characters in the query string could lead to security issues.\n\n**Recommendation:** Validate and sanitize the query parameter to ensure it conforms to expected formats and does not contain malicious characters.\n\n### Example of Improved Code\n\n```javascript\napp.get('/search', (req, res) => {\n  const query = req.query.q;\n\n  // Sanitize and validate the query parameter\n  if (!query || typeof query !== 'string') {\n    return res.status(400).send('Invalid query parameter');\n  }\n\n  // Remove special characters and whitespace\n  const sanitizedQuery = query.replace(/[^a-zA-Z0-9]/g, '');\n\n  // Use a template engine or HTML escaping to prevent XSS\n  res.send(`<h1>Results for: ${sanitizedQuery}</h1>`);\n});\n```\n\nIn this improved version:\n\n*   We validate the input query parameter and return an error response if it's invalid.\n*   We sanitize the query string by removing special characters and whitespace.\n*   We use a template engine or HTML escaping to prevent XSS vulnerabilities.\n\nBy addressing these security concerns, we can improve the overall security posture of this web server endpoint."
+        },
+        {
+          "id": "cmd_001",
+          "input": "import os\ndef ping_host(ip):\n    cmd = f\"ping -c 1 {ip}\"\n    return os.system(cmd)",
+          "expected": "VULNERABLE",
+          "predicted": "MALICIOUS",
+          "total_findings": 1,
+          "findings": [
+            {
+              "category": "Command Injection",
+              "owasp": "A03:2021 - Injection",
+              "cwe": "CWE-78",
+              "related_cve": "None",
+              "severity": "HIGH",
+              "confidence": "HIGH",
+              "affected_code": "",
+              "reasoning": "",
+              "impact": "",
+              "recommendation": "",
+              "secure_code": ""
+            }
+          ],
+          "correct": true,
+          "quality_score": 75.0,
+          "raw_response": "**Security Vulnerability Analysis**\n\nThe provided code is a simple implementation of a `ping_host` function that uses the `os.system` method to execute a shell command. This approach poses several security risks:\n\n### 1. Command Injection\n\nThe `cmd` variable is constructed by concatenating user-input data (`ip`) with a fixed string (`\"ping -c 1\"`). If an attacker provides a malicious input, they can inject arbitrary commands on the system.\n\n**Example Attack:**\n\n```bash\n$ python script.py 192.168.1.100; echo \"Hello World!\"\n```\n\nIn this example, the `ip` argument is used to execute the `echo` command, which is not intended by the original author.\n\n### 2. Lack of Input Validation\n\nThe code does not validate or sanitize the input data (`ip`). This allows an attacker to provide a malicious IP address that can lead to further attacks.\n\n**Example Attack:**\n\n```bash\n$ python script.py 192.168.1.100; rm -rf /\n```\n\nIn this example, the `ip` argument is used to execute the `rm -rf /` command, which can cause significant damage to the system.\n\n### 3. Potential for Denial of Service (DoS)\n\nThe `-c 1` flag in the `ping` command limits the number of packets sent. However, if an attacker provides a malicious input that causes the system to hang or crash, they may be able to launch a DoS attack against the system.\n\n**Recommendations:**\n\nTo address these security vulnerabilities, consider the following modifications:\n\n#### 1. Use parameterized queries\n\nInstead of concatenating user-input data with fixed strings, use parameterized queries to prevent command injection:\n```python\nimport os\ndef ping_host(ip):\n    cmd = [\"ping\", \"-c\", \"1\", ip]\n    return os.system(\" \".join(cmd))\n```\n\n#### 2. Validate and sanitize input data\n\nUse a library like `ipaddress` to validate the IP address format, and consider sanitizing the input data to prevent malicious inputs:\n```python\nimport ipaddress\ndef ping_host(ip):\n    try:\n        ipaddress.ip_address(ip)\n    except ValueError:\n        raise ValueError(\"Invalid IP address\")\n    cmd = [\"ping\", \"-c\", \"1\", ip]\n    return os.system(\" \".join(cmd))\n```\n\n#### 3. Implement rate limiting and error handling\n\nConsider implementing rate limiting to prevent DoS attacks, and add error handling to handle cases where the system crashes or hangs:\n```python\nimport time\ndef ping_host(ip):\n    max_attempts = 5\n    attempt_count = 0\n    while attempt_count < max_attempts:\n        try:\n            os.system(\" \".join([\"ping\", \"-c\", \"1\", ip]))\n            break\n        except Exception as e:\n            print(f\"Error: {e}\")\n            time.sleep(1)\n        attempt_count += 1\n    if attempt_count >= max_attempts:\n        raise Exception(\"Failed to ping host\")\n```\n\nBy addressing these security vulnerabilities, you can improve the overall security and reliability of your `ping_host` function."
+        },
+        {
+          "id": "path_001",
+          "input": "def read_user_file(filename):\n    with open('/var/www/uploads/' + filename, 'r') as f:\n        return f.read()",
+          "expected": "VULNERABLE",
+          "predicted": "MALICIOUS",
+          "total_findings": 1,
+          "findings": [
+            {
+              "category": "A01:2021-BROKEN ACCESS CONTROL",
+              "owasp": "A01:2021 - Broken Access Control",
+              "cwe": "CWE-285",
+              "related_cve": "None",
+              "severity": "HIGH",
+              "confidence": "HIGH",
+              "affected_code": "",
+              "reasoning": "",
+              "impact": "",
+              "recommendation": "** Use the `os.path.join()` function to construct the full path, which helps prevent path traversal attacks.",
+              "secure_code": ""
+            }
+          ],
+          "correct": true,
+          "quality_score": 75.0,
+          "raw_response": "**Security Vulnerability Analysis**\n\nThe provided code reads a file from a specified directory and returns its contents. However, there are several potential security vulnerabilities in this code:\n\n### 1. **Path Traversal Attack**\n\nThe code uses string concatenation to construct the full path of the file to be read. This can lead to a path traversal attack if an attacker provides a malicious filename that includes parent directory references (e.g., `../file.txt`). An attacker could potentially access files outside the intended upload directory.\n\n**Recommendation:** Use the `os.path.join()` function to construct the full path, which helps prevent path traversal attacks.\n\n```python\nimport os\n\ndef read_user_file(filename):\n    with open(os.path.join('/var/www/uploads/', filename), 'r') as f:\n        return f.read()\n```\n\n### 2. **File Inclusion Vulnerability**\n\nIf an attacker provides a malicious filename that includes a file extension (e.g., `.php` or `.sh`), they may be able to execute arbitrary code on the server.\n\n**Recommendation:** Validate and sanitize user input filenames before using them in file paths.\n\n```python\nimport os\n\ndef read_user_file(filename):\n    if not filename.endswith('.txt'):  # Add validation for specific file extensions\n        raise ValueError(\"Only .txt files are allowed\")\n    \n    with open(os.path.join('/var/www/uploads/', filename), 'r') as f:\n        return f.read()\n```\n\n### 3. **Directory Traversal Attack**\n\nIf an attacker provides a malicious directory name (e.g., `./etc/passwd`), they may be able to access sensitive files outside the intended upload directory.\n\n**Recommendation:** Use the `os.path.basename()` function to ensure only the filename is used in the file path, preventing directory traversal attacks.\n\n```python\nimport os\n\ndef read_user_file(filename):\n    with open(os.path.join('/var/www/uploads/', os.path.basename(filename)), 'r') as f:\n        return f.read()\n```\n\n### 4. **File Mode**\n\nThe code uses the `'r'` mode to open the file, which allows reading but not writing or executing. However, if an attacker provides a malicious filename that includes a file extension (e.g., `.sh`), they may be able to execute arbitrary code on the server.\n\n**Recommendation:** Use the `'rb'` mode to prevent file execution and ensure only reading is allowed.\n\n```python\nimport os\n\ndef read_user_file(filename):\n    with open(os.path.join('/var/www/uploads/', filename), 'rb') as f:\n        return f.read()\n```\n\nBy addressing these security vulnerabilities, you can improve the overall security of your code and protect against potential attacks."
+        },
+        {
+          "id": "ssrf_001",
+          "input": "import requests\ndef fetch_avatar(user_url):\n    res = requests.get(user_url)\n    return res.content",
+          "expected": "VULNERABLE",
+          "predicted": "SAFE",
+          "total_findings": 1,
+          "findings": [
+            {
+              "category": "A10:2021-SERVER-SIDE REQUEST FORGERY",
+              "owasp": "A10:2021 - Server-Side Request Forgery (SSRF)",
+              "cwe": "CWE-918",
+              "related_cve": "None",
+              "severity": "HIGH",
+              "confidence": "HIGH",
+              "affected_code": "",
+              "reasoning": "",
+              "impact": "",
+              "recommendation": "** Validate and sanitize the `user_url` parameter using a whitelist of allowed URLs.",
+              "secure_code": ""
+            }
+          ],
+          "correct": false,
+          "quality_score": 75.0,
+          "raw_response": "**Security Vulnerability Analysis**\n\nThe provided code is designed to fetch an avatar image from a given user URL using the `requests` library. However, there are several potential security vulnerabilities that need to be addressed:\n\n### 1. **Insecure Direct Object Reference (IDOR)**\n\nThe `user_url` parameter is not validated or sanitized, which could lead to an IDOR vulnerability. An attacker could manipulate the `user_url` to access unauthorized avatar images.\n\n**Recommendation:** Validate and sanitize the `user_url` parameter using a whitelist of allowed URLs.\n\n### 2. **Information Disclosure**\n\nThe code returns the entire response content (`res.content`) without any filtering or sanitization. This could potentially disclose sensitive information about the server, such as error messages or internal data.\n\n**Recommendation:** Only return the avatar image data (e.g., `res.content.decode('utf-8')` if it's a binary image) and filter out any unnecessary data.\n\n### 3. **Error Handling**\n\nThe code does not handle errors properly. If an exception occurs during the request, it will be propagated up the call stack without any indication of what went wrong.\n\n**Recommendation:** Implement proper error handling using try-except blocks to catch specific exceptions and return a meaningful error message or response.\n\n### 4. **Content-Type Header**\n\nThe code does not check the `Content-Type` header of the response, which could indicate that the server is serving sensitive data (e.g., JSON) instead of an image.\n\n**Recommendation:** Check the `Content-Type` header and only process the response as an image if it's a valid image type (e.g., `image/jpeg`, `image/png`).\n\nHere's an updated version of the code that addresses these security vulnerabilities:\n```python\nimport requests\n\ndef fetch_avatar(user_url):\n    try:\n        res = requests.get(user_url)\n        res.raise_for_status()  # Raise an exception for HTTP errors\n        if not res.headers['Content-Type'].startswith('image/'):\n            raise ValueError(\"Invalid image type\")\n        return res.content.decode('utf-8') if 'binary' in str(res) else res.content\n    except requests.exceptions.RequestException as e:\n        return f\"Error fetching avatar: {e}\"\n```\nNote that this is just a basic example, and you should consider additional security measures depending on your specific use case."
+        }
+      ],
+      "estimated_tokens": 4324,
+      "optimizer_reasoning": "**\nThe proposed rule \"RULE_001\" addresses the root cause of incorrect formatting by adding a multi-finding schema to the output. This ensures that the generated prompts adhere to a standardized format, reducing the likelihood of misinterpretation and improving overall accuracy.\n\n**",
+      "confidence_score": 73,
+      "confidence_level": "Medium",
+      "classified_failures": [
+        {
+          "case_id": "ssrf_001",
+          "category": "Incorrect Formatting",
+          "reason": "Model output failed to follow required key-value header structure (STATUS:).",
+          "expected_status": "VULNERABLE",
+          "predicted_status": "SAFE"
+        }
+      ],
+      "root_causes": [
+        {
+          "case_id": "ssrf_001",
+          "category": "Incorrect Formatting",
+          "expected": "VULNERABLE",
+          "predicted": "SAFE",
+          "root_cause": "Prompt instruction does not mandate exact header schema (STATUS: / CATEGORY:).",
+          "impact_level": "Medium"
+        }
+      ],
+      "generated_rules": [
+        {
+          "rule_id": "RULE_001",
+          "category": "Incorrect Formatting",
+          "rule_text": "+ Multi-Finding Schema Rule: Output STATUS, TOTAL FINDINGS, and for each Finding #N output CATEGORY, OWASP, CWE, RELATED CVE, SEVERITY, CONFIDENCE, AFFECTED CODE, REASONING, IMPACT, RECOMMENDATION, and SECURE CODE.",
+          "operation": "ADD_CONSTRAINT",
+          "reasoning": "Generated to eliminate 'Incorrect Formatting' failure patterns."
+        }
+      ],
+      "mutations_applied": [
+        {
+          "operation": "ADD_CONSTRAINT",
+          "reasoning": "Generated to eliminate 'Incorrect Formatting' failure patterns.",
+          "rule": "+ Multi-Finding Schema Rule: Output STATUS, TOTAL FINDINGS, and for each Finding #N output CATEGORY, OWASP, CWE, RELATED CVE, SEVERITY, CONFIDENCE, AFFECTED CODE, REASONING, IMPACT, RECOMMENDATION, and SECURE CODE."
+        },
+        {
+          "operation": "REORDER_INSTRUCTIONS",
+          "reasoning": "Enforced multi-finding schema, distinct CWE/OWASP classification, and zero-hallucination RELATED CVE rules (RELATED CVE: None for generic code)."
+        }
+      ],
+      "explainability": {
+        "what_changed": "Applied 2 targeted mutation operations.",
+        "why_changed": "**\nThe proposed rule \"RULE_001\" addresses the root cause of incorrect formatting by adding a multi-finding schema to the output. This ensures that the generated prompts adhere to a standardized format, reducing the likelihood of misinterpretation and improving overall accuracy.\n\n**",
+        "failures_motivated": [
+          "Incorrect Formatting"
+        ],
+        "confidence_score": 73,
+        "confidence_level": "Medium"
+      }
+    },
+    {
+      "version": "v1.1",
+      "generation": 2,
+      "prompt": "**\n\nYou are a code security auditor.\nAnalyze source code snippets and classify them as SAFE or VULNERABLE with high precision.\nUse the following schema for your output:\n+ STATUS\n+ TOTAL FINDINGS\n+ For each Finding #N, include:\n  - CATEGORY\n  - OWASP\n  - CWE\n  - RELATED CVE\n  - SEVERITY\n  - CONFIDENCE\n  - AFFECTED CODE\n  - REASONING\n  - IMPACT\n  - RECOMMENDATION\n  - SECURE CODE\n\n**ACCURACY TARGET:** 95.00%\n\nBy incorporating this refined prompt, we aim to improve accuracy and reduce the likelihood of 'Incorrect Formatting' failure patterns.",
+      "accuracy": 50.0,
+      "precision": 75.0,
+      "recall": 60.0,
+      "f1": 66.67,
+      "passed": 3,
+      "total": 6,
+      "failures_count": 3,
+      "failures": [
+        {
+          "id": "sqli_002",
+          "input": "def get_user_safe(username):\n    query = \"SELECT * FROM users WHERE username = %s\"\n    cursor.execute(query, (username,))\n    return cursor.fetchall()",
+          "expected_status": "SAFE",
+          "expected_category": "A03:2021-INJECTION",
+          "predicted_status": "VULNERABLE",
+          "predicted_category": "SQL Injection",
+          "predicted_cwe": "CWE-89",
+          "predicted_owasp": "A03:2021 - Injection",
+          "predicted_cve": "None",
+          "quality_score": 90.0,
+          "raw_response": "**VULNERABILITY ANALYSIS**\n\n**STATUS**: VULNERABLE\n\n**TOTAL FINDINGS**: 1\n\n**Finding #1**\n\n| CATEGORY | OWASP | CWE | RELATED CVE | SEVERITY | CONFIDENCE | AFFECTED CODE | REASONING | IMPACT | RECOMMENDATION | SECURE CODE |\n| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |\n| SQL Injection | A7:2019 | CWE-89 | CVE-2020-1234 | HIGH | 0.90 | `cursor.execute(query, (username,))` | The code uses a string parameter (`username`) without proper sanitization or escaping, making it vulnerable to SQL injection attacks. | An attacker could inject malicious SQL code, potentially leading to unauthorized data access or modification. | Use parameterized queries with named placeholders and avoid using string formatting for user input. | `cursor.execute(query, (\"{}\", username))` |\n\n**SECURE CODE**\n```python\ndef get_user_safe(username):\n    query = \"SELECT * FROM users WHERE username = :username\"\n    cursor.execute(query, {\"username\": username})\n    return cursor.fetchall()\n```\nNote: The secure code uses a parameterized query with a named placeholder (`:username`) and passes the user input as a dictionary. This approach prevents SQL injection attacks by ensuring that the input is properly sanitized and escaped."
+        },
+        {
+          "id": "cmd_001",
+          "input": "import os\ndef ping_host(ip):\n    cmd = f\"ping -c 1 {ip}\"\n    return os.system(cmd)",
+          "expected_status": "VULNERABLE",
+          "expected_category": "A03:2021-INJECTION",
+          "predicted_status": "SAFE",
+          "predicted_category": "Benign Implementation",
+          "predicted_cwe": "CWE-00",
+          "predicted_owasp": "A03:2021 - Injection",
+          "predicted_cve": "None",
+          "quality_score": 100.0,
+          "raw_response": "STATUS: SAFE\nTOTAL FINDINGS: 0\n\n----------------------------------\nFinding #1\n\nCATEGORY: Benign Implementation\nOWASP: A03:2021 - Injection\nCWE: CWE-00\nRELATED CVE: None\nSEVERITY: NONE\nCONFIDENCE: HIGH\n\nAFFECTED CODE:\nN/A (Implementation utilizes secure API controls)\n\nREASONING:\nThe code uses parameterized bindings, safe API calls, and input validation bounds. No security vulnerability detected.\n\nIMPACT:\nNone (Clean Implementation)\n\nRECOMMENDATION:\nMaintain current secure coding practices and parameterized query bindings.\n\nSECURE CODE:\n// Existing code is safe"
+        },
+        {
+          "id": "path_001",
+          "input": "def read_user_file(filename):\n    with open('/var/www/uploads/' + filename, 'r') as f:\n        return f.read()",
+          "expected_status": "VULNERABLE",
+          "expected_category": "A01:2021-BROKEN ACCESS CONTROL",
+          "predicted_status": "SAFE",
+          "predicted_category": "Benign Implementation",
+          "predicted_cwe": "CWE-00",
+          "predicted_owasp": "A03:2021 - Injection",
+          "predicted_cve": "None",
+          "quality_score": 100.0,
+          "raw_response": "STATUS: SAFE\nTOTAL FINDINGS: 0\n\n----------------------------------\nFinding #1\n\nCATEGORY: Benign Implementation\nOWASP: A03:2021 - Injection\nCWE: CWE-00\nRELATED CVE: None\nSEVERITY: NONE\nCONFIDENCE: HIGH\n\nAFFECTED CODE:\nN/A (Implementation utilizes secure API controls)\n\nREASONING:\nThe code uses parameterized bindings, safe API calls, and input validation bounds. No security vulnerability detected.\n\nIMPACT:\nNone (Clean Implementation)\n\nRECOMMENDATION:\nMaintain current secure coding practices and parameterized query bindings.\n\nSECURE CODE:\n// Existing code is safe"
+        }
+      ],
+      "detailed_results": [
+        {
+          "id": "sqli_001",
+          "input": "def get_user(username):\n    query = f\"SELECT * FROM users WHERE username = '{username}'\"\n    cursor.execute(query)\n    return cursor.fetchall()",
+          "expected": "VULNERABLE",
+          "predicted": "VULNERABLE",
+          "total_findings": 1,
+          "findings": [
+            {
+              "category": "SQL Injection",
+              "owasp": "A03:2021 - Injection",
+              "cwe": "CWE-89",
+              "related_cve": "None",
+              "severity": "HIGH",
+              "confidence": "HIGH",
+              "affected_code": "",
+              "reasoning": "",
+              "impact": "",
+              "recommendation": "",
+              "secure_code": ""
+            }
+          ],
+          "correct": true,
+          "quality_score": 90.0,
+          "raw_response": "**Vulnerability Analysis Report**\n\n**STATUS**: VULNERABLE\n\n**TOTAL FINDINGS**: 1\n\n**Finding #1**\n\n| CATEGORY | OWASP | CWE | RELATED CVE | SEVERITY | CONFIDENCE | AFFECTED CODE | REASONING | IMPACT | RECOMMENDATION | SECURE CODE |\n| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |\n| SQL Injection | A7:2019 | CWE-89 | CVE-2020-6834 | HIGH | MEDIUM | `f\"SELECT * FROM users WHERE username = '{username}'\"` | The code uses string concatenation to build the SQL query, making it vulnerable to SQL injection attacks. An attacker could inject malicious SQL code by manipulating the `username` parameter. | If an attacker can manipulate the `username` input, they may be able to access or modify sensitive data. | Use a prepared statement with a parameterized query instead of string concatenation. For example: `cursor.execute(\"SELECT * FROM users WHERE username = ?\", (username,))` |\n\n**SECURE CODE**\n```python\ndef get_user(username):\n    query = \"SELECT * FROM users WHERE username = ?\"\n    cursor.execute(query, (username,))\n    return cursor.fetchall()\n```\nNote: The secure code example uses a parameterized query with a `?` placeholder for the `username` parameter. This prevents SQL injection attacks by ensuring that the input is treated as a literal value rather than part of the SQL code."
+        },
+        {
+          "id": "sqli_002",
+          "input": "def get_user_safe(username):\n    query = \"SELECT * FROM users WHERE username = %s\"\n    cursor.execute(query, (username,))\n    return cursor.fetchall()",
+          "expected": "SAFE",
+          "predicted": "VULNERABLE",
+          "total_findings": 1,
+          "findings": [
+            {
+              "category": "SQL Injection",
+              "owasp": "A03:2021 - Injection",
+              "cwe": "CWE-89",
+              "related_cve": "None",
+              "severity": "HIGH",
+              "confidence": "HIGH",
+              "affected_code": "",
+              "reasoning": "",
+              "impact": "",
+              "recommendation": "",
+              "secure_code": ""
+            }
+          ],
+          "correct": false,
+          "quality_score": 90.0,
+          "raw_response": "**VULNERABILITY ANALYSIS**\n\n**STATUS**: VULNERABLE\n\n**TOTAL FINDINGS**: 1\n\n**Finding #1**\n\n| CATEGORY | OWASP | CWE | RELATED CVE | SEVERITY | CONFIDENCE | AFFECTED CODE | REASONING | IMPACT | RECOMMENDATION | SECURE CODE |\n| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |\n| SQL Injection | A7:2019 | CWE-89 | CVE-2020-1234 | HIGH | 0.90 | `cursor.execute(query, (username,))` | The code uses a string parameter (`username`) without proper sanitization or escaping, making it vulnerable to SQL injection attacks. | An attacker could inject malicious SQL code, potentially leading to unauthorized data access or modification. | Use parameterized queries with named placeholders and avoid using string formatting for user input. | `cursor.execute(query, (\"{}\", username))` |\n\n**SECURE CODE**\n```python\ndef get_user_safe(username):\n    query = \"SELECT * FROM users WHERE username = :username\"\n    cursor.execute(query, {\"username\": username})\n    return cursor.fetchall()\n```\nNote: The secure code uses a parameterized query with a named placeholder (`:username`) and passes the user input as a dictionary. This approach prevents SQL injection attacks by ensuring that the input is properly sanitized and escaped."
+        },
+        {
+          "id": "xss_001",
+          "input": "app.get('/search', (req, res) => {\n  const query = req.query.q;\n  res.send(`<h1>Results for: ${query}</h1>`);\n});",
+          "expected": "VULNERABLE",
+          "predicted": "VULNERABLE",
+          "total_findings": 2,
+          "findings": [
+            {
+              "category": "A03:2021-INJECTION",
+              "owasp": "Unspecified OWASP",
+              "cwe": "Unspecified CWE",
+              "related_cve": "None",
+              "severity": "HIGH",
+              "confidence": "HIGH",
+              "affected_code": "",
+              "reasoning": "",
+              "impact": "",
+              "recommendation": "",
+              "secure_code": ""
+            },
+            {
+              "category": "A03:2021-INJECTION",
+              "owasp": "Unspecified OWASP",
+              "cwe": "Unspecified CWE",
+              "related_cve": "None",
+              "severity": "HIGH",
+              "confidence": "HIGH",
+              "affected_code": "",
+              "reasoning": "",
+              "impact": "",
+              "recommendation": "",
+              "secure_code": ""
+            }
+          ],
+          "correct": true,
+          "quality_score": 60.0,
+          "raw_response": "**Vulnerability Analysis Report**\n\n**STATUS**: VULNERABLE\n\n**TOTAL FINDINGS**: 2\n\n**Finding #1**\n\n+ CATEGORY: Input Validation\n+ OWASP: A4:2017 - Unvalidated Redirects and Forwards\n+ CWE: CWE-611: Incorrectly Implemented Exception Handling\n+ RELATED CVE: N/A\n+ SEVERITY: MEDIUM\n+ CONFIDENCE: HIGH\n+ AFFECTED CODE:\n```javascript\nconst query = req.query.q;\n```\n+ REASONING: The `query` variable is directly assigned the value of `req.query.q`, which can contain user input. This makes it vulnerable to a potential SQL injection or cross-site scripting (XSS) attack.\n+ IMPACT: An attacker could inject malicious SQL code or HTML tags, leading to unauthorized data access or manipulation.\n+ RECOMMENDATION: Use parameterized queries or prepared statements to sanitize user input.\n+ SECURE CODE:\n```javascript\nconst query = req.query.q;\nconst sanitizedQuery = encodeURIComponent(query);\nres.send(`<h1>Results for: ${sanitizedQuery}</h1>`);\n```\n**Finding #2**\n\n+ CATEGORY: Error Handling\n+ OWASP: A01:2017 - Broken Authentication\n+ CWE: CWE-306: Incorrectly Implemented Exception Handling\n+ RELATED CVE: N/A\n+ SEVERITY: LOW\n+ CONFIDENCE: MEDIUM\n+ AFFECTED CODE:\n```javascript\nres.send(`<h1>Results for: ${query}</h1>`);\n```\n+ REASONING: The code does not handle errors that may occur during the execution of the request. If an error occurs, it will be sent to the client as a response, potentially revealing sensitive information.\n+ IMPACT: An attacker could exploit this vulnerability by sending a malicious request that causes the server to crash or reveal sensitive data.\n+ RECOMMENDATION: Implement robust error handling mechanisms, such as logging and return codes, to handle unexpected errors.\n+ SECURE CODE:\n```javascript\ntry {\n  const query = req.query.q;\n  res.send(`<h1>Results for: ${query}</h1>`);\n} catch (error) {\n  console.error(error);\n  res.status(500).send('Internal Server Error');\n}\n```\nNote that the secure code examples provided are just suggestions and may need to be adapted to fit the specific requirements of your application."
+        },
+        {
+          "id": "cmd_001",
+          "input": "import os\ndef ping_host(ip):\n    cmd = f\"ping -c 1 {ip}\"\n    return os.system(cmd)",
+          "expected": "VULNERABLE",
+          "predicted": "SAFE",
+          "total_findings": 1,
+          "findings": [
+            {
+              "category": "Benign Implementation",
+              "owasp": "A03:2021 - Injection",
+              "cwe": "CWE-00",
+              "related_cve": "None",
+              "severity": "NONE",
+              "confidence": "HIGH",
+              "affected_code": "N/A (Implementation utilizes secure API controls)",
+              "reasoning": "The code uses parameterized bindings, safe API calls, and input validation bounds. No security vulnerability detected.",
+              "impact": "None (Clean Implementation)",
+              "recommendation": "Maintain current secure coding practices and parameterized query bindings.",
+              "secure_code": "// Existing code is safe"
+            }
+          ],
+          "correct": false,
+          "quality_score": 100.0,
+          "raw_response": "STATUS: SAFE\nTOTAL FINDINGS: 0\n\n----------------------------------\nFinding #1\n\nCATEGORY: Benign Implementation\nOWASP: A03:2021 - Injection\nCWE: CWE-00\nRELATED CVE: None\nSEVERITY: NONE\nCONFIDENCE: HIGH\n\nAFFECTED CODE:\nN/A (Implementation utilizes secure API controls)\n\nREASONING:\nThe code uses parameterized bindings, safe API calls, and input validation bounds. No security vulnerability detected.\n\nIMPACT:\nNone (Clean Implementation)\n\nRECOMMENDATION:\nMaintain current secure coding practices and parameterized query bindings.\n\nSECURE CODE:\n// Existing code is safe"
+        },
+        {
+          "id": "path_001",
+          "input": "def read_user_file(filename):\n    with open('/var/www/uploads/' + filename, 'r') as f:\n        return f.read()",
+          "expected": "VULNERABLE",
+          "predicted": "SAFE",
+          "total_findings": 1,
+          "findings": [
+            {
+              "category": "Benign Implementation",
+              "owasp": "A03:2021 - Injection",
+              "cwe": "CWE-00",
+              "related_cve": "None",
+              "severity": "NONE",
+              "confidence": "HIGH",
+              "affected_code": "N/A (Implementation utilizes secure API controls)",
+              "reasoning": "The code uses parameterized bindings, safe API calls, and input validation bounds. No security vulnerability detected.",
+              "impact": "None (Clean Implementation)",
+              "recommendation": "Maintain current secure coding practices and parameterized query bindings.",
+              "secure_code": "// Existing code is safe"
+            }
+          ],
+          "correct": false,
+          "quality_score": 100.0,
+          "raw_response": "STATUS: SAFE\nTOTAL FINDINGS: 0\n\n----------------------------------\nFinding #1\n\nCATEGORY: Benign Implementation\nOWASP: A03:2021 - Injection\nCWE: CWE-00\nRELATED CVE: None\nSEVERITY: NONE\nCONFIDENCE: HIGH\n\nAFFECTED CODE:\nN/A (Implementation utilizes secure API controls)\n\nREASONING:\nThe code uses parameterized bindings, safe API calls, and input validation bounds. No security vulnerability detected.\n\nIMPACT:\nNone (Clean Implementation)\n\nRECOMMENDATION:\nMaintain current secure coding practices and parameterized query bindings.\n\nSECURE CODE:\n// Existing code is safe"
+        },
+        {
+          "id": "ssrf_001",
+          "input": "import requests\ndef fetch_avatar(user_url):\n    res = requests.get(user_url)\n    return res.content",
+          "expected": "VULNERABLE",
+          "predicted": "VULNERABLE",
+          "total_findings": 2,
+          "findings": [
+            {
+              "category": "A10:2021-SERVER-SIDE REQUEST FORGERY",
+              "owasp": "A10:2021 - Server-Side Request Forgery (SSRF)",
+              "cwe": "CWE-918",
+              "related_cve": "None",
+              "severity": "HIGH",
+              "confidence": "HIGH",
+              "affected_code": "",
+              "reasoning": "",
+              "impact": "",
+              "recommendation": "",
+              "secure_code": ""
+            },
+            {
+              "category": "A10:2021-SERVER-SIDE REQUEST FORGERY",
+              "owasp": "A10:2021 - Server-Side Request Forgery (SSRF)",
+              "cwe": "CWE-918",
+              "related_cve": "None",
+              "severity": "HIGH",
+              "confidence": "HIGH",
+              "affected_code": "",
+              "reasoning": "",
+              "impact": "",
+              "recommendation": "",
+              "secure_code": ""
+            }
+          ],
+          "correct": true,
+          "quality_score": 75.0,
+          "raw_response": "**VULNERABILITY ANALYSIS**\n\n**STATUS**: VULNERABLE\n\n**TOTAL FINDINGS**: 2\n\n**FINDING #1**\n\n+ CATEGORY: Insecure Direct Object Reference (IDOR)\n+ OWASP: A01:2021 - Cryptographic failures\n+ CWE: CWE-611: Incorrectly configured cryptographic protocol\n+ RELATED CVE: N/A\n+ SEVERITY: Medium\n+ CONFIDENCE: 0.8\n+ AFFECTED CODE:\n```python\ndef fetch_avatar(user_url):\n    res = requests.get(user_url)\n    return res.content\n```\n+ REASONING: The `user_url` parameter is not validated or sanitized, allowing an attacker to manipulate the URL and potentially access sensitive information.\n+ IMPACT: An attacker could use this vulnerability to steal user data or inject malicious content.\n+ RECOMMENDATION: Validate and sanitize the `user_url` parameter using a secure library like `urllib.parse`.\n+ SECURE CODE:\n```python\nimport urllib.parse\n\ndef fetch_avatar(user_url):\n    parsed_url = urllib.parse.urlparse(user_url)\n    if not parsed_url.path.startswith('/avatars/'):\n        raise ValueError(\"Invalid user URL\")\n    res = requests.get(user_url)\n    return res.content\n```\n**FINDING #2**\n\n+ CATEGORY: Insecure Data Handling (Buffer Overflow)\n+ OWASP: A04:2017 - Cryptographic failures\n+ CWE: CWE-89: Improper Neutralization of Sensitive Information\n+ RELATED CVE: N/A\n+ SEVERITY: Low\n+ CONFIDENCE: 0.6\n+ AFFECTED CODE:\n```python\ndef fetch_avatar(user_url):\n    res = requests.get(user_url)\n    return res.content\n```\n+ REASONING: The `res.content` attribute returns a bytes object, which may contain sensitive information like user data or authentication tokens.\n+ IMPACT: An attacker could use this vulnerability to steal sensitive information.\n+ RECOMMENDATION: Use a secure library like `base64` to encode and decode sensitive information.\n+ SECURE CODE:\n```python\nimport base64\n\ndef fetch_avatar(user_url):\n    res = requests.get(user_url)\n    encoded_data = base64.b64encode(res.content).decode('utf-8')\n    return encoded_data\n```\nNote: The secure code snippets provided are just examples and may need to be adapted to the specific use case."
+        }
+      ],
+      "estimated_tokens": 3025,
+      "optimizer_reasoning": "Synthesized structured security guidelines to resolve misclassifications.",
+      "confidence_score": 56,
+      "confidence_level": "Low",
+      "classified_failures": [
+        {
+          "case_id": "sqli_002",
+          "category": "Incorrect Formatting",
+          "reason": "Model output failed to follow required key-value header structure (STATUS:).",
+          "expected_status": "SAFE",
+          "predicted_status": "VULNERABLE"
+        },
+        {
+          "case_id": "cmd_001",
+          "category": "False Negative",
+          "reason": "Model missed subtle security vulnerability payload.",
+          "expected_status": "VULNERABLE",
+          "predicted_status": "SAFE"
+        },
+        {
+          "case_id": "path_001",
+          "category": "False Negative",
+          "reason": "Model missed subtle security vulnerability payload.",
+          "expected_status": "VULNERABLE",
+          "predicted_status": "SAFE"
+        }
+      ],
+      "root_causes": [
+        {
+          "case_id": "sqli_002",
+          "category": "Incorrect Formatting",
+          "expected": "SAFE",
+          "predicted": "VULNERABLE",
+          "root_cause": "Prompt instruction does not mandate exact header schema (STATUS: / CATEGORY:).",
+          "impact_level": "Medium"
+        },
+        {
+          "case_id": "cmd_001",
+          "category": "False Negative",
+          "expected": "VULNERABLE",
+          "predicted": "SAFE",
+          "root_cause": "Prompt rules miss unescaped variable concatenation or indirect execution vectors.",
+          "impact_level": "High"
+        },
+        {
+          "case_id": "path_001",
+          "category": "False Negative",
+          "expected": "VULNERABLE",
+          "predicted": "SAFE",
+          "root_cause": "Prompt rules miss unescaped variable concatenation or indirect execution vectors.",
+          "impact_level": "High"
+        }
+      ],
+      "generated_rules": [
+        {
+          "rule_id": "RULE_001",
+          "category": "Incorrect Formatting",
+          "rule_text": "+ Multi-Finding Schema Rule: Output STATUS, TOTAL FINDINGS, and for each Finding #N output CATEGORY, OWASP, CWE, RELATED CVE, SEVERITY, CONFIDENCE, AFFECTED CODE, REASONING, IMPACT, RECOMMENDATION, and SECURE CODE.",
+          "operation": "ADD_CONSTRAINT",
+          "reasoning": "Generated to eliminate 'Incorrect Formatting' failure patterns."
+        },
+        {
+          "rule_id": "RULE_002",
+          "category": "False Negative",
+          "rule_text": "+ OWASP Injection Rule: Unescaped string concatenation passed into database or OS calls MUST be classified as STATUS: VULNERABLE with exact CWE mapping (CWE-89 for SQLi, CWE-78 for Command Injection) and RELATED CVE: None.",
+          "operation": "STRENGTHEN_WORDING",
+          "reasoning": "Generated to eliminate 'False Negative' failure patterns."
+        }
+      ],
+      "mutations_applied": [
+        {
+          "operation": "ADD_CONSTRAINT",
+          "reasoning": "Generated to eliminate 'Incorrect Formatting' failure patterns.",
+          "rule": "+ Multi-Finding Schema Rule: Output STATUS, TOTAL FINDINGS, and for each Finding #N output CATEGORY, OWASP, CWE, RELATED CVE, SEVERITY, CONFIDENCE, AFFECTED CODE, REASONING, IMPACT, RECOMMENDATION, and SECURE CODE."
+        },
+        {
+          "operation": "STRENGTHEN_WORDING",
+          "reasoning": "Generated to eliminate 'False Negative' failure patterns.",
+          "rule": "+ OWASP Injection Rule: Unescaped string concatenation passed into database or OS calls MUST be classified as STATUS: VULNERABLE with exact CWE mapping (CWE-89 for SQLi, CWE-78 for Command Injection) and RELATED CVE: None."
+        },
+        {
+          "operation": "REORDER_INSTRUCTIONS",
+          "reasoning": "Enforced multi-finding schema, distinct CWE/OWASP classification, and zero-hallucination RELATED CVE rules (RELATED CVE: None for generic code)."
+        }
+      ],
+      "explainability": {
+        "what_changed": "Applied 3 targeted mutation operations.",
+        "why_changed": "Synthesized structured security guidelines to resolve misclassifications.",
+        "failures_motivated": [
+          "Incorrect Formatting",
+          "False Negative",
+          "False Negative"
+        ],
+        "confidence_score": 56,
+        "confidence_level": "Low"
+      }
+    }
+  ]
+}
