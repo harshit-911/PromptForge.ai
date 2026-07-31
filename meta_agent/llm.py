@@ -186,8 +186,10 @@ class GeminiClient:
 
     def _simulate_fallback(self, prompt: str, system_instruction: Optional[str] = None) -> str:
         """Two-Stage Semantic SAST Analysis Engine matching APIs, Frameworks, and Published CVEs."""
-        input_text = prompt.upper()
-        raw_input = prompt
+        if "Analyze the following input:\n\n" in prompt:
+            input_text = prompt.split("Analyze the following input:\n\n", 1)[1].upper()
+        else:
+            input_text = prompt.upper()
 
         # -------------------------------------------------------------
         # STAGE 1: Artifact Type & Known Published CVE Matching

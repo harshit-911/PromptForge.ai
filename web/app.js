@@ -1187,61 +1187,74 @@ function displayResults(data, elapsedTime = "0.85") {
   timelineEl.innerHTML = timelineHtml;
 }
 
-function renderProfessionalSecurityReportCard(text) {
-  if (!text) return '<p style="color:var(--text-muted);">No report data available.</p>';
+function renderProfessionalSecurityReportCard(textOrObj) {
+  if (!textOrObj) return '<p style="color:var(--text-muted);">No report data available.</p>';
 
   const escapeHtml = (str) => (str || "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 
-  const extract = (block, field) => {
-    const reg = new RegExp("^\\s*\\*?\\*?" + field + "\\*?\\*?\\s*:\\s*([^\\n]+)", "gim");
-    const matches = [...block.matchAll(reg)];
-    if (matches.length > 0) {
-      const lastMatch = matches[matches.length - 1];
-      return lastMatch[1].replace(/[\*`]/g, '').trim();
-    }
-    return "";
-  };
+  let overallStatus = "VULNERABLE";
+  let findings = [];
 
-  const extractBlock = (blockText, field) => {
-    const reg = new RegExp("^\\s*\\*?\\*?" + field + "\\*?\\*?\\s*:\\s*(.*?)(?=^\\s*\\*?\\*?[A-Z\\s]{3,20}\\*?\\*?\\s*:|$)", "ims");
-    const m = blockText.match(reg);
-    if (m) {
-      let val = m[1].trim();
-      val = val.replace(/^```[a-z]*\n?/, '').replace(/\n?```$/, '');
-      return val.trim();
-    }
-    return "";
-  };
+  if (typeof textOrObj === "object" && textOrObj.findings) {
+    overallStatus = textOrObj.status || "VULNERABLE";
+    findings = textOrObj.findings;
+  } else {
+    const text = String(textOrObj);
+    const extract = (block, field) => {
+      const reg = new RegExp("^\\s*\\*?\\*?" + field + "\\*?\\*?\\s*:\\s*([^\\n]+)", "gim");
+      const matches = [...block.matchAll(reg)];
+      if (matches.length > 0) return matches[matches.length - 1][1].replace(/[\*`]/g, '').trim();
+      return "";
+    };
+    const extractBlock = (blockText, field) => {
+      const reg = new RegExp("^\\s*\\*?\\*?" + field + "\\*?\\*?\\s*:\\s*(.*?)(?=^\\s*\\*?\\*?[A-Z\\s]{3,20}\\*?\\*?\\s*:|$)", "ims");
+      const m = blockText.match(reg);
+      return m ? m[1].replace(/^```[a-z]*\n?/, '').replace(/\n?```$/, '').trim() : "";
+    };
 
-  const overallStatus = extract(text, "STATUS") || "VULNERABLE";
+    overallStatus = extract(text, "STATUS") || "VULNERABLE";
+    const findingBlocks = text.split(/Finding\s*#\d+/i);
+    const blocksToProcess = findingBlocks.length > 1 ? findingBlocks.slice(1) : [text];
+
+    findings = blocksToProcess.map(bText => ({
+      category: extract(bText, "CATEGORY") || "Unspecified Vulnerability",
+      owasp: extract(bText, "OWASP") || "Unspecified OWASP",
+      cwe: extract(bText, "CWE") || "Unspecified CWE",
+      related_cve: extract(bText, "RELATED CVE") || extract(bText, "CVE") || "None",
+      severity: extract(bText, "SEVERITY") || "MEDIUM",
+      confidence: extract(bText, "CONFIDENCE") || "MEDIUM",
+      affected_code: extractBlock(bText, "AFFECTED CODE"),
+      reasoning: extractBlock(bText, "REASONING"),
+      impact: extractBlock(bText, "IMPACT"),
+      recommendation: extractBlock(bText, "RECOMMENDATION") || extractBlock(bText, "FIX"),
+      secure_code: extractBlock(bText, "SECURE CODE") || extractBlock(bText, "FIXED CODE")
+    }));
+  }
+
   const isVuln = overallStatus.includes("VULN") || overallStatus.includes("MALIC");
-
-  // Split into Finding blocks
-  const findingBlocks = text.split(/Finding\s*#\d+/i);
-  const blocksToProcess = findingBlocks.length > 1 ? findingBlocks.slice(1) : [text];
 
   let html = `
     <div style="display:flex; flex-direction:column; gap:1.25rem;">
       <div style="display:flex; justify-content:space-between; align-items:center; background:var(--bg-card); padding:12px 18px; border-radius:10px; border:1px solid var(--border-hairline);">
         <div style="display:flex; align-items:center; gap:10px;">
           <span class="badge ${isVuln ? 'initial' : 'optimized'}">${overallStatus}</span>
-          <span style="font-family:var(--font-display); font-weight:700; font-size:1rem; color:var(--text-primary);">SECURITY AUDIT REPORT (${blocksToProcess.length} FINDING${blocksToProcess.length > 1 ? 'S' : ''})</span>
+          <span style="font-family:var(--font-display); font-weight:700; font-size:1rem; color:var(--text-primary);">SECURITY AUDIT REPORT (${findings.length} FINDING${findings.length > 1 ? 'S' : ''})</span>
         </div>
       </div>
   `;
 
-  blocksToProcess.forEach((bText, idx) => {
-    const category = extract(bText, "CATEGORY") || "Unspecified Vulnerability";
-    const owasp = extract(bText, "OWASP") || "Unspecified OWASP";
-    const cwe = extract(bText, "CWE") || "Unspecified CWE";
-    const relatedCve = extract(bText, "RELATED CVE") || extract(bText, "CVE") || "None";
-    const severity = extract(bText, "SEVERITY") || "MEDIUM";
-    const confidence = extract(bText, "CONFIDENCE") || "MEDIUM";
-    const affectedCode = extractBlock(bText, "AFFECTED CODE");
-    const reasoning = extractBlock(bText, "REASONING");
-    const impact = extractBlock(bText, "IMPACT");
-    const recommendation = extractBlock(bText, "RECOMMENDATION") || extractBlock(bText, "FIX");
-    const secureCode = extractBlock(bText, "SECURE CODE") || extractBlock(bText, "FIXED CODE");
+  findings.forEach((f, idx) => {
+    const category = f.category || "Unspecified Vulnerability";
+    const owasp = f.owasp || "Unspecified OWASP";
+    const cwe = f.cwe || "Unspecified CWE";
+    const relatedCve = f.related_cve || "None";
+    const severity = f.severity || "MEDIUM";
+    const confidence = f.confidence || "MEDIUM";
+    const affectedCode = f.affected_code;
+    const reasoning = f.reasoning;
+    const impact = f.impact;
+    const recommendation = f.recommendation;
+    const secureCode = f.secure_code;
 
     const hasCve = relatedCve && !relatedCve.toUpperCase().includes("NONE") && relatedCve.toUpperCase().includes("CVE-");
     const sevColor = severity === "CRITICAL" ? "#ef4444" : (severity === "HIGH" ? "#f59e0b" : "var(--accent-emerald)");
@@ -1313,7 +1326,7 @@ async function runPlayground() {
     const data = await res.json();
     playSuccessSound();
     logActivity("[RUN]", "Executed Playground inference against LLM.");
-    outputEl.innerHTML = renderProfessionalSecurityReportCard(data.output || "");
+    outputEl.innerHTML = renderProfessionalSecurityReportCard(data.parsed_audit || data.output || "");
   } catch (err) {
     alert("Error: " + err.message);
   }
