@@ -647,93 +647,72 @@
 
     <!-- TAB 4: PLAYGROUND -->
     <div id="tab-playground" class="tab-content">
-      <div class="hero-section">
-        <h1 class="hero-title">Security Prompt Playground & Interactive SAST Auditor</h1>
-        <p class="hero-sub">Test security prompts live against vulnerabilities, server logs, or DAN jailbreak payloads with real-time multi-finding classification and side-by-side comparison.</p>
+      <div class="hero-section" style="margin-bottom:1.5rem;">
+        <h1 class="hero-title">Security Prompt Playground & Auditor</h1>
+        <p class="hero-sub">Test prompts live against custom payloads, execute instant security audits, or run side-by-side prompt comparisons.</p>
       </div>
 
-      <!-- PLAYGROUND CONTROLS & THREAT VECTOR SELECTOR TOOLBAR -->
-      <div style="background:var(--bg-card); border:1px solid var(--border-hairline); border-radius:12px; padding:1.25rem; margin-bottom:1.5rem;">
-        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:15px; margin-bottom:1rem;">
-          <div style="display:flex; align-items:center; gap:10px;">
-            <span style="font-family:var(--font-display); font-size:0.85rem; font-weight:700; color:var(--text-muted); text-transform:uppercase;">Threat Vector Library:</span>
-            <select id="pg-vector-select" class="filter-select" style="min-width:240px;" onchange="loadPlaygroundVector(this.value)">
-              <option value="sqli">SQL Injection (CWE-89)</option>
-              <option value="xss">Cross-Site Scripting (CWE-79)</option>
-              <option value="cmd">Command Injection (CWE-78)</option>
-              <option value="log4j">Log4Shell RCE (CVE-2021-44228)</option>
-              <option value="spring">Spring4Shell RCE (CVE-2022-22965)</option>
-              <option value="ssh">SIEM SSH Brute Force Log</option>
-              <option value="dan">DAN Jailbreak Guardrail (AI Safety)</option>
-              <option value="pii">PII & Credit Card Leakage (GDPR)</option>
-              <option value="cloud">AWS IAM Wildcard Policy (Cloud)</option>
-              <option value="safe_sql">Patched Safe SQL Query (Verification)</option>
-            </select>
-          </div>
+      <!-- MINIMALIST PRESET CHIPS BAR -->
+      <div class="preset-bar" style="margin-bottom:1.5rem; background:var(--bg-card); padding:10px 16px; border-radius:30px; border:1px solid var(--border-hairline); display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+        <span style="font-family: var(--font-display); font-size:0.75rem; font-weight:700; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.05em; margin-right:4px;">PRESETS:</span>
+        <button class="preset-btn" onclick="loadPreset('sqli')">SQLi Code</button>
+        <button class="preset-btn" onclick="loadPreset('xss')">XSS Code</button>
+        <button class="preset-btn" onclick="loadPreset('cmd')">Command RCE</button>
+        <button class="preset-btn" onclick="loadPreset('ssh')">SSH SIEM Log</button>
+        <button class="preset-btn" onclick="loadPreset('dan')">DAN Jailbreak</button>
+      </div>
 
-          <div style="display:flex; align-items:center; gap:15px;">
-            <div style="display:flex; align-items:center; gap:8px;">
-              <span style="font-size:0.8rem; font-weight:700; color:var(--text-muted);">Temperature:</span>
-              <input type="range" id="pg-temp-slider" min="0.0" max="1.0" step="0.1" value="0.2" style="width:80px;" oninput="document.getElementById('pg-temp-val').textContent = this.value">
-              <span id="pg-temp-val" style="font-family:'JetBrains Mono', monospace; font-size:0.8rem; font-weight:700; color:var(--accent-cyan);">0.2</span>
+      <!-- SPLIT 2-COLUMN MINIMALIST PLAYGROUND GRID -->
+      <div style="display:grid; grid-template-columns: 1fr 1fr; gap:1.5rem; align-items:start;">
+
+        <!-- LEFT COLUMN: EDITOR & ACTIONS -->
+        <div style="display:flex; flex-direction:column; gap:1.25rem;">
+          <div class="form-group" style="margin-bottom:0;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+              <label style="font-size:0.78rem;">SYSTEM PROMPT TO TEST</label>
+              <button class="copy-btn" style="padding:2px 8px; font-size:0.75rem;" onclick="copyText('pg-prompt')">Copy Prompt</button>
             </div>
-            <div style="display:flex; align-items:center; gap:8px;">
-              <span style="font-size:0.8rem; font-weight:700; color:var(--text-muted);">View Mode:</span>
-              <button class="copy-btn active" id="pg-view-single-btn" onclick="setPlaygroundViewMode('single')">Report Card</button>
-              <button class="copy-btn" id="pg-view-split-btn" onclick="setPlaygroundViewMode('split')">Split Dual View</button>
+            <textarea id="pg-prompt" class="code-input" style="min-height:160px; font-family:'JetBrains Mono', monospace; font-size:0.88rem;" placeholder="Paste system prompt specification..."></textarea>
+          </div>
+
+          <div class="form-group" style="margin-bottom:0;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+              <label style="font-size:0.78rem;">TEST INPUT PAYLOAD / CODE SNIPPET / LOG</label>
+              <button class="copy-btn" style="color:var(--accent-purple); border-color:rgba(168, 85, 247, 0.3); padding:2px 10px; font-size:0.75rem;" onclick="generateAITestInput()">[AI] Auto-Generate Payload</button>
+            </div>
+            <textarea id="pg-input" class="code-input" style="min-height:160px; font-family:'JetBrains Mono', monospace; font-size:0.88rem;" placeholder="Paste test input code snippet or log payload..."></textarea>
+          </div>
+
+          <!-- ACTION BUTTONS TOOLBAR -->
+          <div style="display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap; margin-top:4px;">
+            <div style="display:flex; gap:8px;">
+              <button class="copy-btn" onclick="auditPlaygroundPrompt()">Run Security Audit</button>
+              <button class="copy-btn" onclick="comparePlayground()">Dual Compare</button>
+            </div>
+            <button class="btn-primary" onclick="runPlayground()"><span>Execute Prompt ➔</span></button>
+          </div>
+        </div>
+
+        <!-- RIGHT COLUMN: LIVE OUTPUT & AUDIT CARD -->
+        <div style="display:flex; flex-direction:column; gap:1.25rem;">
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <label style="font-size:0.78rem;">TARGET LLM MODEL RESPONSE</label>
+            <div style="display:flex; gap:6px;">
+              <button class="preset-btn active" id="pg-view-card-btn" onclick="setPlaygroundView('card')">Audit Report</button>
+              <button class="preset-btn" id="pg-view-raw-btn" onclick="setPlaygroundView('raw')">Raw Text</button>
+              <button class="copy-btn" style="padding:2px 8px; font-size:0.75rem;" onclick="copyText('pg-output')">Copy Output</button>
+            </div>
+          </div>
+
+          <div id="pg-output" class="output-box" style="min-height:390px; max-height:600px; overflow-y:auto; padding:1.25rem; border-radius:12px; background:var(--bg-card); border:1px solid var(--border-hairline);">
+            <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; height:100%; min-height:300px; color:var(--text-muted); text-align:center; gap:12px;">
+              <span style="font-size:2rem; opacity:0.6;">🛡️</span>
+              <span style="font-size:0.9rem; font-weight:600;">Playground Ready</span>
+              <span style="font-size:0.8rem; max-width:280px; line-height:1.5;">Select a preset above or paste custom code/logs to execute live inference.</span>
             </div>
           </div>
         </div>
 
-        <div class="preset-bar" style="padding:0; background:transparent; margin-bottom:0;">
-          <span style="font-family: var(--font-display); font-size:0.82rem; font-weight:700; color:var(--text-muted); display:flex; align-items:center;">QUICK PRESETS:</span>
-          <button class="preset-btn" onclick="loadPreset('sqli')">SQLi Code</button>
-          <button class="preset-btn" onclick="loadPreset('xss')">XSS Code</button>
-          <button class="preset-btn" onclick="loadPreset('cmd')">Command Inj</button>
-          <button class="preset-btn" onclick="loadPreset('log4j')">Log4Shell</button>
-          <button class="preset-btn" onclick="loadPreset('ssh')">SSH Log</button>
-          <button class="preset-btn" onclick="loadPreset('dan')">DAN Jailbreak</button>
-          <button class="preset-btn" onclick="loadPreset('safe_sql')" style="color:var(--accent-emerald); border-color:rgba(16, 185, 129, 0.3);">[SAFE] Fixed Code</button>
-        </div>
-      </div>
-
-      <div class="playground-grid">
-        <div class="form-group">
-          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
-            <label style="margin:0;">System Prompt Specification to Test</label>
-            <button class="copy-btn" style="font-size:0.75rem; padding:3px 8px;" onclick="loadMutatedPromptIntoPlayground()">Load Mutated Spec ➔</button>
-          </div>
-          <textarea id="pg-prompt" class="code-input" placeholder="Paste or load system prompt..."></textarea>
-        </div>
-        <div class="form-group">
-          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
-            <label style="margin:0;">Test Input Payload (Source Code / Log / Query)</label>
-            <button class="copy-btn" style="font-size:0.75rem; padding:3px 8px; color:var(--accent-purple); border-color:rgba(168, 85, 247, 0.3);" onclick="generateAITestInput()">[AI] Auto-Generate Snippet</button>
-          </div>
-          <textarea id="pg-input" class="code-input" placeholder="Paste code snippet, syslog record, or prompt payload..."></textarea>
-        </div>
-      </div>
-
-      <div style="margin-top: 1.25rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
-        <div style="display:flex; gap:10px;">
-          <button class="copy-btn" onclick="togglePlaygroundInputPatch()" id="pg-toggle-patch-btn">🧪 Toggle Fixed Secure Code</button>
-        </div>
-        <div style="display: flex; gap: 10px; flex-wrap: wrap;">
-          <button class="copy-btn" onclick="auditPlaygroundPrompt()">Run Security Audit</button>
-          <button class="copy-btn" onclick="comparePlayground()">Compare Seed vs. Mutated Live</button>
-          <button class="btn-primary" onclick="runPlayground()">Execute Prompt ➔</button>
-        </div>
-      </div>
-
-      <div style="margin-top: 2rem;" class="form-group">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
-          <label style="margin:0;">Target LLM Model Response & Security Report</label>
-          <div style="display:flex; gap:8px;">
-            <button class="copy-btn" style="font-size:0.75rem; padding:3px 8px;" onclick="copyPlaygroundReport()">📋 Copy Report Markdown</button>
-            <button class="copy-btn" style="font-size:0.75rem; padding:3px 8px; color:var(--accent-emerald);" onclick="applyPlaygroundPatch()">🛡️ Apply Fixed Secure Code</button>
-          </div>
-        </div>
-        <div id="pg-output" class="output-box">Select a threat vector or paste a code snippet, then click Execute Prompt ➔</div>
       </div>
     </div>
   </main>
