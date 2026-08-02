@@ -1752,8 +1752,8 @@ function initCustomCursor() {
   }
 
   document.addEventListener("mousemove", (e) => {
-    // Hide immediately if cursor reaches tab/window edges
-    if (e.clientX <= 2 || e.clientY <= 2 || e.clientX >= window.innerWidth - 2 || e.clientY >= window.innerHeight - 2) {
+    // Hide immediately if cursor reaches tab/window edges or text inputs
+    if (e.clientX <= 3 || e.clientY <= 3 || e.clientX >= window.innerWidth - 3 || e.clientY >= window.innerHeight - 3 || e.target.tagName === "INPUT" || e.target.tagName === "TEXTAREA") {
       hideCursor();
       return;
     }

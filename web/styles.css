@@ -115,7 +115,16 @@
   padding: 0;
 }
 
-/* Custom Cursor Follower */
+/* Custom Cursor Styling */
+@media (hover: hover) and (pointer: fine) {
+  body, button, select, a, .btn-primary, .copy-btn, .preset-btn, .nav-btn, .metric-card-pro {
+    cursor: none !important;
+  }
+  input, textarea {
+    cursor: text !important;
+  }
+}
+
 .custom-cursor-follower {
   position: fixed;
   top: 0;
