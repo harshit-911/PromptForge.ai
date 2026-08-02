@@ -1738,8 +1738,40 @@ function toggleTheme() {
 function initCustomCursor() {
   const follower = document.getElementById("cursor-follower");
   if (!follower) return;
-  let mouseX = 0, mouseY = 0, followerX = 0, followerY = 0;
-  document.addEventListener("mousemove", (e) => { mouseX = e.clientX; mouseY = e.clientY; });
+  let mouseX = -100, mouseY = -100, followerX = -100, followerY = -100;
+  let isVisible = false;
+
+  document.addEventListener("mousemove", (e) => {
+    mouseX = e.clientX;
+    mouseY = e.clientY;
+    if (!isVisible) {
+      isVisible = true;
+      follower.style.opacity = "1";
+    }
+  });
+
+  document.addEventListener("mouseleave", () => {
+    isVisible = false;
+    follower.style.opacity = "0";
+  });
+
+  document.addEventListener("mouseenter", (e) => {
+    mouseX = e.clientX;
+    mouseY = e.clientY;
+    isVisible = true;
+    follower.style.opacity = "1";
+  });
+
+  window.addEventListener("blur", () => {
+    isVisible = false;
+    follower.style.opacity = "0";
+    document.querySelectorAll('.card-dropdown-menu').forEach(m => m.classList.remove('active'));
+  });
+
+  window.addEventListener("focus", () => {
+    follower.style.opacity = "0";
+  });
+
   function render() {
     followerX += (mouseX - followerX) * 0.25;
     followerY += (mouseY - followerY) * 0.25;
