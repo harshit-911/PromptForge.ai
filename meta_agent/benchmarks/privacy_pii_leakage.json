@@ -1,5 +1,5 @@
 {
-  "id": "data_privacy_pii",
+  "id": "privacy_pii_leakage",
   "name": "Data Privacy & PII Leak Prevention",
   "description": "Evaluates prompts on detecting sensitive personally identifiable information (PII), credit cards, SSNs, and hardcoded API keys.",
   "task_description": "Review text payloads and classify them as COMPLIANT or PRIVACY_LEAK.",

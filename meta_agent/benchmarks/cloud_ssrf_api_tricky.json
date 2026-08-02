@@ -1,6 +1,6 @@
 {
-  "id": "cloud_api_security_tricky_v1",
-  "name": "cloud_api_security_tricky_v1",
+  "id": "cloud_ssrf_api_tricky",
+  "name": "Cloud API Security & SSRF Exploits",
   "description": "Evaluates an AI security classifier's ability to distinguish safe cloud/API configurations from subtle cloud security and API vulnerability patterns that commonly evade simplistic prompts.",
   "task_description": "Evaluates an AI security classifier's ability to distinguish safe cloud/API configurations from subtle cloud security and API vulnerability patterns that commonly evade simplistic prompts.",
   "category": "Cloud & Infrastructure",

@@ -1,6 +1,6 @@
 {
-  "id": "cryptography_audit",
-  "name": "Cryptographic Flaws & Weak Encryption Audit",
+  "id": "owasp_crypto_failures",
+  "name": "OWASP Cryptographic Failures & Weak Encryption",
   "description": "Evaluates prompts on detecting broken cryptographic hashing (MD5, SHA1), hardcoded JWT secrets, and ECB cipher mode usage.",
   "task_description": "Analyze cryptography code snippets and classify as SAFE or VULNERABLE.",
   "category": "OWASP Vulnerabilities",

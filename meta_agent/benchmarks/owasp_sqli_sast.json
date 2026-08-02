@@ -1,6 +1,6 @@
 {
-  "id": "sql_injection_detection",
-  "name": "sql_injection_detection",
+  "id": "owasp_sqli_sast",
+  "name": "OWASP SQL Injection SAST Suite",
   "description": "Tests whether an AI system can correctly distinguish vulnerable SQL query construction from safe parameterized database queries.",
   "task_description": "Tests whether an AI system can correctly distinguish vulnerable SQL query construction from safe parameterized database queries.",
   "category": "OWASP Vulnerabilities",

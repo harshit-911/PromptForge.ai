@@ -1,6 +1,6 @@
 {
-  "id": "log_threats",
-  "name": "SOC Threat Detection & Log Anomalies",
+  "id": "sec_siem_log_threats",
+  "name": "SIEM Server Log Threat & Intrusion Detection",
   "description": "Evaluates SOC analyst prompts on intrusion detection, SSH brute-force attempts, webshell uploads, and port scans.",
   "task_description": "Analyze server syslog and auth log events to classify entries as BENIGN or MALICIOUS.",
   "category": "Real CVE Vulnerabilities",

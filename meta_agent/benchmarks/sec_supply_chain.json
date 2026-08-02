@@ -1,6 +1,6 @@
 {
-  "id": "supply_chain_security",
-  "name": "Supply Chain & Package Dependency Security",
+  "id": "sec_supply_chain",
+  "name": "Software Supply Chain & Package Security",
   "description": "Evaluates prompts on detecting malicious npm/PyPI packages, unpinned dependencies, and typosquatting attacks.",
   "task_description": "Analyze package manifest files and dependency locks to classify as SAFE or VULNERABLE.",
   "category": "Supply Chain Security",

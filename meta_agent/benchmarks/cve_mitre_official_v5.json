@@ -1,6 +1,6 @@
 {
-  "id": "cve_official_mitre",
-  "name": "Official MITRE CVE Dataset (cvelistV5)",
+  "id": "cve_mitre_official_v5",
+  "name": "Official MITRE CVE Record Suite (cvelistV5)",
   "description": "Real-world Common Vulnerabilities and Exposures (CVE) parsed directly from the local cvelistV5-main repository.",
   "task_description": "Analyze official cve.org technical vulnerability records and classify as SAFE or VULNERABLE.",
   "category": "Real CVE Vulnerabilities",

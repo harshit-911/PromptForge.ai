@@ -1,6 +1,6 @@
 {
-  "id": "vulnerability_audit",
-  "name": "OWASP Vulnerability Audit",
+  "id": "owasp_code_audit",
+  "name": "OWASP Top 10 Code Security Audit",
   "description": "Evaluates code security auditing prompts against OWASP Top 10 vulnerabilities (SQLi, XSS, Command Injection, Path Traversal, SSRF).",
   "task_description": "Analyze source code snippets and classify them as SAFE or VULNERABLE with high precision.",
   "category": "OWASP Vulnerabilities",

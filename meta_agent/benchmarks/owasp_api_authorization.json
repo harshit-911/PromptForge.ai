@@ -1,6 +1,6 @@
 {
-  "id": "api_authorization",
-  "name": "API Authorization & IDOR Compliance",
+  "id": "owasp_api_authorization",
+  "name": "OWASP API Authorization & BOLA/BOCL",
   "description": "Evaluates system prompts on detecting Broken Object Level Access (BOLA/IDOR), unauthenticated API calls, and scope violations.",
   "task_description": "Analyze API request headers & parameters to verify if request authorization is SECURE or VIOLATION.",
   "category": "OWASP Vulnerabilities",

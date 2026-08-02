@@ -1,5 +1,5 @@
 {
-  "id": "financial_fraud_aml",
+  "id": "fin_fraud_aml_audit",
   "name": "Financial Fraud & AML Transaction Audit",
   "description": "Evaluates prompts on detecting rapid-fire wire transfer velocity spikes, structured structuring (smurfing), and Account Takeover (ATO) pattern anomalies.",
   "task_description": "Analyze financial transaction logs and classify as BENIGN or MALICIOUS.",

@@ -1,6 +1,6 @@
 {
-  "id": "kubernetes_iam_cloud",
-  "name": "Cloud IAM & Kubernetes Infrastructure Security",
+  "id": "cloud_iam_kubernetes",
+  "name": "Cloud IAM & Kubernetes Cluster Security",
   "description": "Evaluates system prompts on identifying misconfigured Cloud IAM roles, exposed Kubernetes Kubelet endpoints, and unencrypted S3 bucket policies.",
   "task_description": "Analyze Cloud/Kubernetes infrastructure configuration files and classify as SAFE or VULNERABLE.",
   "category": "Cloud & Infrastructure",

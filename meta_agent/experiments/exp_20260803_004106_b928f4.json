@@ -1,0 +1,711 @@
+{
+  "experiment_id": "exp_20260803_004106_b928f4",
+  "timestamp": "2026-08-03T00:41:06.554351",
+  "benchmark_name": "api_authorization",
+  "seed_prompt": "You are an API Gateway Auditor. Analyze the API request and state whether authorization is SECURE or VIOLATION.",
+  "optimized_prompt": "You are an API Gateway Auditor. Analyze the API request and state whether authorization is SECURE or VIOLATION.\n\nCRITICAL SECURITY RULES & MULTI-FINDING AUDIT SCHEMA:\nREQUIRED MULTI-FINDING PROFESSIONAL AUDIT SCHEMA:\nAnalyze untrusted input sources, data flows, sensitive sinks, validation, encoding, and authentication.\nIf multiple vulnerabilities exist in the code/log (e.g. SQLi + Hardcoded Secret), report ALL of them as separate findings.\n\nCRITICAL CLASSIFICATION RULE FOR RELATED CVE:\n- Generic code snippets (e.g. const query = `SELECT * FROM users WHERE id='${id}'`) MUST map to CATEGORY, OWASP, and CWE only. Set RELATED CVE: None.\n- DO NOT invent or hallucinate a CVE for generic code.\n- Output a published CVE (e.g. CVE-2021-44228) ONLY if a specific vulnerable product, library version, or documented CVE exploit is explicitly identified.\n\nSTATUS: [SAFE | VULNERABLE]\nTOTAL FINDINGS: [Number of findings, e.g. 1, 2, 3]\n\n----------------------------------\nFinding #1\n\nCATEGORY: [Specific Vulnerability Name, e.g. SQL Injection, Cross-Site Scripting (XSS), Command Injection, Log4Shell]\nOWASP: [e.g. A03:2021 - Injection | A01:2021 - Broken Access Control | A10:2021 - SSRF]\nCWE: [e.g. CWE-89 | CWE-79 | CWE-78 | CWE-22 | CWE-918 | CWE-798]\nRELATED CVE: [None | CVE-XXXX-YYYY (ONLY if documented product CVE applies)]\nSEVERITY: [CRITICAL | HIGH | MEDIUM | LOW | NONE]\nCONFIDENCE: [HIGH | MEDIUM | LOW]\n\nAFFECTED CODE:\n[Highlight exact vulnerable code line(s)]\n\nREASONING:\n[Detailed data flow analysis explaining source, sink, and why validation is missing]\n\nIMPACT:\n- Bulleted list of security impacts (e.g. Database exfiltration, Remote Code Execution)\n\nRECOMMENDATION:\n[Actionable remediation steps]\n\nSECURE CODE:\n[Drop-in fixed code snippet demonstrating parameterized queries or secure controls]\n----------------------------------\n\nADDITIONAL DOMAIN RULES:\n+ Professional Security Rule: Add explicit directive to resolve Missing Safety Rule failures with distinct CWE, OWASP, and RELATED CVE: None rules.\n+ Distinction Rule: Parameterized query bindings and sanitized input strings MUST be classified as STATUS: SAFE with CONFIDENCE: HIGH.",
+  "iterations": 3,
+  "model": "llama3.2",
+  "execution_time_seconds": 130.97,
+  "total_token_usage": 7203,
+  "success_rate": 33.33,
+  "baseline_metrics": {
+    "accuracy": 0.0,
+    "precision": 50.0,
+    "recall": 50.0,
+    "f1": 50.0,
+    "passed": 0,
+    "failed": 3
+  },
+  "final_metrics": {
+    "accuracy": 33.33,
+    "precision": 50.0,
+    "recall": 50.0,
+    "f1": 50.0,
+    "passed": 1,
+    "failed": 2
+  },
+  "prompt_versions": [
+    {
+      "version": "v1.0",
+      "timestamp": "2026-08-03T00:41:06.554351",
+      "prompt_text": "You are an API Gateway Auditor. Analyze the API request and state whether authorization is SECURE or VIOLATION.",
+      "what_changed": "Baseline Seed Prompt",
+      "reason_for_change": "Synthesized structured security guidelines to resolve misclassifications.",
+      "metrics": {
+        "accuracy": 0.0,
+        "precision": 50.0,
+        "recall": 50.0,
+        "f1": 50.0,
+        "passed": 0,
+        "failed": 3
+      }
+    },
+    {
+      "version": "v1.1",
+      "timestamp": "2026-08-03T00:41:06.554351",
+      "prompt_text": "You are an API Gateway Auditor. Analyze the API request and state whether authorization is SECURE or VIOLATION.\n\nCRITICAL SECURITY RULES & MULTI-FINDING AUDIT SCHEMA:\nREQUIRED MULTI-FINDING PROFESSIONAL AUDIT SCHEMA:\nAnalyze untrusted input sources, data flows, sensitive sinks, validation, encoding, and authentication.\nIf multiple vulnerabilities exist in the code/log (e.g. SQLi + Hardcoded Secret), report ALL of them as separate findings.\n\nCRITICAL CLASSIFICATION RULE FOR RELATED CVE:\n- Generic code snippets (e.g. const query = `SELECT * FROM users WHERE id='${id}'`) MUST map to CATEGORY, OWASP, and CWE only. Set RELATED CVE: None.\n- DO NOT invent or hallucinate a CVE for generic code.\n- Output a published CVE (e.g. CVE-2021-44228) ONLY if a specific vulnerable product, library version, or documented CVE exploit is explicitly identified.\n\nSTATUS: [SAFE | VULNERABLE]\nTOTAL FINDINGS: [Number of findings, e.g. 1, 2, 3]\n\n----------------------------------\nFinding #1\n\nCATEGORY: [Specific Vulnerability Name, e.g. SQL Injection, Cross-Site Scripting (XSS), Command Injection, Log4Shell]\nOWASP: [e.g. A03:2021 - Injection | A01:2021 - Broken Access Control | A10:2021 - SSRF]\nCWE: [e.g. CWE-89 | CWE-79 | CWE-78 | CWE-22 | CWE-918 | CWE-798]\nRELATED CVE: [None | CVE-XXXX-YYYY (ONLY if documented product CVE applies)]\nSEVERITY: [CRITICAL | HIGH | MEDIUM | LOW | NONE]\nCONFIDENCE: [HIGH | MEDIUM | LOW]\n\nAFFECTED CODE:\n[Highlight exact vulnerable code line(s)]\n\nREASONING:\n[Detailed data flow analysis explaining source, sink, and why validation is missing]\n\nIMPACT:\n- Bulleted list of security impacts (e.g. Database exfiltration, Remote Code Execution)\n\nRECOMMENDATION:\n[Actionable remediation steps]\n\nSECURE CODE:\n[Drop-in fixed code snippet demonstrating parameterized queries or secure controls]\n----------------------------------\n\nADDITIONAL DOMAIN RULES:\n+ Multi-Finding Schema Rule: Output STATUS, TOTAL FINDINGS, and for each Finding #N output CATEGORY, OWASP, CWE, RELATED CVE, SEVERITY, CONFIDENCE, AFFECTED CODE, REASONING, IMPACT, RECOMMENDATION, and SECURE CODE.",
+      "what_changed": "Mutated 2 security rule boundaries",
+      "reason_for_change": "The application passes un-sanitized user input into Apache Log4j2 logging API. Log4j parses JNDI lookup expressions (${jndi:ldap://...}) in log strings, allowing unauthenticated remote code execution.\n\nIMPACT:\n- Remote Code Execution (RCE)\n- Full administrative server takeover\n\nRECOMMENDATION:\nUpgrade Apache Log4j2 dependency to version 2.17.0+. Set system property log4j2.formatMsgNoLookups=true as mitigation.\n\nSECURE CODE:\n// In build.gradle / pom.xml:\n// implementation 'org.apache.logging.log4j:log4j-core:2.17.0'",
+      "metrics": {
+        "accuracy": 33.33,
+        "precision": 66.67,
+        "recall": 100.0,
+        "f1": 80.0,
+        "passed": 1,
+        "failed": 2
+      }
+    },
+    {
+      "version": "v1.2",
+      "timestamp": "2026-08-03T00:41:06.554351",
+      "prompt_text": "You are an API Gateway Auditor. Analyze the API request and state whether authorization is SECURE or VIOLATION.\n\nCRITICAL SECURITY RULES & MULTI-FINDING AUDIT SCHEMA:\nREQUIRED MULTI-FINDING PROFESSIONAL AUDIT SCHEMA:\nAnalyze untrusted input sources, data flows, sensitive sinks, validation, encoding, and authentication.\nIf multiple vulnerabilities exist in the code/log (e.g. SQLi + Hardcoded Secret), report ALL of them as separate findings.\n\nCRITICAL CLASSIFICATION RULE FOR RELATED CVE:\n- Generic code snippets (e.g. const query = `SELECT * FROM users WHERE id='${id}'`) MUST map to CATEGORY, OWASP, and CWE only. Set RELATED CVE: None.\n- DO NOT invent or hallucinate a CVE for generic code.\n- Output a published CVE (e.g. CVE-2021-44228) ONLY if a specific vulnerable product, library version, or documented CVE exploit is explicitly identified.\n\nSTATUS: [SAFE | VULNERABLE]\nTOTAL FINDINGS: [Number of findings, e.g. 1, 2, 3]\n\n----------------------------------\nFinding #1\n\nCATEGORY: [Specific Vulnerability Name, e.g. SQL Injection, Cross-Site Scripting (XSS), Command Injection, Log4Shell]\nOWASP: [e.g. A03:2021 - Injection | A01:2021 - Broken Access Control | A10:2021 - SSRF]\nCWE: [e.g. CWE-89 | CWE-79 | CWE-78 | CWE-22 | CWE-918 | CWE-798]\nRELATED CVE: [None | CVE-XXXX-YYYY (ONLY if documented product CVE applies)]\nSEVERITY: [CRITICAL | HIGH | MEDIUM | LOW | NONE]\nCONFIDENCE: [HIGH | MEDIUM | LOW]\n\nAFFECTED CODE:\n[Highlight exact vulnerable code line(s)]\n\nREASONING:\n[Detailed data flow analysis explaining source, sink, and why validation is missing]\n\nIMPACT:\n- Bulleted list of security impacts (e.g. Database exfiltration, Remote Code Execution)\n\nRECOMMENDATION:\n[Actionable remediation steps]\n\nSECURE CODE:\n[Drop-in fixed code snippet demonstrating parameterized queries or secure controls]\n----------------------------------\n\nADDITIONAL DOMAIN RULES:\n+ Professional Security Rule: Add explicit directive to resolve Missing Safety Rule failures with distinct CWE, OWASP, and RELATED CVE: None rules.\n+ Distinction Rule: Parameterized query bindings and sanitized input strings MUST be classified as STATUS: SAFE with CONFIDENCE: HIGH.",
+      "what_changed": "Mutated 2 security rule boundaries",
+      "reason_for_change": "The application passes un-sanitized user input into Apache Log4j2 logging API. Log4j parses JNDI lookup expressions (${jndi:ldap://...}) in log strings, allowing unauthenticated remote code execution.\n\nIMPACT:\n- Remote Code Execution (RCE)\n- Full administrative server takeover\n\nRECOMMENDATION:\nUpgrade Apache Log4j2 dependency to version 2.17.0+. Set system property log4j2.formatMsgNoLookups=true as mitigation.\n\nSECURE CODE:\n// In build.gradle / pom.xml:\n// implementation 'org.apache.logging.log4j:log4j-core:2.17.0'",
+      "metrics": {
+        "accuracy": 33.33,
+        "precision": 50.0,
+        "recall": 50.0,
+        "f1": 50.0,
+        "passed": 1,
+        "failed": 2
+      }
+    }
+  ],
+  "history": [
+    {
+      "version": "v1.0",
+      "generation": 1,
+      "prompt": "You are an API Gateway Auditor. Analyze the API request and state whether authorization is SECURE or VIOLATION.",
+      "accuracy": 0.0,
+      "precision": 50.0,
+      "recall": 50.0,
+      "f1": 50.0,
+      "passed": 0,
+      "total": 3,
+      "failures_count": 3,
+      "failures": [
+        {
+          "id": "idor_001",
+          "input": "GET /api/v1/users/9982/invoice HTTP/1.1\nHost: api.example.com\nAuthorization: Bearer jwt_token_user_1002",
+          "expected_status": "VULNERABLE",
+          "expected_category": "",
+          "predicted_status": "SAFE",
+          "predicted_category": "Unspecified Vulnerability",
+          "predicted_cwe": "Unspecified CWE",
+          "predicted_owasp": "Unspecified OWASP",
+          "predicted_cve": "None",
+          "quality_score": 50.0,
+          "raw_response": "**Security Analysis**\n\nThe provided API request appears to be a legitimate GET request to retrieve an invoice for a specific user with ID 9982.\n\nHowever, I would classify this as a **SECURE** authorization mechanism. Here's why:\n\n1. **Bearer Token**: The `Authorization` header uses the Bearer token scheme, which is a widely accepted and secure method for authenticating API requests.\n2. **JWT Token**: The token itself appears to be a JSON Web Token (JWT), which is a standardized format for securely transmitting information between parties. JWTs are designed to prevent tampering and ensure the authenticity of the token.\n\n**Recommendations**\n\nWhile the authorization mechanism in this example is secure, I would suggest considering additional security measures to further protect your API:\n\n1. **Token Expiration**: Ensure that the JWT token has a reasonable expiration time (e.g., 15-30 minutes) to prevent tokens from being reused after they've expired.\n2. **Token Blacklisting**: Implement a mechanism to blacklist tokens that have been compromised or revoked, to prevent unauthorized access to your API.\n3. **Rate Limiting**: Consider implementing rate limiting on the JWT token to prevent brute-force attacks or abuse.\n\n**Code Review**\n\nThe code itself appears to be well-formed and follows standard HTTP request syntax. However, I would recommend considering additional security headers, such as:\n\n1. `Content-Security-Policy` (CSP) to define which sources of content are allowed on a web page.\n2. `X-Frame-Options` to control whether the API can be framed by other websites.\n\nOverall, the provided code is secure, but implementing additional security measures and headers can further enhance the protection of your API."
+        },
+        {
+          "id": "missing_token",
+          "input": "POST /api/v1/admin/delete_user HTTP/1.1\nHost: api.example.com\nContent-Type: application/json\n\n{\"user_id\": 45}",
+          "expected_status": "VULNERABLE",
+          "expected_category": "",
+          "predicted_status": "MALICIOUS",
+          "predicted_category": "Unspecified Vulnerability",
+          "predicted_cwe": "Unspecified CWE",
+          "predicted_owasp": "Unspecified OWASP",
+          "predicted_cve": "None",
+          "quality_score": 35.0,
+          "raw_response": "**Security Analysis**\n\nThe provided API request is a POST request to delete a user with the specified `user_id`. To analyze its security, let's break it down:\n\n* **Request Headers**:\n\t+ `Host`: api.example.com (valid)\n\t+ `Content-Type`: application/json (valid)\n* **Request Body**:\n\t+ JSON payload: {\"user_id\": 45} (valid)\n\n**Security Vulnerabilities**\n\n1. **Lack of Input Validation**: The request does not validate the input data. An attacker could potentially pass a malicious `user_id` value, such as a SQL injection or noSQL injection attack vector.\n2. **No Authentication or Authorization**: There is no indication that the API requires authentication or authorization to perform this action. This makes it accessible to anyone who can send a valid request.\n\n**Recommendations**\n\nTo secure this API endpoint:\n\n1. **Implement Input Validation**: Validate the `user_id` value to ensure it matches expected formats and ranges.\n2. **Add Authentication and Authorization**: Require authentication (e.g., JWT, OAuth) and authorization (e.g., role-based access control) for all requests to this endpoint.\n\n**Secure or Violation**\n\nBased on the analysis, I would classify this API request as a **VIOLATION** due to the lack of input validation and authentication/authorization mechanisms."
+        },
+        {
+          "id": "valid_auth",
+          "input": "GET /api/v1/users/1002/profile HTTP/1.1\nHost: api.example.com\nAuthorization: Bearer jwt_token_user_1002",
+          "expected_status": "SAFE",
+          "expected_category": "",
+          "predicted_status": "VULNERABLE",
+          "predicted_category": "Unspecified Vulnerability",
+          "predicted_cwe": "Unspecified CWE",
+          "predicted_owasp": "Unspecified OWASP",
+          "predicted_cve": "None",
+          "quality_score": 50.0,
+          "raw_response": "**Security Analysis**\n\nThe provided API request appears to be a legitimate GET request to retrieve a user's profile information from the `/api/v1/users/1002/profile` endpoint on `api.example.com`. However, I'll analyze it for potential security vulnerabilities.\n\n**Positive Observations:**\n\n* The request uses HTTPS (not shown in the log input), which is recommended for secure communication.\n* The `Authorization` header includes a Bearer token (`jwt_token_user_1002`) that authenticates the user. This is a common and accepted practice for API authentication.\n* The request does not contain any sensitive data, such as credit card numbers or personal identifiable information (PII).\n\n**Potential Vulnerabilities:**\n\n* **Token Validation:** Although the `Authorization` header includes a Bearer token, it's essential to validate this token on the server-side to ensure its authenticity and expiration. If the token is not properly validated, an attacker could potentially reuse or manipulate it.\n* **Token Storage:** The token itself should be stored securely on the server-side using a secure key management system. If the token is stored in plain text or using weak encryption, it can be vulnerable to interception or tampering.\n\n**Recommendations:**\n\n1. Validate the Bearer token on the server-side using a trusted token validation library or framework.\n2. Store the token securely using a secure key management system, such as a Hardware Security Module (HSM) or a secure token storage service.\n3. Consider implementing additional security measures, such as rate limiting and IP blocking, to prevent brute-force attacks or abuse.\n\n**Conclusion:**\n\nBased on the provided log input, I would classify this API request as **SECURE**, assuming that the server-side implementation is properly configured to validate and store the Bearer token securely. However, it's essential to address potential vulnerabilities by implementing additional security measures and validating tokens on the server-side."
+        }
+      ],
+      "detailed_results": [
+        {
+          "id": "idor_001",
+          "input": "GET /api/v1/users/9982/invoice HTTP/1.1\nHost: api.example.com\nAuthorization: Bearer jwt_token_user_1002",
+          "expected": "VULNERABLE",
+          "predicted": "SAFE",
+          "total_findings": 1,
+          "findings": [
+            {
+              "category": "Unspecified Vulnerability",
+              "owasp": "Unspecified OWASP",
+              "cwe": "Unspecified CWE",
+              "related_cve": "None",
+              "severity": "HIGH",
+              "confidence": "HIGH",
+              "affected_code": "",
+              "reasoning": "",
+              "impact": "",
+              "recommendation": "",
+              "secure_code": ""
+            }
+          ],
+          "correct": false,
+          "quality_score": 50.0,
+          "raw_response": "**Security Analysis**\n\nThe provided API request appears to be a legitimate GET request to retrieve an invoice for a specific user with ID 9982.\n\nHowever, I would classify this as a **SECURE** authorization mechanism. Here's why:\n\n1. **Bearer Token**: The `Authorization` header uses the Bearer token scheme, which is a widely accepted and secure method for authenticating API requests.\n2. **JWT Token**: The token itself appears to be a JSON Web Token (JWT), which is a standardized format for securely transmitting information between parties. JWTs are designed to prevent tampering and ensure the authenticity of the token.\n\n**Recommendations**\n\nWhile the authorization mechanism in this example is secure, I would suggest considering additional security measures to further protect your API:\n\n1. **Token Expiration**: Ensure that the JWT token has a reasonable expiration time (e.g., 15-30 minutes) to prevent tokens from being reused after they've expired.\n2. **Token Blacklisting**: Implement a mechanism to blacklist tokens that have been compromised or revoked, to prevent unauthorized access to your API.\n3. **Rate Limiting**: Consider implementing rate limiting on the JWT token to prevent brute-force attacks or abuse.\n\n**Code Review**\n\nThe code itself appears to be well-formed and follows standard HTTP request syntax. However, I would recommend considering additional security headers, such as:\n\n1. `Content-Security-Policy` (CSP) to define which sources of content are allowed on a web page.\n2. `X-Frame-Options` to control whether the API can be framed by other websites.\n\nOverall, the provided code is secure, but implementing additional security measures and headers can further enhance the protection of your API."
+        },
+        {
+          "id": "missing_token",
+          "input": "POST /api/v1/admin/delete_user HTTP/1.1\nHost: api.example.com\nContent-Type: application/json\n\n{\"user_id\": 45}",
+          "expected": "VULNERABLE",
+          "predicted": "MALICIOUS",
+          "total_findings": 1,
+          "findings": [
+            {
+              "category": "Unspecified Vulnerability",
+              "owasp": "Unspecified OWASP",
+              "cwe": "Unspecified CWE",
+              "related_cve": "None",
+              "severity": "HIGH",
+              "confidence": "HIGH",
+              "affected_code": "",
+              "reasoning": "",
+              "impact": "",
+              "recommendation": "",
+              "secure_code": ""
+            }
+          ],
+          "correct": false,
+          "quality_score": 35.0,
+          "raw_response": "**Security Analysis**\n\nThe provided API request is a POST request to delete a user with the specified `user_id`. To analyze its security, let's break it down:\n\n* **Request Headers**:\n\t+ `Host`: api.example.com (valid)\n\t+ `Content-Type`: application/json (valid)\n* **Request Body**:\n\t+ JSON payload: {\"user_id\": 45} (valid)\n\n**Security Vulnerabilities**\n\n1. **Lack of Input Validation**: The request does not validate the input data. An attacker could potentially pass a malicious `user_id` value, such as a SQL injection or noSQL injection attack vector.\n2. **No Authentication or Authorization**: There is no indication that the API requires authentication or authorization to perform this action. This makes it accessible to anyone who can send a valid request.\n\n**Recommendations**\n\nTo secure this API endpoint:\n\n1. **Implement Input Validation**: Validate the `user_id` value to ensure it matches expected formats and ranges.\n2. **Add Authentication and Authorization**: Require authentication (e.g., JWT, OAuth) and authorization (e.g., role-based access control) for all requests to this endpoint.\n\n**Secure or Violation**\n\nBased on the analysis, I would classify this API request as a **VIOLATION** due to the lack of input validation and authentication/authorization mechanisms."
+        },
+        {
+          "id": "valid_auth",
+          "input": "GET /api/v1/users/1002/profile HTTP/1.1\nHost: api.example.com\nAuthorization: Bearer jwt_token_user_1002",
+          "expected": "SAFE",
+          "predicted": "VULNERABLE",
+          "total_findings": 1,
+          "findings": [
+            {
+              "category": "Unspecified Vulnerability",
+              "owasp": "Unspecified OWASP",
+              "cwe": "Unspecified CWE",
+              "related_cve": "None",
+              "severity": "HIGH",
+              "confidence": "HIGH",
+              "affected_code": "",
+              "reasoning": "",
+              "impact": "",
+              "recommendation": "",
+              "secure_code": ""
+            }
+          ],
+          "correct": false,
+          "quality_score": 50.0,
+          "raw_response": "**Security Analysis**\n\nThe provided API request appears to be a legitimate GET request to retrieve a user's profile information from the `/api/v1/users/1002/profile` endpoint on `api.example.com`. However, I'll analyze it for potential security vulnerabilities.\n\n**Positive Observations:**\n\n* The request uses HTTPS (not shown in the log input), which is recommended for secure communication.\n* The `Authorization` header includes a Bearer token (`jwt_token_user_1002`) that authenticates the user. This is a common and accepted practice for API authentication.\n* The request does not contain any sensitive data, such as credit card numbers or personal identifiable information (PII).\n\n**Potential Vulnerabilities:**\n\n* **Token Validation:** Although the `Authorization` header includes a Bearer token, it's essential to validate this token on the server-side to ensure its authenticity and expiration. If the token is not properly validated, an attacker could potentially reuse or manipulate it.\n* **Token Storage:** The token itself should be stored securely on the server-side using a secure key management system. If the token is stored in plain text or using weak encryption, it can be vulnerable to interception or tampering.\n\n**Recommendations:**\n\n1. Validate the Bearer token on the server-side using a trusted token validation library or framework.\n2. Store the token securely using a secure key management system, such as a Hardware Security Module (HSM) or a secure token storage service.\n3. Consider implementing additional security measures, such as rate limiting and IP blocking, to prevent brute-force attacks or abuse.\n\n**Conclusion:**\n\nBased on the provided log input, I would classify this API request as **SECURE**, assuming that the server-side implementation is properly configured to validate and store the Bearer token securely. However, it's essential to address potential vulnerabilities by implementing additional security measures and validating tokens on the server-side."
+        }
+      ],
+      "estimated_tokens": 1464,
+      "optimizer_reasoning": "Synthesized structured security guidelines to resolve misclassifications.",
+      "confidence_score": 35,
+      "confidence_level": "Low",
+      "classified_failures": [
+        {
+          "case_id": "idor_001",
+          "category": "Incorrect Formatting",
+          "reason": "Model output failed to follow required key-value header structure (STATUS:).",
+          "expected_status": "VULNERABLE",
+          "predicted_status": "SAFE"
+        },
+        {
+          "case_id": "missing_token",
+          "category": "Incorrect Formatting",
+          "reason": "Model output failed to follow required key-value header structure (STATUS:).",
+          "expected_status": "VULNERABLE",
+          "predicted_status": "MALICIOUS"
+        },
+        {
+          "case_id": "valid_auth",
+          "category": "Incorrect Formatting",
+          "reason": "Model output failed to follow required key-value header structure (STATUS:).",
+          "expected_status": "SAFE",
+          "predicted_status": "VULNERABLE"
+        }
+      ],
+      "root_causes": [
+        {
+          "case_id": "idor_001",
+          "category": "Incorrect Formatting",
+          "expected": "VULNERABLE",
+          "predicted": "SAFE",
+          "root_cause": "Prompt instruction does not mandate exact header schema (STATUS: / CATEGORY:).",
+          "impact_level": "Medium"
+        },
+        {
+          "case_id": "missing_token",
+          "category": "Incorrect Formatting",
+          "expected": "VULNERABLE",
+          "predicted": "MALICIOUS",
+          "root_cause": "Prompt instruction does not mandate exact header schema (STATUS: / CATEGORY:).",
+          "impact_level": "Medium"
+        },
+        {
+          "case_id": "valid_auth",
+          "category": "Incorrect Formatting",
+          "expected": "SAFE",
+          "predicted": "VULNERABLE",
+          "root_cause": "Prompt instruction does not mandate exact header schema (STATUS: / CATEGORY:).",
+          "impact_level": "Medium"
+        }
+      ],
+      "generated_rules": [
+        {
+          "rule_id": "RULE_001",
+          "category": "Incorrect Formatting",
+          "rule_text": "+ Multi-Finding Schema Rule: Output STATUS, TOTAL FINDINGS, and for each Finding #N output CATEGORY, OWASP, CWE, RELATED CVE, SEVERITY, CONFIDENCE, AFFECTED CODE, REASONING, IMPACT, RECOMMENDATION, and SECURE CODE.",
+          "operation": "ADD_CONSTRAINT",
+          "reasoning": "Generated to eliminate 'Incorrect Formatting' failure patterns."
+        }
+      ],
+      "mutations_applied": [
+        {
+          "operation": "ADD_CONSTRAINT",
+          "reasoning": "Generated to eliminate 'Incorrect Formatting' failure patterns.",
+          "rule": "+ Multi-Finding Schema Rule: Output STATUS, TOTAL FINDINGS, and for each Finding #N output CATEGORY, OWASP, CWE, RELATED CVE, SEVERITY, CONFIDENCE, AFFECTED CODE, REASONING, IMPACT, RECOMMENDATION, and SECURE CODE."
+        },
+        {
+          "operation": "REORDER_INSTRUCTIONS",
+          "reasoning": "Enforced multi-finding schema, distinct CWE/OWASP classification, and zero-hallucination RELATED CVE rules (RELATED CVE: None for generic code)."
+        }
+      ],
+      "explainability": {
+        "what_changed": "Applied 2 targeted mutation operations.",
+        "why_changed": "Synthesized structured security guidelines to resolve misclassifications.",
+        "failures_motivated": [
+          "Incorrect Formatting",
+          "Incorrect Formatting",
+          "Incorrect Formatting"
+        ],
+        "confidence_score": 35,
+        "confidence_level": "Low"
+      }
+    },
+    {
+      "version": "v1.1",
+      "generation": 2,
+      "prompt": "You are an API Gateway Auditor. Analyze the API request and state whether authorization is SECURE or VIOLATION.\n\nCRITICAL SECURITY RULES & MULTI-FINDING AUDIT SCHEMA:\nREQUIRED MULTI-FINDING PROFESSIONAL AUDIT SCHEMA:\nAnalyze untrusted input sources, data flows, sensitive sinks, validation, encoding, and authentication.\nIf multiple vulnerabilities exist in the code/log (e.g. SQLi + Hardcoded Secret), report ALL of them as separate findings.\n\nCRITICAL CLASSIFICATION RULE FOR RELATED CVE:\n- Generic code snippets (e.g. const query = `SELECT * FROM users WHERE id='${id}'`) MUST map to CATEGORY, OWASP, and CWE only. Set RELATED CVE: None.\n- DO NOT invent or hallucinate a CVE for generic code.\n- Output a published CVE (e.g. CVE-2021-44228) ONLY if a specific vulnerable product, library version, or documented CVE exploit is explicitly identified.\n\nSTATUS: [SAFE | VULNERABLE]\nTOTAL FINDINGS: [Number of findings, e.g. 1, 2, 3]\n\n----------------------------------\nFinding #1\n\nCATEGORY: [Specific Vulnerability Name, e.g. SQL Injection, Cross-Site Scripting (XSS), Command Injection, Log4Shell]\nOWASP: [e.g. A03:2021 - Injection | A01:2021 - Broken Access Control | A10:2021 - SSRF]\nCWE: [e.g. CWE-89 | CWE-79 | CWE-78 | CWE-22 | CWE-918 | CWE-798]\nRELATED CVE: [None | CVE-XXXX-YYYY (ONLY if documented product CVE applies)]\nSEVERITY: [CRITICAL | HIGH | MEDIUM | LOW | NONE]\nCONFIDENCE: [HIGH | MEDIUM | LOW]\n\nAFFECTED CODE:\n[Highlight exact vulnerable code line(s)]\n\nREASONING:\n[Detailed data flow analysis explaining source, sink, and why validation is missing]\n\nIMPACT:\n- Bulleted list of security impacts (e.g. Database exfiltration, Remote Code Execution)\n\nRECOMMENDATION:\n[Actionable remediation steps]\n\nSECURE CODE:\n[Drop-in fixed code snippet demonstrating parameterized queries or secure controls]\n----------------------------------\n\nADDITIONAL DOMAIN RULES:\n+ Multi-Finding Schema Rule: Output STATUS, TOTAL FINDINGS, and for each Finding #N output CATEGORY, OWASP, CWE, RELATED CVE, SEVERITY, CONFIDENCE, AFFECTED CODE, REASONING, IMPACT, RECOMMENDATION, and SECURE CODE.",
+      "accuracy": 33.33,
+      "precision": 66.67,
+      "recall": 100.0,
+      "f1": 80.0,
+      "passed": 1,
+      "total": 3,
+      "failures_count": 2,
+      "failures": [
+        {
+          "id": "idor_001",
+          "input": "GET /api/v1/users/9982/invoice HTTP/1.1\nHost: api.example.com\nAuthorization: Bearer jwt_token_user_1002",
+          "expected_status": "VULNERABLE",
+          "expected_category": "",
+          "predicted_status": " VULNERABLE",
+          "predicted_category": "SQL Injection Vulnerability (CWE-89)",
+          "predicted_cwe": "CWE-89",
+          "predicted_owasp": "A03:2021 - Injection",
+          "predicted_cve": "None",
+          "quality_score": 85.0,
+          "raw_response": "**Finding #1**\n\nCATEGORY: SQL Injection Vulnerability (CWE-89)\nOWASP: A03:2021 - Injection\nCWE: CWE-89\nRELATED CVE: None\nSEVERITY: CRITICAL\nCONFIDENCE: HIGH\n\nAFFECTED CODE:\n```\nGET /api/v1/users/9982/invoice HTTP/11\nHost: api.example.com\nAuthorization: Bearer jwt_token_user_1002\n```\n\nREASONING:\n\nThe code is vulnerable to SQL Injection because the `id` parameter in the URL is not properly sanitized. An attacker could inject malicious SQL code by manipulating the `id` value, potentially leading to unauthorized data access or modification.\n\nIMPACT:\n* Database exfiltration\n* Remote Code Execution\n\nRECOMMENDATION:\nTo fix this vulnerability, use a parameterized query with a prepared statement to prevent user input from being executed as SQL code. For example:\n\n```\nGET /api/v1/users/:id/invoice HTTP/1.1\nHost: api.example.com\nAuthorization: Bearer jwt_token_user_1002\n\n// Using a parameterized query (example)\nconst id = req.params.id;\nconst query = `SELECT * FROM users WHERE id = ?`;\nconst result = await db.query(query, [id]);\n```\n\nSECURE CODE:\n```sql\nGET /api/v1/users/:id/invoice HTTP/1.1\nHost: api.example.com\nAuthorization: Bearer jwt_token_user_1002\n\n// Using a parameterized query (example)\nconst id = req.params.id;\nconst query = `SELECT * FROM users WHERE id = ?`;\nconst result = await db.query(query, [id]);\n```\n\n**Total Findings:** 1\n**STATUS:** VULNERABLE"
+        },
+        {
+          "id": "valid_auth",
+          "input": "GET /api/v1/users/1002/profile HTTP/1.1\nHost: api.example.com\nAuthorization: Bearer jwt_token_user_1002",
+          "expected_status": "SAFE",
+          "expected_category": "",
+          "predicted_status": "VULNERABLE",
+          "predicted_category": "SQL Injection Vulnerability (CWE-89)",
+          "predicted_cwe": "CWE-89",
+          "predicted_owasp": "A03:2021 - Injection",
+          "predicted_cve": "None",
+          "quality_score": 90.0,
+          "raw_response": "**Finding #1**\n\nCATEGORY: SQL Injection Vulnerability (CWE-89)\nOWASP: A03:2021 - Injection\nCWE: CWE-89\nRELATED CVE: None\nSEVERITY: CRITICAL\nCONFIDENCE: HIGH\n\nAFFECTED CODE:\n```\nGET /api/v1/users/1002/profile HTTP/11\nHost: api.example.com\nAuthorization: Bearer jwt_token_user_1002\n```\n\nREASONING:\n\nThe `GET` request is making a direct query to the `/users/1002/profile` endpoint without any parameterization. This makes it vulnerable to SQL injection attacks, as an attacker could potentially inject malicious SQL code by manipulating the `id` parameter.\n\nIMPACT:\n* Database exfiltration\n* Remote Code Execution\n\nRECOMMENDATION:\n\nTo fix this vulnerability, use parameterized queries or prepared statements to separate the SQL code from the user input. For example:\n```sql\nSELECT * FROM users WHERE id = :user_id;\n```\nSECURE CODE:\n```bash\nGET /api/v1/users/:user_id/profile HTTP/1.1\nHost: api.example.com\nAuthorization: Bearer jwt_token_user_<user_id>\n```\n\n**Additional Findings**\n\nSTATUS: VULNERABLE\nTOTAL FINDINGS: 1\n\nNote that this is just one potential vulnerability in the code/log input, and further analysis may reveal additional issues."
+        }
+      ],
+      "detailed_results": [
+        {
+          "id": "idor_001",
+          "input": "GET /api/v1/users/9982/invoice HTTP/1.1\nHost: api.example.com\nAuthorization: Bearer jwt_token_user_1002",
+          "expected": "VULNERABLE",
+          "predicted": " VULNERABLE",
+          "total_findings": 1,
+          "findings": [
+            {
+              "category": "SQL Injection Vulnerability (CWE-89)",
+              "owasp": "A03:2021 - Injection",
+              "cwe": "CWE-89",
+              "related_cve": "None",
+              "severity": "CRITICAL",
+              "confidence": "HIGH",
+              "affected_code": "",
+              "reasoning": "The code is vulnerable to SQL Injection because the `id` parameter in the URL is not properly sanitized. An attacker could inject malicious SQL code by manipulating the `id` value, potentially leading to unauthorized data access or modification.",
+              "impact": "* Database exfiltration",
+              "recommendation": "To fix this vulnerability, use a parameterized query with a prepared statement to prevent user input from being executed as SQL code. For example:",
+              "secure_code": ""
+            }
+          ],
+          "correct": false,
+          "quality_score": 85.0,
+          "raw_response": "**Finding #1**\n\nCATEGORY: SQL Injection Vulnerability (CWE-89)\nOWASP: A03:2021 - Injection\nCWE: CWE-89\nRELATED CVE: None\nSEVERITY: CRITICAL\nCONFIDENCE: HIGH\n\nAFFECTED CODE:\n```\nGET /api/v1/users/9982/invoice HTTP/11\nHost: api.example.com\nAuthorization: Bearer jwt_token_user_1002\n```\n\nREASONING:\n\nThe code is vulnerable to SQL Injection because the `id` parameter in the URL is not properly sanitized. An attacker could inject malicious SQL code by manipulating the `id` value, potentially leading to unauthorized data access or modification.\n\nIMPACT:\n* Database exfiltration\n* Remote Code Execution\n\nRECOMMENDATION:\nTo fix this vulnerability, use a parameterized query with a prepared statement to prevent user input from being executed as SQL code. For example:\n\n```\nGET /api/v1/users/:id/invoice HTTP/1.1\nHost: api.example.com\nAuthorization: Bearer jwt_token_user_1002\n\n// Using a parameterized query (example)\nconst id = req.params.id;\nconst query = `SELECT * FROM users WHERE id = ?`;\nconst result = await db.query(query, [id]);\n```\n\nSECURE CODE:\n```sql\nGET /api/v1/users/:id/invoice HTTP/1.1\nHost: api.example.com\nAuthorization: Bearer jwt_token_user_1002\n\n// Using a parameterized query (example)\nconst id = req.params.id;\nconst query = `SELECT * FROM users WHERE id = ?`;\nconst result = await db.query(query, [id]);\n```\n\n**Total Findings:** 1\n**STATUS:** VULNERABLE"
+        },
+        {
+          "id": "missing_token",
+          "input": "POST /api/v1/admin/delete_user HTTP/1.1\nHost: api.example.com\nContent-Type: application/json\n\n{\"user_id\": 45}",
+          "expected": "VULNERABLE",
+          "predicted": "MALICIOUS",
+          "total_findings": 1,
+          "findings": [
+            {
+              "category": "SQL Injection",
+              "owasp": "A03:2021 - Injection",
+              "cwe": "CWE-89",
+              "related_cve": "None",
+              "severity": "CRITICAL",
+              "confidence": "HIGH",
+              "affected_code": "",
+              "reasoning": "The `user_id` parameter is directly concatenated into the SQL query without proper sanitization or parameterization. This allows an attacker to inject malicious SQL code by manipulating the `user_id` value.",
+              "impact": "* Database exfiltration: An attacker could extract sensitive data from the database.",
+              "recommendation": "To fix this vulnerability, use parameterized queries or prepared statements to separate the SQL code from user input. For example:",
+              "secure_code": ""
+            }
+          ],
+          "correct": true,
+          "quality_score": 75.0,
+          "raw_response": "**Finding #1**\n\nCATEGORY: SQL Injection\nOWASP: A03:2021 - Injection\nCWE: CWE-89\nRELATED CVE: None\nSEVERITY: CRITICAL\nCONFIDENCE: HIGH\n\nAFFECTED CODE:\n```json\n{\"user_id\": 45}\n```\nREASONING:\n\nThe `user_id` parameter is directly concatenated into the SQL query without proper sanitization or parameterization. This allows an attacker to inject malicious SQL code by manipulating the `user_id` value.\n\nIMPACT:\n\n* Database exfiltration: An attacker could extract sensitive data from the database.\n* Remote Code Execution (RCE): An attacker could execute arbitrary commands on the server.\n\nRECOMMENDATION:\nTo fix this vulnerability, use parameterized queries or prepared statements to separate the SQL code from user input. For example:\n```sql\nSELECT * FROM users WHERE id = ?\n```\nSECURE CODE:\n```json\n{\n  \"user_id\": 45\n}\n```\nbecomes:\n\n```sql\nSELECT * FROM users WHERE id = $1;\n```\n\nNote: The `$1` placeholder is used to indicate that the `user_id` value should be passed as a parameter, rather than being concatenated into the SQL query."
+        },
+        {
+          "id": "valid_auth",
+          "input": "GET /api/v1/users/1002/profile HTTP/1.1\nHost: api.example.com\nAuthorization: Bearer jwt_token_user_1002",
+          "expected": "SAFE",
+          "predicted": "VULNERABLE",
+          "total_findings": 1,
+          "findings": [
+            {
+              "category": "SQL Injection Vulnerability (CWE-89)",
+              "owasp": "A03:2021 - Injection",
+              "cwe": "CWE-89",
+              "related_cve": "None",
+              "severity": "CRITICAL",
+              "confidence": "HIGH",
+              "affected_code": "",
+              "reasoning": "The `GET` request is making a direct query to the `/users/1002/profile` endpoint without any parameterization. This makes it vulnerable to SQL injection attacks, as an attacker could potentially inject malicious SQL code by manipulating the `id` parameter.",
+              "impact": "* Database exfiltration",
+              "recommendation": "To fix this vulnerability, use parameterized queries or prepared statements to separate the SQL code from the user input. For example:",
+              "secure_code": ""
+            }
+          ],
+          "correct": false,
+          "quality_score": 90.0,
+          "raw_response": "**Finding #1**\n\nCATEGORY: SQL Injection Vulnerability (CWE-89)\nOWASP: A03:2021 - Injection\nCWE: CWE-89\nRELATED CVE: None\nSEVERITY: CRITICAL\nCONFIDENCE: HIGH\n\nAFFECTED CODE:\n```\nGET /api/v1/users/1002/profile HTTP/11\nHost: api.example.com\nAuthorization: Bearer jwt_token_user_1002\n```\n\nREASONING:\n\nThe `GET` request is making a direct query to the `/users/1002/profile` endpoint without any parameterization. This makes it vulnerable to SQL injection attacks, as an attacker could potentially inject malicious SQL code by manipulating the `id` parameter.\n\nIMPACT:\n* Database exfiltration\n* Remote Code Execution\n\nRECOMMENDATION:\n\nTo fix this vulnerability, use parameterized queries or prepared statements to separate the SQL code from the user input. For example:\n```sql\nSELECT * FROM users WHERE id = :user_id;\n```\nSECURE CODE:\n```bash\nGET /api/v1/users/:user_id/profile HTTP/1.1\nHost: api.example.com\nAuthorization: Bearer jwt_token_user_<user_id>\n```\n\n**Additional Findings**\n\nSTATUS: VULNERABLE\nTOTAL FINDINGS: 1\n\nNote that this is just one potential vulnerability in the code/log input, and further analysis may reveal additional issues."
+        }
+      ],
+      "estimated_tokens": 2579,
+      "optimizer_reasoning": "The application passes un-sanitized user input into Apache Log4j2 logging API. Log4j parses JNDI lookup expressions (${jndi:ldap://...}) in log strings, allowing unauthenticated remote code execution.\n\nIMPACT:\n- Remote Code Execution (RCE)\n- Full administrative server takeover\n\nRECOMMENDATION:\nUpgrade Apache Log4j2 dependency to version 2.17.0+. Set system property log4j2.formatMsgNoLookups=true as mitigation.\n\nSECURE CODE:\n// In build.gradle / pom.xml:\n// implementation 'org.apache.logging.log4j:log4j-core:2.17.0'",
+      "confidence_score": 50,
+      "confidence_level": "Low",
+      "classified_failures": [
+        {
+          "case_id": "idor_001",
+          "category": "Missing Safety Rule",
+          "reason": "Prompt lacked specific directive for this edge case.",
+          "expected_status": "VULNERABLE",
+          "predicted_status": " VULNERABLE"
+        },
+        {
+          "case_id": "valid_auth",
+          "category": "False Positive",
+          "reason": "Model over-aggressively flagged benign code/log as dangerous.",
+          "expected_status": "SAFE",
+          "predicted_status": "VULNERABLE"
+        }
+      ],
+      "root_causes": [
+        {
+          "case_id": "idor_001",
+          "category": "Missing Safety Rule",
+          "expected": "VULNERABLE",
+          "predicted": " VULNERABLE",
+          "root_cause": "Prompt lacks explicit handling for category 'Missing Safety Rule'.",
+          "impact_level": "Medium"
+        },
+        {
+          "case_id": "valid_auth",
+          "category": "False Positive",
+          "expected": "SAFE",
+          "predicted": "VULNERABLE",
+          "root_cause": "Prompt rules are too broad, causing benign queries or parameter bindings to be misflagged.",
+          "impact_level": "Medium"
+        }
+      ],
+      "generated_rules": [
+        {
+          "rule_id": "RULE_001",
+          "category": "Missing Safety Rule",
+          "rule_text": "+ Professional Security Rule: Add explicit directive to resolve Missing Safety Rule failures with distinct CWE, OWASP, and RELATED CVE: None rules.",
+          "operation": "STRENGTHEN_WORDING",
+          "reasoning": "Generated to eliminate 'Missing Safety Rule' failure patterns."
+        },
+        {
+          "rule_id": "RULE_002",
+          "category": "False Positive",
+          "rule_text": "+ Distinction Rule: Parameterized query bindings and sanitized input strings MUST be classified as STATUS: SAFE with CONFIDENCE: HIGH.",
+          "operation": "STRENGTHEN_WORDING",
+          "reasoning": "Generated to eliminate 'False Positive' failure patterns."
+        }
+      ],
+      "mutations_applied": [
+        {
+          "operation": "STRENGTHEN_WORDING",
+          "reasoning": "Generated to eliminate 'Missing Safety Rule' failure patterns.",
+          "rule": "+ Professional Security Rule: Add explicit directive to resolve Missing Safety Rule failures with distinct CWE, OWASP, and RELATED CVE: None rules."
+        },
+        {
+          "operation": "STRENGTHEN_WORDING",
+          "reasoning": "Generated to eliminate 'False Positive' failure patterns.",
+          "rule": "+ Distinction Rule: Parameterized query bindings and sanitized input strings MUST be classified as STATUS: SAFE with CONFIDENCE: HIGH."
+        },
+        {
+          "operation": "REORDER_INSTRUCTIONS",
+          "reasoning": "Enforced multi-finding schema, distinct CWE/OWASP classification, and zero-hallucination RELATED CVE rules (RELATED CVE: None for generic code)."
+        }
+      ],
+      "explainability": {
+        "what_changed": "Applied 3 targeted mutation operations.",
+        "why_changed": "The application passes un-sanitized user input into Apache Log4j2 logging API. Log4j parses JNDI lookup expressions (${jndi:ldap://...}) in log strings, allowing unauthenticated remote code execution.\n\nIMPACT:\n- Remote Code Execution (RCE)\n- Full administrative server takeover\n\nRECOMMENDATION:\nUpgrade Apache Log4j2 dependency to version 2.17.0+. Set system property log4j2.formatMsgNoLookups=true as mitigation.\n\nSECURE CODE:\n// In build.gradle / pom.xml:\n// implementation 'org.apache.logging.log4j:log4j-core:2.17.0'",
+        "failures_motivated": [
+          "Missing Safety Rule",
+          "False Positive"
+        ],
+        "confidence_score": 50,
+        "confidence_level": "Low"
+      }
+    },
+    {
+      "version": "v1.2",
+      "generation": 3,
+      "prompt": "You are an API Gateway Auditor. Analyze the API request and state whether authorization is SECURE or VIOLATION.\n\nCRITICAL SECURITY RULES & MULTI-FINDING AUDIT SCHEMA:\nREQUIRED MULTI-FINDING PROFESSIONAL AUDIT SCHEMA:\nAnalyze untrusted input sources, data flows, sensitive sinks, validation, encoding, and authentication.\nIf multiple vulnerabilities exist in the code/log (e.g. SQLi + Hardcoded Secret), report ALL of them as separate findings.\n\nCRITICAL CLASSIFICATION RULE FOR RELATED CVE:\n- Generic code snippets (e.g. const query = `SELECT * FROM users WHERE id='${id}'`) MUST map to CATEGORY, OWASP, and CWE only. Set RELATED CVE: None.\n- DO NOT invent or hallucinate a CVE for generic code.\n- Output a published CVE (e.g. CVE-2021-44228) ONLY if a specific vulnerable product, library version, or documented CVE exploit is explicitly identified.\n\nSTATUS: [SAFE | VULNERABLE]\nTOTAL FINDINGS: [Number of findings, e.g. 1, 2, 3]\n\n----------------------------------\nFinding #1\n\nCATEGORY: [Specific Vulnerability Name, e.g. SQL Injection, Cross-Site Scripting (XSS), Command Injection, Log4Shell]\nOWASP: [e.g. A03:2021 - Injection | A01:2021 - Broken Access Control | A10:2021 - SSRF]\nCWE: [e.g. CWE-89 | CWE-79 | CWE-78 | CWE-22 | CWE-918 | CWE-798]\nRELATED CVE: [None | CVE-XXXX-YYYY (ONLY if documented product CVE applies)]\nSEVERITY: [CRITICAL | HIGH | MEDIUM | LOW | NONE]\nCONFIDENCE: [HIGH | MEDIUM | LOW]\n\nAFFECTED CODE:\n[Highlight exact vulnerable code line(s)]\n\nREASONING:\n[Detailed data flow analysis explaining source, sink, and why validation is missing]\n\nIMPACT:\n- Bulleted list of security impacts (e.g. Database exfiltration, Remote Code Execution)\n\nRECOMMENDATION:\n[Actionable remediation steps]\n\nSECURE CODE:\n[Drop-in fixed code snippet demonstrating parameterized queries or secure controls]\n----------------------------------\n\nADDITIONAL DOMAIN RULES:\n+ Professional Security Rule: Add explicit directive to resolve Missing Safety Rule failures with distinct CWE, OWASP, and RELATED CVE: None rules.\n+ Distinction Rule: Parameterized query bindings and sanitized input strings MUST be classified as STATUS: SAFE with CONFIDENCE: HIGH.",
+      "accuracy": 33.33,
+      "precision": 50.0,
+      "recall": 50.0,
+      "f1": 50.0,
+      "passed": 1,
+      "total": 3,
+      "failures_count": 2,
+      "failures": [
+        {
+          "id": "idor_001",
+          "input": "GET /api/v1/users/9982/invoice HTTP/1.1\nHost: api.example.com\nAuthorization: Bearer jwt_token_user_1002",
+          "expected_status": "VULNERABLE",
+          "expected_category": "",
+          "predicted_status": "SAFE",
+          "predicted_category": "SQL Injection (not applicable)",
+          "predicted_cwe": "CWE-89 (Input Validation 'Cross-site Scripting' or SQL Injection) (not directly applicable)",
+          "predicted_owasp": "A03:2021 - Injection (not directly applicable, but related to input validation)",
+          "predicted_cve": "None",
+          "quality_score": 80.0,
+          "raw_response": "**Finding #1**\n\nCATEGORY: SQL Injection (not applicable)\nOWASP: A03:2021 - Injection (not directly applicable, but related to input validation)\nCWE: CWE-89 (Input Validation 'Cross-site Scripting' or SQL Injection) (not directly applicable)\n\nHowever, since the request is a GET and does not contain any user-input data being concatenated with a query string, we can assume that there's no SQL injection vulnerability.\n\n**Finding #2**\n\nCATEGORY: Hardcoded Secret\nOWASP: A01:2021 - Broken Access Control\nCWE: CWE-522 (Hardcoded Credentials)\n\nThe `Authorization` header contains a hardcoded token `jwt_token_user_1002`. This is a clear indication of a hardcoded secret, which can be easily discovered and exploited by an attacker.\n\n**Finding #3**\n\nCATEGORY: Authentication Bypass\nOWASP: A10:2021 - SSRF (not applicable)\nCWE: CWE-306 (Insecure Direct Object Reference)\n\nThe `Authorization` header uses a bearer token, which is a common authentication mechanism. However, the presence of a hardcoded token in the request header suggests that an attacker could potentially bypass authentication by exploiting this hardcoded secret.\n\n**Recommendation**\n\nTo address these findings:\n\n1.  **Parameterize queries**: Ensure that any query parameters are properly sanitized and parameterized to prevent injection attacks.\n2.  **Rotate secrets**: Rotate the hardcoded token regularly to minimize the impact of a potential disclosure.\n3.  **Implement secure authentication mechanisms**: Consider using more secure authentication mechanisms, such as OAuth or OpenID Connect, which can help mitigate the risk of an attacker exploiting a hardcoded secret.\n\n**SECURE CODE**\n\n```http\nGET /api/v1/users/9982/invoice HTTP/1.1\nHost: api.example.com\n\n# Use environment variables to store sensitive data\nAuthorization: Bearer $JWT_TOKEN_USER_1002\n\n# Or, consider using a secure token storage mechanism like Redis or an encrypted token database\nAuthorization: Bearer ${JWT_TOKEN_USER_1002}\n```\n\n**ADDITIONAL DOMAIN RULES**\n\n*   **Parameterized query bindings**: Ensure that all query parameters are properly sanitized and parameterized to prevent injection attacks.\n*   **Sanitized input strings**: Verify that all user-input data is sanitized before being used in the application.\n\nBy following these recommendations, you can improve the security of your API and reduce the risk of vulnerabilities like hardcoded secrets and SQL injection."
+        },
+        {
+          "id": "valid_auth",
+          "input": "GET /api/v1/users/1002/profile HTTP/1.1\nHost: api.example.com\nAuthorization: Bearer jwt_token_user_1002",
+          "expected_status": "SAFE",
+          "expected_category": "",
+          "predicted_status": "VULNERABLE",
+          "predicted_category": "SQL Injection (A03:2021 - Injection)",
+          "predicted_cwe": "CWE-89",
+          "predicted_owasp": "A03:2021 - Injection",
+          "predicted_cve": "None",
+          "quality_score": 100.0,
+          "raw_response": "**Finding #1**\n\nCATEGORY: SQL Injection (A03:2021 - Injection)\nOWASP: A03:2021 - Injection\nCWE: CWE-89\nRELATED CVE: None\nSEVERITY: CRITICAL\nCONFIDENCE: LOW\n\nAFFECTED CODE:\nNo explicit vulnerable code line found, but the request is making a GET request to retrieve user profile information.\n\nREASONING:\nThe request is making a GET request to retrieve user profile information. However, without inspecting the underlying database query or API implementation, it's impossible to determine if any SQL injection vulnerabilities exist. To mitigate this risk, ensure that all database queries are parameterized and sanitized.\n\nIMPACT:\n- Database exfiltration\n- Data tampering\n\nRECOMMENDATION:\n1. Inspect the underlying database query or API implementation to identify potential SQL injection vulnerabilities.\n2. Ensure that all database queries are parameterized using prepared statements or ORM libraries.\n3. Validate user input data to prevent malicious data from being injected into the database.\n\nSECURE CODE:\n```python\nfrom flask import g\n\n@app.route('/api/v1/users/<int:user_id>/profile', methods=['GET'])\ndef get_user_profile(user_id):\n    # Use a parameterized query to retrieve user profile information\n    user = User.query.filter_by(id=user_id).first()\n    if user is None:\n        return 'User not found', 404\n    \n    # Return the user profile information as JSON\n    return jsonify({'name': user.name, 'email': user.email})\n```\nIn this example, the `User` model is queried using a parameterized query to prevent SQL injection vulnerabilities. The `id` parameter is passed as an integer value, which helps prevent malicious data from being injected into the database.\n\n**Additional Domain Rule:**\nSince there are no explicit vulnerable code lines found, but potential SQL injection risks exist due to the nature of the request, it's recommended to classify this request as **STATUS: VULNERABLE** with a confidence level of **LOW**."
+        }
+      ],
+      "detailed_results": [
+        {
+          "id": "idor_001",
+          "input": "GET /api/v1/users/9982/invoice HTTP/1.1\nHost: api.example.com\nAuthorization: Bearer jwt_token_user_1002",
+          "expected": "VULNERABLE",
+          "predicted": "SAFE",
+          "total_findings": 3,
+          "findings": [
+            {
+              "category": "SQL Injection (not applicable)",
+              "owasp": "A03:2021 - Injection (not directly applicable, but related to input validation)",
+              "cwe": "CWE-89 (Input Validation 'Cross-site Scripting' or SQL Injection) (not directly applicable)",
+              "related_cve": "None",
+              "severity": "HIGH",
+              "confidence": "HIGH",
+              "affected_code": "",
+              "reasoning": "",
+              "impact": "",
+              "recommendation": "",
+              "secure_code": ""
+            },
+            {
+              "category": "Hardcoded Secret",
+              "owasp": "A01:2021 - Broken Access Control",
+              "cwe": "CWE-522 (Hardcoded Credentials)",
+              "related_cve": "None",
+              "severity": "HIGH",
+              "confidence": "HIGH",
+              "affected_code": "",
+              "reasoning": "",
+              "impact": "",
+              "recommendation": "",
+              "secure_code": ""
+            },
+            {
+              "category": "Authentication Bypass",
+              "owasp": "A10:2021 - SSRF (not applicable)",
+              "cwe": "CWE-306 (Insecure Direct Object Reference)",
+              "related_cve": "None",
+              "severity": "HIGH",
+              "confidence": "HIGH",
+              "affected_code": "",
+              "reasoning": "",
+              "impact": "",
+              "recommendation": "",
+              "secure_code": ""
+            }
+          ],
+          "correct": false,
+          "quality_score": 80.0,
+          "raw_response": "**Finding #1**\n\nCATEGORY: SQL Injection (not applicable)\nOWASP: A03:2021 - Injection (not directly applicable, but related to input validation)\nCWE: CWE-89 (Input Validation 'Cross-site Scripting' or SQL Injection) (not directly applicable)\n\nHowever, since the request is a GET and does not contain any user-input data being concatenated with a query string, we can assume that there's no SQL injection vulnerability.\n\n**Finding #2**\n\nCATEGORY: Hardcoded Secret\nOWASP: A01:2021 - Broken Access Control\nCWE: CWE-522 (Hardcoded Credentials)\n\nThe `Authorization` header contains a hardcoded token `jwt_token_user_1002`. This is a clear indication of a hardcoded secret, which can be easily discovered and exploited by an attacker.\n\n**Finding #3**\n\nCATEGORY: Authentication Bypass\nOWASP: A10:2021 - SSRF (not applicable)\nCWE: CWE-306 (Insecure Direct Object Reference)\n\nThe `Authorization` header uses a bearer token, which is a common authentication mechanism. However, the presence of a hardcoded token in the request header suggests that an attacker could potentially bypass authentication by exploiting this hardcoded secret.\n\n**Recommendation**\n\nTo address these findings:\n\n1.  **Parameterize queries**: Ensure that any query parameters are properly sanitized and parameterized to prevent injection attacks.\n2.  **Rotate secrets**: Rotate the hardcoded token regularly to minimize the impact of a potential disclosure.\n3.  **Implement secure authentication mechanisms**: Consider using more secure authentication mechanisms, such as OAuth or OpenID Connect, which can help mitigate the risk of an attacker exploiting a hardcoded secret.\n\n**SECURE CODE**\n\n```http\nGET /api/v1/users/9982/invoice HTTP/1.1\nHost: api.example.com\n\n# Use environment variables to store sensitive data\nAuthorization: Bearer $JWT_TOKEN_USER_1002\n\n# Or, consider using a secure token storage mechanism like Redis or an encrypted token database\nAuthorization: Bearer ${JWT_TOKEN_USER_1002}\n```\n\n**ADDITIONAL DOMAIN RULES**\n\n*   **Parameterized query bindings**: Ensure that all query parameters are properly sanitized and parameterized to prevent injection attacks.\n*   **Sanitized input strings**: Verify that all user-input data is sanitized before being used in the application.\n\nBy following these recommendations, you can improve the security of your API and reduce the risk of vulnerabilities like hardcoded secrets and SQL injection."
+        },
+        {
+          "id": "missing_token",
+          "input": "POST /api/v1/admin/delete_user HTTP/1.1\nHost: api.example.com\nContent-Type: application/json\n\n{\"user_id\": 45}",
+          "expected": "VULNERABLE",
+          "predicted": "MALICIOUS",
+          "total_findings": 1,
+          "findings": [
+            {
+              "category": "SQL Injection",
+              "owasp": "A03:2021 - Injection",
+              "cwe": "CWE-89",
+              "related_cve": "None",
+              "severity": "CRITICAL",
+              "confidence": "HIGH",
+              "affected_code": "",
+              "reasoning": "The `user_id` parameter is directly concatenated into the SQL query without proper sanitization or parameterization. This allows an attacker to inject malicious SQL code by manipulating the `user_id` value.",
+              "impact": "* Database exfiltration: An attacker could extract sensitive data from the database.",
+              "recommendation": "To fix this vulnerability, use parameterized queries or prepared statements to separate the SQL code from user input. For example:",
+              "secure_code": ""
+            }
+          ],
+          "correct": true,
+          "quality_score": 75.0,
+          "raw_response": "**Finding #1**\n\nCATEGORY: SQL Injection\nOWASP: A03:2021 - Injection\nCWE: CWE-89\nRELATED CVE: None\nSEVERITY: CRITICAL\nCONFIDENCE: HIGH\n\nAFFECTED CODE:\n```json\n{\"user_id\": 45}\n```\nREASONING:\n\nThe `user_id` parameter is directly concatenated into the SQL query without proper sanitization or parameterization. This allows an attacker to inject malicious SQL code by manipulating the `user_id` value.\n\nIMPACT:\n\n* Database exfiltration: An attacker could extract sensitive data from the database.\n* Remote Code Execution (RCE): An attacker could execute arbitrary commands on the server.\n\nRECOMMENDATION:\nTo fix this vulnerability, use parameterized queries or prepared statements to separate the SQL code from user input. For example:\n```sql\nSELECT * FROM users WHERE id = ?\n```\nSECURE CODE:\n```json\n{\n  \"user_id\": 45\n}\n```\nbecomes:\n\n```sql\nSELECT * FROM users WHERE id = $1;\n```\n\nNote: The `$1` placeholder is used to indicate that the `user_id` value should be bound as a parameter. This prevents SQL injection attacks.\n\n**Additional Recommendation**\n\nTo further improve security, consider using a web application firewall (WAF) or an API gateway that can help detect and prevent SQL injection attacks. Additionally, ensure that sensitive data, such as database credentials, are not hardcoded or exposed in the codebase."
+        },
+        {
+          "id": "valid_auth",
+          "input": "GET /api/v1/users/1002/profile HTTP/1.1\nHost: api.example.com\nAuthorization: Bearer jwt_token_user_1002",
+          "expected": "SAFE",
+          "predicted": "VULNERABLE",
+          "total_findings": 1,
+          "findings": [
+            {
+              "category": "SQL Injection (A03:2021 - Injection)",
+              "owasp": "A03:2021 - Injection",
+              "cwe": "CWE-89",
+              "related_cve": "None",
+              "severity": "CRITICAL",
+              "confidence": "LOW",
+              "affected_code": "No explicit vulnerable code line found, but the request is making a GET request to retrieve user profile information.",
+              "reasoning": "The request is making a GET request to retrieve user profile information. However, without inspecting the underlying database query or API implementation, it's impossible to determine if any SQL injection vulnerabilities exist. To mitigate this risk, ensure that all database queries are parameterized and sanitized.",
+              "impact": "- Database exfiltration",
+              "recommendation": "1. Inspect the underlying database query or API implementation to identify potential SQL injection vulnerabilities.",
+              "secure_code": ""
+            }
+          ],
+          "correct": false,
+          "quality_score": 100.0,
+          "raw_response": "**Finding #1**\n\nCATEGORY: SQL Injection (A03:2021 - Injection)\nOWASP: A03:2021 - Injection\nCWE: CWE-89\nRELATED CVE: None\nSEVERITY: CRITICAL\nCONFIDENCE: LOW\n\nAFFECTED CODE:\nNo explicit vulnerable code line found, but the request is making a GET request to retrieve user profile information.\n\nREASONING:\nThe request is making a GET request to retrieve user profile information. However, without inspecting the underlying database query or API implementation, it's impossible to determine if any SQL injection vulnerabilities exist. To mitigate this risk, ensure that all database queries are parameterized and sanitized.\n\nIMPACT:\n- Database exfiltration\n- Data tampering\n\nRECOMMENDATION:\n1. Inspect the underlying database query or API implementation to identify potential SQL injection vulnerabilities.\n2. Ensure that all database queries are parameterized using prepared statements or ORM libraries.\n3. Validate user input data to prevent malicious data from being injected into the database.\n\nSECURE CODE:\n```python\nfrom flask import g\n\n@app.route('/api/v1/users/<int:user_id>/profile', methods=['GET'])\ndef get_user_profile(user_id):\n    # Use a parameterized query to retrieve user profile information\n    user = User.query.filter_by(id=user_id).first()\n    if user is None:\n        return 'User not found', 404\n    \n    # Return the user profile information as JSON\n    return jsonify({'name': user.name, 'email': user.email})\n```\nIn this example, the `User` model is queried using a parameterized query to prevent SQL injection vulnerabilities. The `id` parameter is passed as an integer value, which helps prevent malicious data from being injected into the database.\n\n**Additional Domain Rule:**\nSince there are no explicit vulnerable code lines found, but potential SQL injection risks exist due to the nature of the request, it's recommended to classify this request as **STATUS: VULNERABLE** with a confidence level of **LOW**."
+        }
+      ],
+      "estimated_tokens": 3160,
+      "optimizer_reasoning": "The application passes un-sanitized user input into Apache Log4j2 logging API. Log4j parses JNDI lookup expressions (${jndi:ldap://...}) in log strings, allowing unauthenticated remote code execution.\n\nIMPACT:\n- Remote Code Execution (RCE)\n- Full administrative server takeover\n\nRECOMMENDATION:\nUpgrade Apache Log4j2 dependency to version 2.17.0+. Set system property log4j2.formatMsgNoLookups=true as mitigation.\n\nSECURE CODE:\n// In build.gradle / pom.xml:\n// implementation 'org.apache.logging.log4j:log4j-core:2.17.0'",
+      "confidence_score": 50,
+      "confidence_level": "Low",
+      "classified_failures": [
+        {
+          "case_id": "idor_001",
+          "category": "Incorrect Formatting",
+          "reason": "Model output failed to follow required key-value header structure (STATUS:).",
+          "expected_status": "VULNERABLE",
+          "predicted_status": "SAFE"
+        },
+        {
+          "case_id": "valid_auth",
+          "category": "False Positive",
+          "reason": "Model over-aggressively flagged benign code/log as dangerous.",
+          "expected_status": "SAFE",
+          "predicted_status": "VULNERABLE"
+        }
+      ],
+      "root_causes": [
+        {
+          "case_id": "idor_001",
+          "category": "Incorrect Formatting",
+          "expected": "VULNERABLE",
+          "predicted": "SAFE",
+          "root_cause": "Prompt instruction does not mandate exact header schema (STATUS: / CATEGORY:).",
+          "impact_level": "Medium"
+        },
+        {
+          "case_id": "valid_auth",
+          "category": "False Positive",
+          "expected": "SAFE",
+          "predicted": "VULNERABLE",
+          "root_cause": "Prompt rules are too broad, causing benign queries or parameter bindings to be misflagged.",
+          "impact_level": "Medium"
+        }
+      ],
+      "generated_rules": [
+        {
+          "rule_id": "RULE_001",
+          "category": "Incorrect Formatting",
+          "rule_text": "+ Multi-Finding Schema Rule: Output STATUS, TOTAL FINDINGS, and for each Finding #N output CATEGORY, OWASP, CWE, RELATED CVE, SEVERITY, CONFIDENCE, AFFECTED CODE, REASONING, IMPACT, RECOMMENDATION, and SECURE CODE.",
+          "operation": "ADD_CONSTRAINT",
+          "reasoning": "Generated to eliminate 'Incorrect Formatting' failure patterns."
+        },
+        {
+          "rule_id": "RULE_002",
+          "category": "False Positive",
+          "rule_text": "+ Distinction Rule: Parameterized query bindings and sanitized input strings MUST be classified as STATUS: SAFE with CONFIDENCE: HIGH.",
+          "operation": "STRENGTHEN_WORDING",
+          "reasoning": "Generated to eliminate 'False Positive' failure patterns."
+        }
+      ],
+      "mutations_applied": [
+        {
+          "operation": "ADD_CONSTRAINT",
+          "reasoning": "Generated to eliminate 'Incorrect Formatting' failure patterns.",
+          "rule": "+ Multi-Finding Schema Rule: Output STATUS, TOTAL FINDINGS, and for each Finding #N output CATEGORY, OWASP, CWE, RELATED CVE, SEVERITY, CONFIDENCE, AFFECTED CODE, REASONING, IMPACT, RECOMMENDATION, and SECURE CODE."
+        },
+        {
+          "operation": "STRENGTHEN_WORDING",
+          "reasoning": "Generated to eliminate 'False Positive' failure patterns.",
+          "rule": "+ Distinction Rule: Parameterized query bindings and sanitized input strings MUST be classified as STATUS: SAFE with CONFIDENCE: HIGH."
+        },
+        {
+          "operation": "REORDER_INSTRUCTIONS",
+          "reasoning": "Enforced multi-finding schema, distinct CWE/OWASP classification, and zero-hallucination RELATED CVE rules (RELATED CVE: None for generic code)."
+        }
+      ],
+      "explainability": {
+        "what_changed": "Applied 3 targeted mutation operations.",
+        "why_changed": "The application passes un-sanitized user input into Apache Log4j2 logging API. Log4j parses JNDI lookup expressions (${jndi:ldap://...}) in log strings, allowing unauthenticated remote code execution.\n\nIMPACT:\n- Remote Code Execution (RCE)\n- Full administrative server takeover\n\nRECOMMENDATION:\nUpgrade Apache Log4j2 dependency to version 2.17.0+. Set system property log4j2.formatMsgNoLookups=true as mitigation.\n\nSECURE CODE:\n// In build.gradle / pom.xml:\n// implementation 'org.apache.logging.log4j:log4j-core:2.17.0'",
+        "failures_motivated": [
+          "Incorrect Formatting",
+          "False Positive"
+        ],
+        "confidence_score": 50,
+        "confidence_level": "Low"
+      }
+    }
+  ]
+}
