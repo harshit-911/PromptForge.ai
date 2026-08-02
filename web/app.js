@@ -669,12 +669,25 @@ function openAddBenchmarkModal() {
 
   switchAddBenchmarkTab('file');
   renderAddBenchmarkRowsInline();
-  document.getElementById("add-benchmark-modal")?.classList.add("active");
+  
+  const modalEl = document.getElementById("add-benchmark-modal");
+  if (modalEl) {
+    modalEl.style.display = "flex";
+    modalEl.classList.add("active");
+  }
 }
 
 function closeAddBenchmarkModal(e) {
-  if (!e || e.target.id === "add-benchmark-modal" || e.target.classList.contains("modal-close")) {
-    document.getElementById("add-benchmark-modal")?.classList.remove("active");
+  if (!e || e.target.id === "add-benchmark-modal" || (e.target && e.target.classList && e.target.classList.contains("modal-close"))) {
+    const modalEl = document.getElementById("add-benchmark-modal");
+    if (modalEl) {
+      modalEl.classList.remove("active");
+      setTimeout(() => {
+        if (!modalEl.classList.contains("active")) {
+          modalEl.style.display = "none";
+        }
+      }, 250);
+    }
   }
 }
 
