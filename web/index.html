@@ -148,84 +148,7 @@
     </div>
   </div>
 
-  <!-- STREAMLINED BENCHMARK CREATION MODAL -->
-  <div id="add-benchmark-modal" class="modal-overlay" onclick="closeAddBenchmarkModal(event)" style="display:none;">
-    <div class="modal-content" style="max-width: 650px;" onclick="event.stopPropagation()">
-      <div class="modal-header">
-        <div>
-          <h2 style="font-family:var(--font-display); font-size:1.25rem;">Add Security Benchmark Suite</h2>
-          <p style="font-size:0.85rem; color:var(--text-muted); margin-top:2px;">Create custom benchmark datasets via File Import, Manual Payload, or AI Generation.</p>
-        </div>
-        <button class="modal-close" onclick="closeAddBenchmarkModal()">✕</button>
-      </div>
 
-      <!-- METADATA FORM -->
-      <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem; margin-bottom:1rem;">
-        <div class="form-group">
-          <label>Benchmark Identifier (Slug)</label>
-          <input type="text" id="add-bm-id" placeholder="e.g. custom_jwt_auth">
-        </div>
-        <div class="form-group">
-          <label>Domain Category</label>
-          <select id="add-bm-category">
-            <option value="OWASP Vulnerabilities">OWASP Code Audit</option>
-            <option value="Real CVE Vulnerabilities">Real CVE Records</option>
-            <option value="Data Privacy & PII">Data Privacy & PII</option>
-            <option value="AI Safety & DAN Jailbreaks">AI Safety & DAN Jailbreaks</option>
-            <option value="Cloud & Infrastructure">Cloud & Infrastructure</option>
-          </select>
-        </div>
-      </div>
-
-      <div class="form-group" style="margin-bottom:1rem;">
-        <label>Short Description</label>
-        <input type="text" id="add-bm-desc" placeholder="e.g. Custom JWT authentication and payload audit test suite">
-      </div>
-
-      <div class="form-group" style="margin-bottom:1.25rem;">
-        <label>Baseline Seed Prompt</label>
-        <textarea id="add-bm-prompt" class="code-input" style="min-height:70px;" placeholder="e.g. You are a security auditor. State whether the input is SAFE or VULNERABLE."></textarea>
-      </div>
-
-      <!-- CREATION METHOD TAB STRIP -->
-      <div style="display:flex; gap:6px; background:var(--bg-input); padding:4px; border-radius:30px; margin-bottom:1rem; border:1px solid var(--border-hairline);">
-        <button class="preset-btn active" id="add-bm-tab-file" onclick="switchAddBenchmarkTab('file')" style="flex:1;">📁 File Import (.json, .csv)</button>
-        <button class="preset-btn" id="add-bm-tab-manual" onclick="switchAddBenchmarkTab('manual')" style="flex:1;">📝 Test Rows</button>
-        <button class="preset-btn" id="add-bm-tab-ai" onclick="switchAddBenchmarkTab('ai')" style="flex:1;">✨ AI Generator</button>
-      </div>
-
-      <!-- TAB 1: FILE IMPORT -->
-      <div id="add-bm-pane-file" style="display:block;">
-        <div style="border:2px dashed var(--border-hairline); padding:1.5rem; text-align:center; border-radius:10px; background:var(--bg-input);">
-          <input type="file" id="add-bm-file-input" accept=".json,.csv,.txt" style="display:none;" onchange="handleAddBenchmarkFile(event)">
-          <button class="copy-btn" onclick="document.getElementById('add-bm-file-input').click()">Browse JSON / CSV File...</button>
-          <div style="font-size:0.8rem; color:var(--text-muted); margin-top:8px;" id="add-bm-filename-text">Supports .json arrays and .csv (ID, Status, Payload)</div>
-        </div>
-      </div>
-
-      <!-- TAB 2: MANUAL TEST ROWS -->
-      <div id="add-bm-pane-manual" style="display:none;">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
-          <span style="font-size:0.8rem; font-weight:700; color:var(--text-muted);">TEST CASE PAYLOADS</span>
-          <button class="copy-btn" style="padding:2px 8px; font-size:0.75rem;" onclick="addBenchmarkRowInline()">+ Add Test Row</button>
-        </div>
-        <div id="add-bm-rows-container" style="max-height:160px; overflow-y:auto; display:flex; flex-direction:column; gap:8px;"></div>
-      </div>
-
-      <!-- TAB 3: AI GENERATION -->
-      <div id="add-bm-pane-ai" style="display:none; background:var(--bg-input); padding:1rem; border-radius:10px; border:1px solid var(--border-hairline);">
-        <p style="font-size:0.85rem; color:var(--text-secondary); margin-bottom:10px;">Click below to automatically generate realistic test case payloads for this benchmark category using AI.</p>
-        <button class="copy-btn" style="color:var(--accent-purple); border-color:rgba(168,85,247,0.3); width:100%;" onclick="generateAIBenchmarkCases()">✨ Auto-Generate Test Cases with AI</button>
-      </div>
-
-      <div id="add-bm-error-box" style="display:none; color:#ef4444; font-size:0.85rem; background:rgba(239,68,68,0.1); padding:10px; border-radius:6px; margin-top:1rem;"></div>
-
-      <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:1.25rem; border-top:1px solid var(--border-hairline); padding-top:1rem;">
-        <button class="copy-btn" onclick="closeAddBenchmarkModal()">Cancel</button>
-        <button class="btn-primary" onclick="submitAddBenchmark()"><span>Publish Benchmark Suite ➔</span></button>
-      </div>
-    </div>
-  </div>
 
   <!-- SETTINGS MODAL DIALOG -->
   <div id="settings-modal" class="modal-overlay" onclick="closeSettingsModal(event)">
@@ -529,7 +452,6 @@
         </div>
         <div style="display:flex; gap:10px;">
           <button class="copy-btn" onclick="copyGeneratorPrompt()">Copy AI Generator Prompt</button>
-          <button class="btn-primary" onclick="openAddBenchmarkModal()"><span>+ Add Benchmark Suite ➔</span></button>
         </div>
       </div>
 
