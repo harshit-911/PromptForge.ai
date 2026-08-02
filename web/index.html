@@ -148,146 +148,81 @@
     </div>
   </div>
 
-  <!-- 6-STEP BENCHMARK CREATION WIZARD MODAL -->
-  <div id="bm-wizard-modal" class="modal-overlay" onclick="closeWizardModal(event)">
-    <div class="modal-content wizard-modal-content" onclick="event.stopPropagation()">
+  <!-- STREAMLINED BENCHMARK CREATION MODAL -->
+  <div id="add-benchmark-modal" class="modal-overlay" onclick="closeAddBenchmarkModal(event)">
+    <div class="modal-content" style="max-width: 650px;" onclick="event.stopPropagation()">
       <div class="modal-header">
         <div>
-          <h2 style="font-family:var(--font-display); font-size:1.3rem;">Create Security Benchmark Wizard</h2>
-          <p style="font-size:0.85rem; color:var(--text-muted); margin-top:2px;">Step-by-step wizard for creating, validating, and publishing custom security test suites.</p>
+          <h2 style="font-family:var(--font-display); font-size:1.25rem;">Add Security Benchmark Suite</h2>
+          <p style="font-size:0.85rem; color:var(--text-muted); margin-top:2px;">Create custom benchmark datasets via File Import, Manual Payload, or AI Generation.</p>
         </div>
-        <button class="modal-close" onclick="closeWizardModal()">✕</button>
+        <button class="modal-close" onclick="closeAddBenchmarkModal()">✕</button>
       </div>
 
-      <div class="wizard-steps-bar">
-        <div class="wizard-step-node active" id="wiz-node-1"><div class="step-circle">1</div><span>General</span></div>
-        <div class="wizard-step-node" id="wiz-node-2"><div class="step-circle">2</div><span>Category</span></div>
-        <div class="wizard-step-node" id="wiz-node-3"><div class="step-circle">3</div><span>Import/Cases</span></div>
-        <div class="wizard-step-node" id="wiz-node-4"><div class="step-circle">4</div><span>Validation</span></div>
-        <div class="wizard-step-node" id="wiz-node-5"><div class="step-circle">5</div><span>Preview</span></div>
-        <div class="wizard-step-node" id="wiz-node-6"><div class="step-circle">6</div><span>Confirm</span></div>
-      </div>
-
-      <div id="wizard-step-content-container" style="min-height: 280px; margin-bottom: 1.5rem;">
-        <div class="wiz-step-pane" id="wiz-pane-1">
-          <div style="display:grid; grid-template-columns:1fr 1fr; gap:1.25rem; margin-bottom:1rem;">
-            <div class="form-group"><label>Benchmark Identifier</label><input type="text" id="wiz-id" placeholder="e.g. custom_api_security"></div>
-            <div class="form-group"><label>Security Label</label>
-              <select id="wiz-icon">
-                <option value="[SEC]">[SEC] General Security</option>
-                <option value="[VULN]">[VULN] OWASP Exploit</option>
-                <option value="[CVE]">[CVE] MITRE Record</option>
-                <option value="[PII]">[PII] Privacy & PII</option>
-              </select>
-            </div>
-          </div>
-          <div class="form-group" style="margin-bottom:1rem;"><label>Short Description</label><input type="text" id="wiz-desc" placeholder="e.g. Custom API authorization test suite"></div>
-          <div class="form-group"><label>Starting Seed Prompt</label><textarea id="wiz-prompt" class="code-input" style="min-height:90px;" placeholder="e.g. You are a security auditor."></textarea></div>
+      <!-- METADATA FORM -->
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem; margin-bottom:1rem;">
+        <div class="form-group">
+          <label>Benchmark Identifier (Slug)</label>
+          <input type="text" id="add-bm-id" placeholder="e.g. custom_jwt_auth">
         </div>
-
-        <div class="wiz-step-pane" id="wiz-pane-2" style="display:none;">
-          <div style="display:grid; grid-template-columns:1fr 1fr; gap:1.25rem; margin-bottom:1rem;">
-            <div class="form-group"><label>Primary Threat Category</label>
-              <select id="wiz-category">
-                <option value="OWASP Vulnerabilities">OWASP Code Audit</option>
-                <option value="Real CVE Vulnerabilities">Real CVE Records</option>
-                <option value="Data Privacy & PII">Data Privacy & PII</option>
-                <option value="AI Safety & DAN Jailbreaks">AI Safety & DAN Jailbreaks</option>
-              </select>
-            </div>
-            <div class="form-group"><label>Difficulty Rating</label>
-              <select id="wiz-difficulty"><option value="Easy">Easy</option><option value="Medium" selected>Medium</option><option value="Hard">Hard</option><option value="Expert">Expert</option></select>
-            </div>
-          </div>
-          <div style="display:grid; grid-template-columns:1fr 1fr; gap:1.25rem;">
-            <div class="form-group"><label>Dataset Source</label><input type="text" id="wiz-source" value="User Custom"></div>
-            <div class="form-group"><label>Estimated Time</label><input type="text" id="wiz-runtime" value="~1.2s"></div>
-          </div>
+        <div class="form-group">
+          <label>Domain Category</label>
+          <select id="add-bm-category">
+            <option value="OWASP Vulnerabilities">OWASP Code Audit</option>
+            <option value="Real CVE Vulnerabilities">Real CVE Records</option>
+            <option value="Data Privacy & PII">Data Privacy & PII</option>
+            <option value="AI Safety & DAN Jailbreaks">AI Safety & DAN Jailbreaks</option>
+            <option value="Cloud & Infrastructure">Cloud & Infrastructure</option>
+          </select>
         </div>
-
-        <div class="wiz-step-pane" id="wiz-pane-3" style="display:none;">
-          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
-            <span style="font-family:var(--font-display); font-size:0.9rem; font-weight:700;">Test Cases Payloads</span>
-            <div style="display:flex; gap:8px;">
-              <button class="copy-btn" onclick="openImportModalFromWizard()">Import JSON/CSV</button>
-              <button class="copy-btn" onclick="addWizardTestCaseRow()">Add Test Row</button>
-            </div>
-          </div>
-          <div id="wiz-cases-container" style="max-height:220px; overflow-y:auto;"></div>
-        </div>
-
-        <div class="wiz-step-pane" id="wiz-pane-4" style="display:none;">
-          <div style="font-family:var(--font-display); font-size:0.9rem; font-weight:700; margin-bottom:0.75rem;">Automated Dataset Validation & Health Audit</div>
-          <div class="validation-panel" id="wiz-validation-results"></div>
-        </div>
-
-        <div class="wiz-step-pane" id="wiz-pane-5" style="display:none;">
-          <div style="font-family:var(--font-display); font-size:0.9rem; font-weight:700; margin-bottom:0.75rem;">Dataset Preview Table</div>
-          <div id="wiz-preview-table-container"></div>
-        </div>
-
-        <div class="wiz-step-pane" id="wiz-pane-6" style="display:none;">
-          <div style="background:var(--bg-input); padding:1.25rem; border-radius:8px; border:1px solid var(--border-hairline);">
-            <h3 style="font-family:var(--font-display); color:var(--accent-emerald); margin-bottom:0.5rem;">Ready to Publish Benchmark Dataset</h3>
-            <div id="wiz-summary-review" style="font-size:0.85rem; color:var(--text-secondary);"></div>
-          </div>
-        </div>
-      </div>
-
-      <div style="display:flex; justify-content:space-between; align-items:center; border-top:1px solid var(--border-hairline); padding-top:1rem;">
-        <button class="copy-btn" id="wiz-prev-btn" onclick="wizPrevStep()" style="display:none;">Back</button>
-        <div style="display:flex; gap:10px; margin-left:auto;">
-          <button class="copy-btn" onclick="closeWizardModal()">Cancel</button>
-          <button class="btn-primary" id="wiz-next-btn" onclick="wizNextStep()">Next Step ➔</button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- DATASET IMPORT MODAL -->
-  <div id="dataset-import-modal" class="modal-overlay" onclick="closeImportModal(event)">
-    <div class="modal-content" onclick="event.stopPropagation()">
-      <div class="modal-header">
-        <h2>Import Security Dataset File</h2>
-        <button class="modal-close" onclick="toggleImportModal()">✕</button>
       </div>
 
       <div class="form-group" style="margin-bottom:1rem;">
-        <label>Select Format</label>
-        <select id="import-format-select">
-          <option value="json">JSON Format (Array of {id, input, expected_status})</option>
-          <option value="csv">CSV Format (Test_Case_ID, Expected_Status, Input_Payload)</option>
-          <option value="txt">TXT Plain Text (Line by line test inputs)</option>
-        </select>
+        <label>Short Description</label>
+        <input type="text" id="add-bm-desc" placeholder="e.g. Custom JWT authentication and payload audit test suite">
       </div>
 
-      <div style="border:2px dashed var(--border-hairline); padding:2rem; text-align:center; border-radius:8px; margin-bottom:1rem; background:var(--bg-input);">
-        <input type="file" id="import-file-input" accept=".json,.csv,.txt" style="display:none;" onchange="handleFileSelected(event)">
-        <button class="copy-btn" onclick="document.getElementById('import-file-input').click()">Browse File...</button>
-        <div style="font-size:0.8rem; color:var(--text-muted); margin-top:8px;" id="import-filename-text">Supports .json, .csv, .txt files</div>
+      <div class="form-group" style="margin-bottom:1.25rem;">
+        <label>Baseline Seed Prompt</label>
+        <textarea id="add-bm-prompt" class="code-input" style="min-height:70px;" placeholder="e.g. You are a security auditor. State whether the input is SAFE or VULNERABLE."></textarea>
       </div>
 
-      <div id="import-error-box" style="display:none; color:#ef4444; font-size:0.85rem; background:rgba(239, 68, 68, 0.1); padding:10px; border-radius:6px; margin-bottom:1rem;"></div>
-
-      <div style="display:flex; justify-content:flex-end; gap:10px;">
-        <button class="copy-btn" onclick="toggleImportModal()">Cancel</button>
-        <button class="btn-primary" onclick="processDatasetImport()">Import Dataset ➔</button>
+      <!-- CREATION METHOD TAB STRIP -->
+      <div style="display:flex; gap:6px; background:var(--bg-input); padding:4px; border-radius:30px; margin-bottom:1rem; border:1px solid var(--border-hairline);">
+        <button class="preset-btn active" id="add-bm-tab-file" onclick="switchAddBenchmarkTab('file')" style="flex:1;">📁 File Import (.json, .csv)</button>
+        <button class="preset-btn" id="add-bm-tab-manual" onclick="switchAddBenchmarkTab('manual')" style="flex:1;">📝 Test Rows</button>
+        <button class="preset-btn" id="add-bm-tab-ai" onclick="switchAddBenchmarkTab('ai')" style="flex:1;">✨ AI Generator</button>
       </div>
-    </div>
-  </div>
 
-  <!-- RENAME BENCHMARK MODAL -->
-  <div id="rename-bm-modal" class="modal-overlay" onclick="closeRenameModal(event)">
-    <div class="modal-content" onclick="event.stopPropagation()">
-      <div class="modal-header">
-        <h2>Rename Benchmark Dataset</h2>
-        <button class="modal-close" onclick="toggleRenameModal()">✕</button>
+      <!-- TAB 1: FILE IMPORT -->
+      <div id="add-bm-pane-file" style="display:block;">
+        <div style="border:2px dashed var(--border-hairline); padding:1.5rem; text-align:center; border-radius:10px; background:var(--bg-input);">
+          <input type="file" id="add-bm-file-input" accept=".json,.csv,.txt" style="display:none;" onchange="handleAddBenchmarkFile(event)">
+          <button class="copy-btn" onclick="document.getElementById('add-bm-file-input').click()">Browse JSON / CSV File...</button>
+          <div style="font-size:0.8rem; color:var(--text-muted); margin-top:8px;" id="add-bm-filename-text">Supports .json arrays and .csv (ID, Status, Payload)</div>
+        </div>
       </div>
-      <div class="form-group" style="margin-bottom:1rem;"><label>New Benchmark Name</label><input type="text" id="rename-bm-title"></div>
-      <div class="form-group" style="margin-bottom:1.5rem;"><label>Description</label><input type="text" id="rename-bm-desc"></div>
-      <div style="display:flex; justify-content:flex-end; gap:10px;">
-        <button class="copy-btn" onclick="toggleRenameModal()">Cancel</button>
-        <button class="btn-primary" onclick="submitBenchmarkRename()">Save Changes</button>
+
+      <!-- TAB 2: MANUAL TEST ROWS -->
+      <div id="add-bm-pane-manual" style="display:none;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+          <span style="font-size:0.8rem; font-weight:700; color:var(--text-muted);">TEST CASE PAYLOADS</span>
+          <button class="copy-btn" style="padding:2px 8px; font-size:0.75rem;" onclick="addBenchmarkRowInline()">+ Add Test Row</button>
+        </div>
+        <div id="add-bm-rows-container" style="max-height:160px; overflow-y:auto; display:flex; flex-direction:column; gap:8px;"></div>
+      </div>
+
+      <!-- TAB 3: AI GENERATION -->
+      <div id="add-bm-pane-ai" style="display:none; background:var(--bg-input); padding:1rem; border-radius:10px; border:1px solid var(--border-hairline);">
+        <p style="font-size:0.85rem; color:var(--text-secondary); margin-bottom:10px;">Click below to automatically generate realistic test case payloads for this benchmark category using AI.</p>
+        <button class="copy-btn" style="color:var(--accent-purple); border-color:rgba(168,85,247,0.3); width:100%;" onclick="generateAIBenchmarkCases()">✨ Auto-Generate Test Cases with AI</button>
+      </div>
+
+      <div id="add-bm-error-box" style="display:none; color:#ef4444; font-size:0.85rem; background:rgba(239,68,68,0.1); padding:10px; border-radius:6px; margin-top:1rem;"></div>
+
+      <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:1.25rem; border-top:1px solid var(--border-hairline); padding-top:1rem;">
+        <button class="copy-btn" onclick="closeAddBenchmarkModal()">Cancel</button>
+        <button class="btn-primary" onclick="submitAddBenchmark()"><span>Publish Benchmark Suite ➔</span></button>
       </div>
     </div>
   </div>
@@ -594,8 +529,7 @@
         </div>
         <div style="display:flex; gap:10px;">
           <button class="copy-btn" onclick="copyGeneratorPrompt()">Copy AI Generator Prompt</button>
-          <button class="copy-btn" onclick="toggleImportModal()">Import Dataset</button>
-          <button class="btn-primary" onclick="openWizardModal()">Create Benchmark Wizard</button>
+          <button class="btn-primary" onclick="openAddBenchmarkModal()"><span>+ Add Benchmark Suite ➔</span></button>
         </div>
       </div>
 

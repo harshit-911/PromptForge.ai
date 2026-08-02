@@ -644,264 +644,184 @@ async function submitBenchmarkRename() {
   }
 }
 
-function openWizardModal() {
+let addBenchmarkActiveTab = 'file';
+let addBenchmarkFileData = null;
+let addBenchmarkRows = [];
+
+function openAddBenchmarkModal() {
   playClickSound();
-  wizardStep = 1;
-  wizardData = {
-    id: `custom_bm_${Date.now().toString().slice(-4)}`,
-    name: 'Custom Benchmark',
-    description: 'Custom security test suite',
-    seed_prompt: 'You are a security auditor. Review the input and state whether it is SAFE or VULNERABLE.',
-    icon: '[SEC]', category: 'OWASP Vulnerabilities', difficulty: 'Medium', source: 'User Custom', runtime: '~1.2s',
-    test_cases: [
-      { id: 'case_001', input: 'def query(user): return f"SELECT * FROM users WHERE name = \'{user}\'"', expected_status: 'VULNERABLE', expected_category: 'SQLi' }
-    ]
-  };
+  addBenchmarkActiveTab = 'file';
+  addBenchmarkFileData = null;
+  addBenchmarkRows = [
+    { id: 'case_001', input: 'def get_user(name): return db.execute(f"SELECT * FROM users WHERE name=\'{name}\'")', expected_status: 'VULNERABLE' }
+  ];
+  
+  const idEl = document.getElementById("add-bm-id");
+  const descEl = document.getElementById("add-bm-desc");
+  const promptEl = document.getElementById("add-bm-prompt");
+  const errEl = document.getElementById("add-bm-error-box");
+  const fileTextEl = document.getElementById("add-bm-filename-text");
 
-  document.getElementById("wiz-id").value = wizardData.id;
-  document.getElementById("wiz-desc").value = wizardData.description;
-  document.getElementById("wiz-prompt").value = wizardData.seed_prompt;
+  if (idEl) idEl.value = `custom_audit_${Date.now().toString().slice(-4)}`;
+  if (descEl) descEl.value = "Custom security audit benchmark suite";
+  if (promptEl) promptEl.value = "You are a Senior Vulnerability Security Auditor. Review the code snippet below and state whether it is SAFE or VULNERABLE.";
+  if (errEl) errEl.style.display = "none";
+  if (fileTextEl) fileTextEl.textContent = "Supports .json arrays and .csv (ID, Status, Payload)";
 
-  renderWizardStep();
-  document.getElementById("bm-wizard-modal").classList.add("active");
+  switchAddBenchmarkTab('file');
+  renderAddBenchmarkRowsInline();
+  document.getElementById("add-benchmark-modal")?.classList.add("active");
 }
 
-function closeWizardModal(e) {
-  if (!e || e.target.id === "bm-wizard-modal" || e.target.classList.contains("modal-close")) {
-    document.getElementById("bm-wizard-modal").classList.remove("active");
+function closeAddBenchmarkModal(e) {
+  if (!e || e.target.id === "add-benchmark-modal" || e.target.classList.contains("modal-close")) {
+    document.getElementById("add-benchmark-modal")?.classList.remove("active");
   }
 }
 
-function renderWizardStep() {
-  for (let i = 1; i <= 6; i++) {
-    const node = document.getElementById(`wiz-node-${i}`);
-    const pane = document.getElementById(`wiz-pane-${i}`);
-    if (node) {
-      node.classList.remove("active", "completed");
-      if (i < wizardStep) node.classList.add("completed");
-      else if (i === wizardStep) node.classList.add("active");
+function switchAddBenchmarkTab(tab) {
+  playClickSound();
+  addBenchmarkActiveTab = tab;
+  document.getElementById("add-bm-tab-file")?.classList.toggle("active", tab === 'file');
+  document.getElementById("add-bm-tab-manual")?.classList.toggle("active", tab === 'manual');
+  document.getElementById("add-bm-tab-ai")?.classList.toggle("active", tab === 'ai');
+
+  const paneFile = document.getElementById("add-bm-pane-file");
+  const paneManual = document.getElementById("add-bm-pane-manual");
+  const paneAi = document.getElementById("add-bm-pane-ai");
+
+  if (paneFile) paneFile.style.display = (tab === 'file') ? "block" : "none";
+  if (paneManual) paneManual.style.display = (tab === 'manual') ? "block" : "none";
+  if (paneAi) paneAi.style.display = (tab === 'ai') ? "block" : "none";
+}
+
+function handleAddBenchmarkFile(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  const fileTextEl = document.getElementById("add-bm-filename-text");
+  if (fileTextEl) fileTextEl.textContent = `Selected File: ${file.name} (${Math.round(file.size / 1024)} KB)`;
+  
+  const reader = new FileReader();
+  reader.onload = (evt) => {
+    const raw = evt.target.result;
+    try {
+      if (file.name.endsWith(".json")) {
+        const parsed = JSON.parse(raw);
+        addBenchmarkFileData = Array.isArray(parsed) ? parsed : (parsed.test_cases || [parsed]);
+      } else if (file.name.endsWith(".csv")) {
+        const lines = raw.split("\n").filter(l => l.trim());
+        addBenchmarkFileData = lines.slice(1).map((line, idx) => {
+          const parts = line.split(",");
+          return { id: parts[0] || `case_${idx+1}`, expected_status: parts[1] || 'VULNERABLE', input: parts.slice(2).join(",") };
+        });
+      }
+      logActivity("[FILE]", `Parsed benchmark import file '${file.name}'.`);
+    } catch (err) {
+      alert("Error parsing file: " + err.message);
     }
-    if (pane) pane.style.display = (i === wizardStep) ? "block" : "none";
-  }
-
-  const prevBtn = document.getElementById("wiz-prev-btn");
-  const nextBtn = document.getElementById("wiz-next-btn");
-  if (prevBtn) prevBtn.style.display = wizardStep > 1 ? "inline-block" : "none";
-  if (nextBtn) nextBtn.textContent = (wizardStep === 6) ? "Publish Benchmark Suite ➔" : "Next Step ➔";
-
-  if (wizardStep === 3) renderWizardTestCasesRows();
-  if (wizardStep === 4) runWizardValidationDiagnostics();
-  if (wizardStep === 5) renderWizardPreviewTable();
-  if (wizardStep === 6) renderWizardSummaryReview();
+  };
+  reader.readAsText(file);
 }
 
-function wizNextStep() {
-  saveCurrentWizardStepData();
-  if (wizardStep < 6) {
-    wizardStep++;
-    renderWizardStep();
-  } else {
-    submitWizardBenchmark();
-  }
-}
-
-function wizPrevStep() {
-  saveCurrentWizardStepData();
-  if (wizardStep > 1) {
-    wizardStep--;
-    renderWizardStep();
-  }
-}
-
-function saveCurrentWizardStepData() {
-  if (wizardStep === 1) {
-    wizardData.id = document.getElementById("wiz-id").value.trim() || wizardData.id;
-    wizardData.name = wizardData.id;
-    wizardData.description = document.getElementById("wiz-desc").value.trim() || wizardData.description;
-    wizardData.seed_prompt = document.getElementById("wiz-prompt").value.trim() || wizardData.seed_prompt;
-    wizardData.icon = document.getElementById("wiz-icon").value;
-  } else if (wizardStep === 2) {
-    wizardData.category = document.getElementById("wiz-category").value;
-    wizardData.difficulty = document.getElementById("wiz-difficulty").value;
-    wizardData.source = document.getElementById("wiz-source").value;
-    wizardData.runtime = document.getElementById("wiz-runtime").value;
-  }
-}
-
-function renderWizardTestCasesRows() {
-  const container = document.getElementById("wiz-cases-container");
+function renderAddBenchmarkRowsInline() {
+  const container = document.getElementById("add-bm-rows-container");
   if (!container) return;
   container.innerHTML = "";
 
-  wizardData.test_cases.forEach((tc, idx) => {
+  addBenchmarkRows.forEach((tc, idx) => {
     const row = document.createElement("div");
-    row.style.cssText = "display:grid; grid-template-columns: 3fr 1.5fr auto; gap:10px; margin-bottom:10px;";
+    row.style.cssText = "display:grid; grid-template-columns: 3fr 1.5fr auto; gap:8px;";
     row.innerHTML = `
-      <textarea class="code-input" style="min-height:60px;" placeholder="Test Case Payload..." onchange="wizardData.test_cases[${idx}].input = this.value">${tc.input}</textarea>
-      <select onchange="wizardData.test_cases[${idx}].expected_status = this.value">
+      <textarea class="code-input" style="min-height:48px; font-size:0.85rem;" placeholder="Test payload..." onchange="addBenchmarkRows[${idx}].input = this.value">${tc.input}</textarea>
+      <select style="font-size:0.85rem; padding:8px;" onchange="addBenchmarkRows[${idx}].expected_status = this.value">
         <option value="VULNERABLE" ${tc.expected_status.includes("VULNERABLE") ? "selected" : ""}>VULNERABLE</option>
         <option value="SAFE" ${tc.expected_status.includes("SAFE") ? "selected" : ""}>SAFE</option>
       </select>
-      <button class="copy-btn" style="color:#ef4444;" onclick="removeWizardTestCaseRow(${idx})">✕</button>
+      <button class="copy-btn" style="color:#ef4444; border-color:rgba(239,68,68,0.3); font-size:0.8rem;" onclick="removeAddBenchmarkRowInline(${idx})">✕</button>
     `;
     container.appendChild(row);
   });
 }
 
-function addWizardTestCaseRow() {
-  wizardData.test_cases.push({
-    id: `case_${String(wizardData.test_cases.length + 1).padStart(3, '0')}`,
-    input: '', expected_status: 'VULNERABLE', expected_category: wizardData.category
-  });
-  renderWizardTestCasesRows();
+function addBenchmarkRowInline() {
+  addBenchmarkRows.push({ id: `case_${String(addBenchmarkRows.length + 1).padStart(3, '0')}`, input: '', expected_status: 'VULNERABLE' });
+  renderAddBenchmarkRowsInline();
 }
 
-function removeWizardTestCaseRow(idx) {
-  wizardData.test_cases.splice(idx, 1);
-  renderWizardTestCasesRows();
+function removeAddBenchmarkRowInline(idx) {
+  addBenchmarkRows.splice(idx, 1);
+  renderAddBenchmarkRowsInline();
 }
 
-function runWizardValidationDiagnostics() {
-  const container = document.getElementById("wiz-validation-results");
-  if (!container) return;
-
-  const checks = [
-    { name: "Benchmark ID Format", pass: !!wizardData.id, detail: wizardData.id ? `Valid ID '${wizardData.id}'` : "ID required" },
-    { name: "Description Scope", pass: !!wizardData.description, detail: wizardData.description ? "Description present" : "Missing" },
-    { name: "Seed System Prompt", pass: !!wizardData.seed_prompt, detail: wizardData.seed_prompt ? "Defined" : "Missing" },
-    { name: "Test Cases Count", pass: wizardData.test_cases.length > 0, detail: `${wizardData.test_cases.length} cases added` }
+async function generateAIBenchmarkCases() {
+  const category = document.getElementById("add-bm-category").value;
+  alert("AI is generating 2 realistic test case payloads...");
+  
+  addBenchmarkRows = [
+    { id: 'case_001', input: `const query = "SELECT * FROM users WHERE id = " + req.query.id;`, expected_status: 'VULNERABLE', category: category },
+    { id: 'case_002', input: `const query = "SELECT * FROM users WHERE id = ?"; db.query(query, [req.query.id]);`, expected_status: 'SAFE', category: category }
   ];
 
-  let html = "";
-  checks.forEach(chk => {
-    html += `
-      <div class="val-item ${chk.pass ? 'pass' : 'fail'}">
-        <span>${chk.pass ? '[PASS]' : '[FAIL]'}</span>
-        <strong style="width:200px;">${chk.name}:</strong>
-        <span>${chk.detail}</span>
-      </div>
-    `;
-  });
-  container.innerHTML = html;
+  switchAddBenchmarkTab('manual');
+  renderAddBenchmarkRowsInline();
 }
 
-function renderWizardPreviewTable() {
-  const container = document.getElementById("wiz-preview-table-container");
-  if (!container) return;
+async function submitAddBenchmark() {
+  const id = document.getElementById("add-bm-id").value.trim();
+  const desc = document.getElementById("add-bm-desc").value.trim();
+  const seedPrompt = document.getElementById("add-bm-prompt").value.trim();
+  const category = document.getElementById("add-bm-category").value;
+  const errBox = document.getElementById("add-bm-error-box");
 
-  let html = `<div class="table-container"><table class="trajectory-table"><thead><tr><th>#</th><th>ID</th><th>Expected Status</th><th>Payload</th></tr></thead><tbody>`;
-  wizardData.test_cases.forEach((tc, idx) => {
-    html += `<tr><td>#${idx + 1}</td><td><span style="font-family:'JetBrains Mono', monospace; color:var(--accent-cyan);">${tc.id}</span></td><td><span class="badge ${tc.expected_status.includes('VULNERABLE') ? 'initial' : 'optimized'}">${tc.expected_status}</span></td><td><div style="font-family:'JetBrains Mono', monospace; font-size:0.8rem; max-height:80px; overflow-y:auto;">${tc.input}</div></td></tr>`;
-  });
-  html += `</tbody></table></div>`;
-  container.innerHTML = html;
-}
-
-function renderWizardSummaryReview() {
-  const container = document.getElementById("wiz-summary-review");
-  if (container) {
-    container.innerHTML = `
-      <div><strong>Identifier:</strong> ${wizardData.id}</div>
-      <div><strong>Category:</strong> ${wizardData.category}</div>
-      <div><strong>Test Cases Count:</strong> ${wizardData.test_cases.length} cases</div>
-    `;
+  if (!id || !desc) {
+    if (errBox) {
+      errBox.textContent = "Please provide Benchmark Identifier and Short Description.";
+      errBox.style.display = "block";
+    }
+    return;
   }
-}
 
-async function submitWizardBenchmark() {
+  let finalCases = [];
+  if (addBenchmarkActiveTab === 'file' && addBenchmarkFileData) {
+    finalCases = addBenchmarkFileData;
+  } else {
+    finalCases = addBenchmarkRows.filter(r => r.input.trim() !== "");
+  }
+
+  if (finalCases.length === 0) {
+    if (errBox) {
+      errBox.textContent = "Please add or import at least 1 test case payload.";
+      errBox.style.display = "block";
+    }
+    return;
+  }
+
   try {
     const res = await fetch("/api/benchmarks", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        benchmark_name: wizardData.id,
-        description: wizardData.description,
-        task_description: wizardData.description,
-        seed_prompt: wizardData.seed_prompt,
-        test_cases: wizardData.test_cases
+        benchmark_name: id,
+        description: desc,
+        task_description: desc,
+        category: category,
+        seed_prompt: seedPrompt || "You are a security auditor.",
+        test_cases: finalCases
       })
     });
 
     if (res.ok) {
       playSuccessSound();
-      logActivity("[ADD]", `Published benchmark dataset '${wizardData.id}'.`);
-      alert(`Benchmark '${wizardData.id}' published successfully!`);
-      closeWizardModal();
+      logActivity("[ADD]", `Published security benchmark suite '${id}'.`);
+      alert(`Benchmark suite '${id}' published successfully!`);
+      closeAddBenchmarkModal();
       fetchBenchmarks();
+    } else {
+      const err = await res.json();
+      alert("Error creating benchmark: " + JSON.stringify(err));
     }
   } catch (err) {
     alert("Publish failed: " + err.message);
-  }
-}
-
-function toggleImportModal() {
-  document.getElementById("dataset-import-modal")?.classList.toggle("active");
-}
-
-function closeImportModal(e) {
-  if (e.target.id === "dataset-import-modal") toggleImportModal();
-}
-
-function openImportModalFromWizard() {
-  closeWizardModal();
-  toggleImportModal();
-}
-
-function handleFileSelected(e) {
-  const file = e.target.files[0];
-  if (!file) return;
-  importFileName = file.name;
-  document.getElementById("import-filename-text").textContent = `Selected: ${file.name} (${Math.round(file.size / 1024)} KB)`;
-  const reader = new FileReader();
-  reader.onload = (evt) => { importFileRawText = evt.target.result; };
-  reader.readAsText(file);
-}
-
-function processDatasetImport() {
-  if (!importFileRawText) return alert("Please select a file to import.");
-  const format = document.getElementById("import-format-select").value;
-  const errBox = document.getElementById("import-error-box");
-  errBox.style.display = "none";
-
-  let importedCases = [];
-  try {
-    if (format === "json") {
-      const parsed = JSON.parse(importFileRawText);
-      const list = Array.isArray(parsed) ? parsed : (parsed.test_cases || []);
-      importedCases = list.map((item, idx) => ({
-        id: item.id || `case_${String(idx + 1).padStart(3, '0')}`,
-        input: item.input || item.payload || "",
-        expected_status: item.expected_status || item.status || "VULNERABLE",
-        expected_category: item.expected_category || "IMPORTED"
-      }));
-    } else if (format === "csv") {
-      const lines = importFileRawText.split("\n").map(l => l.trim()).filter(l => l);
-      lines.slice(1).forEach((line, idx) => {
-        const parts = line.split(",");
-        if (parts.length >= 2) {
-          importedCases.push({
-            id: `case_${String(idx + 1).padStart(3, '0')}`,
-            expected_status: parts[1] ? parts[1].replace(/"/g, '').trim() : "VULNERABLE",
-            input: parts.slice(2).join(",").replace(/^"|"$/g, '').trim() || parts[0],
-            expected_category: "IMPORTED"
-          });
-        }
-      });
-    }
-
-    if (importedCases.length === 0) throw new Error("No valid test cases parsed.");
-
-    wizardData.test_cases = importedCases;
-    playSuccessSound();
-    logActivity("[IMPORT]", `Imported ${importedCases.length} test cases from '${importFileName}'.`);
-    alert(`Successfully imported ${importedCases.length} test cases!`);
-    toggleImportModal();
-    openWizardModal();
-    wizardStep = 3;
-    renderWizardStep();
-  } catch (err) {
-    errBox.textContent = "Import Error: " + err.message;
-    errBox.style.display = "block";
   }
 }
 
