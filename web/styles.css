@@ -115,9 +115,21 @@
   padding: 0;
 }
 
-/* Clean Native OS Cursor Styling */
+/* Custom Cursor Follower */
 .custom-cursor-follower {
-  display: none !important;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 18px;
+  height: 18px;
+  background: var(--cursor-color);
+  clip-path: polygon(0 0, 100% 45%, 55% 55%, 45% 100%);
+  pointer-events: none;
+  z-index: 99998;
+  opacity: 0;
+  transform: translate(0, 0);
+  transition: opacity 0.15s ease, transform 0.1s cubic-bezier(0.1, 0.7, 0.1, 1), background-color 0.2s, width 0.2s, height 0.2s;
+  box-shadow: 0 0 6px rgba(255, 255, 255, 0.8);
 }
 
 .custom-cursor-follower.hovering {

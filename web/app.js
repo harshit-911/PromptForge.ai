@@ -1741,42 +1741,68 @@ function initCustomCursor() {
   let mouseX = -100, mouseY = -100, followerX = -100, followerY = -100;
   let isVisible = false;
 
-  document.addEventListener("mousemove", (e) => {
-    mouseX = e.clientX;
-    mouseY = e.clientY;
-    if (!isVisible) {
-      isVisible = true;
-      follower.style.opacity = "1";
-    }
-  });
-
-  document.addEventListener("mouseleave", () => {
+  function hideCursor() {
     isVisible = false;
     follower.style.opacity = "0";
+  }
+
+  function showCursor() {
+    isVisible = true;
+    follower.style.opacity = "1";
+  }
+
+  document.addEventListener("mousemove", (e) => {
+    // Hide immediately if cursor reaches tab/window edges
+    if (e.clientX <= 2 || e.clientY <= 2 || e.clientX >= window.innerWidth - 2 || e.clientY >= window.innerHeight - 2) {
+      hideCursor();
+      return;
+    }
+    mouseX = e.clientX;
+    mouseY = e.clientY;
+    if (!isVisible) showCursor();
+  });
+
+  document.addEventListener("mouseleave", hideCursor);
+  document.addEventListener("mouseout", (e) => {
+    if (!e.relatedTarget || e.relatedTarget.nodeName === "HTML") {
+      hideCursor();
+    }
   });
 
   document.addEventListener("mouseenter", (e) => {
     mouseX = e.clientX;
     mouseY = e.clientY;
-    isVisible = true;
-    follower.style.opacity = "1";
+    showCursor();
   });
 
   window.addEventListener("blur", () => {
-    isVisible = false;
-    follower.style.opacity = "0";
+    hideCursor();
     document.querySelectorAll('.card-dropdown-menu').forEach(m => m.classList.remove('active'));
   });
 
-  window.addEventListener("focus", () => {
-    follower.style.opacity = "0";
+  document.addEventListener("mousedown", () => {
+    follower.classList.add("clicking");
+  });
+
+  document.addEventListener("mouseup", () => {
+    follower.classList.remove("clicking");
+  });
+
+  document.addEventListener("mouseover", (e) => {
+    if (e.target.closest("button, select, a, .preset-btn, .copy-btn, .nav-btn, .metric-card")) {
+      follower.classList.add("hovering");
+    } else {
+      follower.classList.remove("hovering");
+    }
   });
 
   function render() {
-    followerX += (mouseX - followerX) * 0.25;
-    followerY += (mouseY - followerY) * 0.25;
-    follower.style.left = `${followerX}px`;
-    follower.style.top = `${followerY}px`;
+    if (isVisible) {
+      followerX += (mouseX - followerX) * 0.3;
+      followerY += (mouseY - followerY) * 0.3;
+      follower.style.left = `${followerX}px`;
+      follower.style.top = `${followerY}px`;
+    }
     requestAnimationFrame(render);
   }
   requestAnimationFrame(render);
