@@ -69,7 +69,7 @@ document.addEventListener("DOMContentLoaded", () => {
   document.addEventListener("keydown", (e) => {
     if (e.key === "Escape") {
       closeSideDrawer();
-      closeWizardModal();
+      closeAddBenchmarkModal();
       closeSettingsModal();
       closeCodeExportModal();
     }
@@ -299,8 +299,7 @@ function renderCatalogCards(items) {
         <div class="empty-sub">We couldn't find any benchmark datasets matching your active search query or filter criteria.</div>
         <div style="display:flex; gap:10px; justify-content:center;">
           <button class="copy-btn" onclick="resetCatalogFilters()">Reset Filters</button>
-          <button class="copy-btn" onclick="toggleImportModal()">Import Dataset</button>
-          <button class="btn-primary" onclick="openWizardModal()">Create Benchmark Wizard</button>
+          <button class="btn-primary" onclick="openAddBenchmarkModal()"><span>+ Add Benchmark Suite ➔</span></button>
         </div>
       </div>
     `;
@@ -678,6 +677,10 @@ function closeAddBenchmarkModal(e) {
     document.getElementById("add-benchmark-modal")?.classList.remove("active");
   }
 }
+
+function openWizardModal() { openAddBenchmarkModal(); }
+function closeWizardModal(e) { closeAddBenchmarkModal(e); }
+function toggleImportModal() { openAddBenchmarkModal(); }
 
 function switchAddBenchmarkTab(tab) {
   playClickSound();
