@@ -1505,31 +1505,14 @@ function toggleTheme() {
 function initCustomCursor() {
   const follower = document.getElementById("cursor-follower");
   if (!follower) return;
-
-  let isVisible = false;
-
-  document.addEventListener("mousemove", (e) => {
-    if (!isVisible) {
-      isVisible = true;
-      follower.style.opacity = "1";
-    }
-    follower.style.transform = `translate3d(${e.clientX}px, ${e.clientY}px, 0)`;
-  }, { passive: true });
-
-  document.addEventListener("mousedown", () => {
-    follower.classList.add("clicking");
-  });
-
-  document.addEventListener("mouseup", () => {
-    follower.classList.remove("clicking");
-  });
-
-  document.addEventListener("mouseover", (e) => {
-    const isInteractive = e.target.closest("button, a, select, input, textarea, [role='button'], .copy-btn, .preset-btn, .nav-btn, .btn-primary, .metric-card-pro, .stat-card-mini, .benchmark-card-pro");
-    if (isInteractive) {
-      follower.classList.add("hovering");
-    } else {
-      follower.classList.remove("hovering");
-    }
-  }, { passive: true });
+  let mouseX = 0, mouseY = 0, followerX = 0, followerY = 0;
+  document.addEventListener("mousemove", (e) => { mouseX = e.clientX; mouseY = e.clientY; });
+  function render() {
+    followerX += (mouseX - followerX) * 0.25;
+    followerY += (mouseY - followerY) * 0.25;
+    follower.style.left = `${followerX}px`;
+    follower.style.top = `${followerY}px`;
+    requestAnimationFrame(render);
+  }
+  requestAnimationFrame(render);
 }

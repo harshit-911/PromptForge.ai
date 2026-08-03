@@ -115,9 +115,9 @@
   padding: 0;
 }
 
-/* Custom 1:1 Direct Tracking Cursor (Only active on desktop) */
+/* Custom Minimalist Cursor (Only active on desktop) */
 @media (hover: hover) and (pointer: fine) {
-  *, *::before, *::after {
+  body, button, select, input, textarea, a {
     cursor: none !important;
   }
 }
@@ -126,28 +126,25 @@
   position: fixed;
   top: 0;
   left: 0;
-  width: 16px;
-  height: 16px;
-  background: var(--accent-cyan);
+  width: 18px;
+  height: 18px;
+  background: var(--cursor-color);
   clip-path: polygon(0 0, 100% 45%, 55% 55%, 45% 100%);
   pointer-events: none;
-  z-index: 99999;
-  opacity: 0;
-  will-change: transform;
-  transform: translate3d(-100px, -100px, 0);
-  transition: opacity 0.15s ease, width 0.1s ease, height 0.15s ease, background-color 0.15s ease;
-  filter: drop-shadow(0 0 6px rgba(56, 189, 248, 0.8));
+  z-index: 99998;
+  transform: translate(0, 0);
+  transition: transform 0.1s cubic-bezier(0.1, 0.7, 0.1, 1), background-color 0.2s, width 0.2s, height 0.2s;
+  box-shadow: 0 0 6px rgba(255, 255, 255, 0.8);
 }
 
 .custom-cursor-follower.hovering {
-  width: 20px;
-  height: 20px;
-  background: var(--accent-purple);
-  filter: drop-shadow(0 0 10px rgba(168, 85, 247, 0.9));
+  width: 24px;
+  height: 24px;
+  opacity: 0.9;
 }
 
 .custom-cursor-follower.clicking {
-  opacity: 0.75;
+  transform: translate(0, 0) scale(0.85);
 }
 
 body {
