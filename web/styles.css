@@ -115,9 +115,9 @@
   padding: 0;
 }
 
-/* Custom Minimalist Cursor (Only active on desktop) */
+/* Custom High-Precision Minimalist Cursor (Only active on desktop) */
 @media (hover: hover) and (pointer: fine) {
-  body, button, select, input, textarea, a {
+  *, *::before, *::after {
     cursor: none !important;
   }
 }
@@ -126,26 +126,61 @@
   position: fixed;
   top: 0;
   left: 0;
-  width: 18px;
-  height: 18px;
-  background: var(--cursor-color);
+  width: 16px;
+  height: 16px;
+  background: var(--accent-cyan);
   clip-path: polygon(0 0, 100% 45%, 55% 55%, 45% 100%);
   pointer-events: none;
-  z-index: 99998;
+  z-index: 99999;
+  opacity: 0;
   will-change: transform;
-  transform: translate3d(0, 0, 0);
-  transition: width 0.15s ease, height 0.15s ease, opacity 0.15s ease;
-  box-shadow: 0 0 6px rgba(255, 255, 255, 0.8);
+  transform: translate3d(-100px, -100px, 0);
+  transition: opacity 0.2s ease, width 0.15s ease, height 0.15s ease;
+  filter: drop-shadow(0 0 6px rgba(56, 189, 248, 0.8));
+}
+
+.custom-cursor-ring {
+  position: fixed;
+  top: -12px;
+  left: -12px;
+  width: 24px;
+  height: 24px;
+  border: 1.5px solid rgba(56, 189, 248, 0.5);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 99998;
+  opacity: 0;
+  will-change: transform;
+  transform: translate3d(-100px, -100px, 0);
+  transition: opacity 0.25s ease, width 0.2s ease, height 0.2s ease, border-color 0.2s ease;
 }
 
 .custom-cursor-follower.hovering {
-  width: 24px;
-  height: 24px;
-  opacity: 0.9;
+  width: 20px;
+  height: 20px;
+  background: var(--accent-purple);
+  filter: drop-shadow(0 0 10px rgba(168, 85, 247, 0.9));
+}
+
+.custom-cursor-ring.hovering {
+  width: 38px;
+  height: 38px;
+  top: -19px;
+  left: -19px;
+  border-color: rgba(168, 85, 247, 0.7);
+  background: rgba(168, 85, 247, 0.08);
 }
 
 .custom-cursor-follower.clicking {
-  transform: translate(0, 0) scale(0.85);
+  opacity: 0.85;
+}
+
+.custom-cursor-ring.clicking {
+  width: 18px;
+  height: 18px;
+  top: -9px;
+  left: -9px;
+  border-color: var(--accent-emerald);
 }
 
 body {

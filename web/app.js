@@ -1504,18 +1504,57 @@ function toggleTheme() {
 
 function initCustomCursor() {
   const follower = document.getElementById("cursor-follower");
+  const ring = document.getElementById("cursor-ring");
   if (!follower) return;
-  let mouseX = -100, mouseY = -100, followerX = -100, followerY = -100;
+
+  let mouseX = -100, mouseY = -100;
+  let followerX = -100, followerY = -100;
+  let ringX = -100, ringY = -100;
+  let isVisible = false;
 
   document.addEventListener("mousemove", (e) => {
     mouseX = e.clientX;
     mouseY = e.clientY;
+    if (!isVisible) {
+      isVisible = true;
+      follower.style.opacity = "1";
+      if (ring) ring.style.opacity = "1";
+    }
+  }, { passive: true });
+
+  document.addEventListener("mousedown", () => {
+    follower.classList.add("clicking");
+    if (ring) ring.classList.add("clicking");
+  });
+
+  document.addEventListener("mouseup", () => {
+    follower.classList.remove("clicking");
+    if (ring) ring.classList.remove("clicking");
+  });
+
+  document.addEventListener("mouseover", (e) => {
+    const isInteractive = e.target.closest("button, a, select, input, textarea, [role='button'], .copy-btn, .preset-btn, .nav-btn, .btn-primary, .metric-card-pro, .stat-card-mini, .benchmark-card-pro");
+    if (isInteractive) {
+      follower.classList.add("hovering");
+      if (ring) ring.classList.add("hovering");
+    } else {
+      follower.classList.remove("hovering");
+      if (ring) ring.classList.remove("hovering");
+    }
   }, { passive: true });
 
   function render() {
-    followerX += (mouseX - followerX) * 0.65;
-    followerY += (mouseY - followerY) * 0.65;
-    follower.style.transform = `translate3d(${followerX}px, ${followerY}px, 0)`;
+    if (isVisible) {
+      followerX += (mouseX - followerX) * 0.75;
+      followerY += (mouseY - followerY) * 0.75;
+      follower.style.transform = `translate3d(${followerX}px, ${followerY}px, 0)`;
+
+      if (ring) {
+        ringX += (mouseX - ringX) * 0.35;
+        ringY += (mouseY - ringY) * 0.35;
+        ring.style.transform = `translate3d(${ringX}px, ${ringY}px, 0)`;
+      }
+    }
     requestAnimationFrame(render);
   }
   requestAnimationFrame(render);
