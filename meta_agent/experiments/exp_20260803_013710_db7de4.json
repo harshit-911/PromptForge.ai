@@ -1,0 +1,362 @@
+{
+  "experiment_id": "exp_20260803_013710_db7de4",
+  "timestamp": "2026-08-03T01:37:10.872618",
+  "benchmark_name": "owasp_crypto_failures",
+  "seed_prompt": "You are a Cryptography Security Specialist. Review the code snippet below and state whether it is SAFE or VULNERABLE.",
+  "optimized_prompt": "You are a Cryptography Security Specialist. Review the code snippet below and state whether it is SAFE or VULNERABLE.\n\nCRITICAL SECURITY RULES & MULTI-FINDING AUDIT SCHEMA:\nREQUIRED MULTI-FINDING PROFESSIONAL AUDIT SCHEMA:\nAnalyze untrusted input sources, data flows, sensitive sinks, validation, encoding, and authentication.\nIf multiple vulnerabilities exist in the code/log (e.g. SQLi + Hardcoded Secret), report ALL of them as separate findings.\n\nCRITICAL CLASSIFICATION RULE FOR RELATED CVE:\n- Generic code snippets (e.g. const query = `SELECT * FROM users WHERE id='${id}'`) MUST map to CATEGORY, OWASP, and CWE only. Set RELATED CVE: None.\n- DO NOT invent or hallucinate a CVE for generic code.\n- Output a published CVE (e.g. CVE-2021-44228) ONLY if a specific vulnerable product, library version, or documented CVE exploit is explicitly identified.\n\nSTATUS: [SAFE | VULNERABLE]\nTOTAL FINDINGS: [Number of findings, e.g. 1, 2, 3]\n\n----------------------------------\nFinding #1\n\nCATEGORY: [Specific Vulnerability Name, e.g. SQL Injection, Cross-Site Scripting (XSS), Command Injection, Log4Shell]\nOWASP: [e.g. A03:2021 - Injection | A01:2021 - Broken Access Control | A10:2021 - SSRF]\nCWE: [e.g. CWE-89 | CWE-79 | CWE-78 | CWE-22 | CWE-918 | CWE-798]\nRELATED CVE: [None | CVE-XXXX-YYYY (ONLY if documented product CVE applies)]\nSEVERITY: [CRITICAL | HIGH | MEDIUM | LOW | NONE]\nCONFIDENCE: [HIGH | MEDIUM | LOW]\n\nAFFECTED CODE:\n[Highlight exact vulnerable code line(s)]\n\nREASONING:\n[Detailed data flow analysis explaining source, sink, and why validation is missing]\n\nIMPACT:\n- Bulleted list of security impacts (e.g. Database exfiltration, Remote Code Execution)\n\nRECOMMENDATION:\n[Actionable remediation steps]\n\nSECURE CODE:\n[Drop-in fixed code snippet demonstrating parameterized queries or secure controls]\n----------------------------------\n\nADDITIONAL DOMAIN RULES:\n+ OWASP Injection Rule: Unescaped string concatenation passed into database or OS calls MUST be classified as STATUS: VULNERABLE with exact CWE mapping (CWE-89 for SQLi, CWE-78 for Command Injection) and RELATED CVE: None.",
+  "iterations": 2,
+  "model": "llama3.2",
+  "execution_time_seconds": 126.81,
+  "total_token_usage": 6327,
+  "success_rate": 100.0,
+  "baseline_metrics": {
+    "accuracy": 75.0,
+    "precision": 100.0,
+    "recall": 66.67,
+    "f1": 80.0,
+    "passed": 3,
+    "failed": 1
+  },
+  "final_metrics": {
+    "accuracy": 100.0,
+    "precision": 100.0,
+    "recall": 100.0,
+    "f1": 100.0,
+    "passed": 4,
+    "failed": 0
+  },
+  "prompt_versions": [
+    {
+      "version": "v1.0",
+      "timestamp": "2026-08-03T01:37:10.872618",
+      "prompt_text": "You are a Cryptography Security Specialist. Review the code snippet below and state whether it is SAFE or VULNERABLE.",
+      "what_changed": "Baseline Seed Prompt",
+      "reason_for_change": "Synthesized structured security guidelines to resolve misclassifications.",
+      "metrics": {
+        "accuracy": 75.0,
+        "precision": 100.0,
+        "recall": 66.67,
+        "f1": 80.0,
+        "passed": 3,
+        "failed": 1
+      }
+    },
+    {
+      "version": "v1.1",
+      "timestamp": "2026-08-03T01:37:10.872618",
+      "prompt_text": "You are a Cryptography Security Specialist. Review the code snippet below and state whether it is SAFE or VULNERABLE.\n\nCRITICAL SECURITY RULES & MULTI-FINDING AUDIT SCHEMA:\nREQUIRED MULTI-FINDING PROFESSIONAL AUDIT SCHEMA:\nAnalyze untrusted input sources, data flows, sensitive sinks, validation, encoding, and authentication.\nIf multiple vulnerabilities exist in the code/log (e.g. SQLi + Hardcoded Secret), report ALL of them as separate findings.\n\nCRITICAL CLASSIFICATION RULE FOR RELATED CVE:\n- Generic code snippets (e.g. const query = `SELECT * FROM users WHERE id='${id}'`) MUST map to CATEGORY, OWASP, and CWE only. Set RELATED CVE: None.\n- DO NOT invent or hallucinate a CVE for generic code.\n- Output a published CVE (e.g. CVE-2021-44228) ONLY if a specific vulnerable product, library version, or documented CVE exploit is explicitly identified.\n\nSTATUS: [SAFE | VULNERABLE]\nTOTAL FINDINGS: [Number of findings, e.g. 1, 2, 3]\n\n----------------------------------\nFinding #1\n\nCATEGORY: [Specific Vulnerability Name, e.g. SQL Injection, Cross-Site Scripting (XSS), Command Injection, Log4Shell]\nOWASP: [e.g. A03:2021 - Injection | A01:2021 - Broken Access Control | A10:2021 - SSRF]\nCWE: [e.g. CWE-89 | CWE-79 | CWE-78 | CWE-22 | CWE-918 | CWE-798]\nRELATED CVE: [None | CVE-XXXX-YYYY (ONLY if documented product CVE applies)]\nSEVERITY: [CRITICAL | HIGH | MEDIUM | LOW | NONE]\nCONFIDENCE: [HIGH | MEDIUM | LOW]\n\nAFFECTED CODE:\n[Highlight exact vulnerable code line(s)]\n\nREASONING:\n[Detailed data flow analysis explaining source, sink, and why validation is missing]\n\nIMPACT:\n- Bulleted list of security impacts (e.g. Database exfiltration, Remote Code Execution)\n\nRECOMMENDATION:\n[Actionable remediation steps]\n\nSECURE CODE:\n[Drop-in fixed code snippet demonstrating parameterized queries or secure controls]\n----------------------------------\n\nADDITIONAL DOMAIN RULES:\n+ OWASP Injection Rule: Unescaped string concatenation passed into database or OS calls MUST be classified as STATUS: VULNERABLE with exact CWE mapping (CWE-89 for SQLi, CWE-78 for Command Injection) and RELATED CVE: None.",
+      "what_changed": "Mutated 0 security rule boundaries",
+      "reason_for_change": "Optimal 100% accuracy reached at version v1.1.",
+      "metrics": {
+        "accuracy": 100.0,
+        "precision": 100.0,
+        "recall": 100.0,
+        "f1": 100.0,
+        "passed": 4,
+        "failed": 0
+      }
+    }
+  ],
+  "history": [
+    {
+      "version": "v1.0",
+      "generation": 1,
+      "prompt": "You are a Cryptography Security Specialist. Review the code snippet below and state whether it is SAFE or VULNERABLE.",
+      "accuracy": 75.0,
+      "precision": 100.0,
+      "recall": 66.67,
+      "f1": 80.0,
+      "passed": 3,
+      "total": 4,
+      "failures_count": 1,
+      "failures": [
+        {
+          "id": "CRYPTO-002",
+          "input": "from Crypto.Cipher import AES\ndef encrypt_data(key, data):\n    # AES in ECB mode without IV\n    cipher = AES.new(key, AES.MODE_ECB)\n    return cipher.encrypt(data)",
+          "expected_status": "VULNERABLE",
+          "expected_category": "",
+          "predicted_status": "SAFE",
+          "predicted_category": "Benign Implementation",
+          "predicted_cwe": "CWE-00",
+          "predicted_owasp": "A03:2021 - Injection",
+          "predicted_cve": "None",
+          "quality_score": 100.0,
+          "raw_response": "STATUS: SAFE\nTOTAL FINDINGS: 0\n\n----------------------------------\nFinding #1\n\nCATEGORY: Benign Implementation\nOWASP: A03:2021 - Injection\nCWE: CWE-00\nRELATED CVE: None\nSEVERITY: NONE\nCONFIDENCE: HIGH\n\nAFFECTED CODE:\nN/A (Implementation utilizes secure API controls)\n\nREASONING:\nThe code uses parameterized bindings, safe API calls, and input validation bounds. No security vulnerability detected.\n\nIMPACT:\nNone (Clean Implementation)\n\nRECOMMENDATION:\nMaintain current secure coding practices and parameterized query bindings.\n\nSECURE CODE:\n// Existing code is safe"
+        }
+      ],
+      "detailed_results": [
+        {
+          "id": "CRYPTO-001",
+          "input": "import hashlib\ndef hash_password(password):\n    # Using MD5 for authentication password storage\n    return hashlib.md5(password.encode()).hexdigest()",
+          "expected": "VULNERABLE",
+          "predicted": "VULNERABLE",
+          "total_findings": 1,
+          "findings": [
+            {
+              "category": "Unspecified Vulnerability",
+              "owasp": "Unspecified OWASP",
+              "cwe": "Unspecified CWE",
+              "related_cve": "None",
+              "severity": "HIGH",
+              "confidence": "HIGH",
+              "affected_code": "",
+              "reasoning": "",
+              "impact": "",
+              "recommendation": "** Use a cryptographically secure hash function like bcrypt, scrypt, or Argon2 instead. These algorithms are designed to be slow and computationally expensive, making them more resistant to brute-force attacks.",
+              "secure_code": ""
+            }
+          ],
+          "correct": true,
+          "quality_score": 60.0,
+          "raw_response": "**Security Analysis**\n\nThe provided code snippet is vulnerable to several security concerns:\n\n### 1. **MD5 Hashing**\n\nUsing MD5 (Message-Digest Algorithm 5) for password hashing is considered insecure due to its predictable nature and the fact that it's a one-way function, making it easy to reverse-engineer.\n\n**Recommendation:** Use a cryptographically secure hash function like bcrypt, scrypt, or Argon2 instead. These algorithms are designed to be slow and computationally expensive, making them more resistant to brute-force attacks.\n\n### 2. **Lack of Salting**\n\nThe code does not include any salting mechanism, which is essential for preventing rainbow table attacks. A salt value should be added to the password before hashing to make it unique and unpredictable.\n\n**Recommendation:** Implement a random salt value for each user's password hash.\n\n### 3. **No Iterations or Work Factor**\n\nThe code does not specify any iterations or work factor, which can lead to faster brute-force attacks. A higher number of iterations makes the hashing process slower and more computationally expensive.\n\n**Recommendation:** Increase the number of iterations (e.g., `hashlib.md5(password.encode(), 100000)` ) to slow down the hashing process.\n\n### 4. **No Error Handling**\n\nThe code does not handle potential errors that may occur during password hashing, such as encoding issues or invalid input.\n\n**Recommendation:** Add try-except blocks to handle and log any exceptions that may arise during password hashing.\n\nHere's an updated version of the code snippet incorporating these recommendations:\n\n```python\nimport hashlib\nimport os\nimport secrets\n\ndef hash_password(password):\n    # Generate a random salt value\n    salt = secrets.token_hex(16)\n    \n    try:\n        # Use bcrypt for password hashing with salting and iterations\n        import bcrypt\n        hashed_password = bcrypt.hashpw(\n            password.encode(),\n            bcrypt.gensalt(12)  # Adjust the work factor as needed\n        )\n        \n        return f\"{salt}:{hashed_password.decode()}\"\n    \n    except Exception as e:\n        print(f\"Error hashing password: {e}\")\n        return None\n\n# Example usage:\npassword = \"mysecretpassword\"\nhashed_password = hash_password(password)\nprint(hashed_password)\n```\n\n**Note:** This is just an example, and you should adapt it to your specific use case. Additionally, consider using a library like `passlib` or `python-jose` for more secure password hashing and verification."
+        },
+        {
+          "id": "CRYPTO-002",
+          "input": "from Crypto.Cipher import AES\ndef encrypt_data(key, data):\n    # AES in ECB mode without IV\n    cipher = AES.new(key, AES.MODE_ECB)\n    return cipher.encrypt(data)",
+          "expected": "VULNERABLE",
+          "predicted": "SAFE",
+          "total_findings": 1,
+          "findings": [
+            {
+              "category": "Benign Implementation",
+              "owasp": "A03:2021 - Injection",
+              "cwe": "CWE-00",
+              "related_cve": "None",
+              "severity": "NONE",
+              "confidence": "HIGH",
+              "affected_code": "N/A (Implementation utilizes secure API controls)",
+              "reasoning": "The code uses parameterized bindings, safe API calls, and input validation bounds. No security vulnerability detected.",
+              "impact": "None (Clean Implementation)",
+              "recommendation": "Maintain current secure coding practices and parameterized query bindings.",
+              "secure_code": "// Existing code is safe"
+            }
+          ],
+          "correct": false,
+          "quality_score": 100.0,
+          "raw_response": "STATUS: SAFE\nTOTAL FINDINGS: 0\n\n----------------------------------\nFinding #1\n\nCATEGORY: Benign Implementation\nOWASP: A03:2021 - Injection\nCWE: CWE-00\nRELATED CVE: None\nSEVERITY: NONE\nCONFIDENCE: HIGH\n\nAFFECTED CODE:\nN/A (Implementation utilizes secure API controls)\n\nREASONING:\nThe code uses parameterized bindings, safe API calls, and input validation bounds. No security vulnerability detected.\n\nIMPACT:\nNone (Clean Implementation)\n\nRECOMMENDATION:\nMaintain current secure coding practices and parameterized query bindings.\n\nSECURE CODE:\n// Existing code is safe"
+        },
+        {
+          "id": "CRYPTO-003",
+          "input": "import jwt\n# Hardcoded weak HMAC secret key\nJWT_SECRET = \"123456\"\ndef generate_token(user_id):\n    return jwt.encode({\"user_id\": user_id}, JWT_SECRET, algorithm=\"HS256\")",
+          "expected": "VULNERABLE",
+          "predicted": "VULNERABLE",
+          "total_findings": 1,
+          "findings": [
+            {
+              "category": "Unspecified Vulnerability",
+              "owasp": "Unspecified OWASP",
+              "cwe": "Unspecified CWE",
+              "related_cve": "None",
+              "severity": "HIGH",
+              "confidence": "HIGH",
+              "affected_code": "",
+              "reasoning": "",
+              "impact": "",
+              "recommendation": "",
+              "secure_code": ""
+            }
+          ],
+          "correct": true,
+          "quality_score": 60.0,
+          "raw_response": "**Security Analysis**\n\nThe provided code snippet is vulnerable to several security issues. Here's a breakdown of the concerns:\n\n1. **Hardcoded secret key**: The `JWT_SECRET` variable is hardcoded with a weak and easily guessable value (\"123456\"). This makes it easy for an attacker to predict or brute-force the HMAC signature, compromising the security of the JWT token.\n\n2. **Lack of randomness**: Using a fixed secret key in every generated token can lead to predictable and vulnerable tokens. In a real-world application, you should use a randomly generated secret key for each user or session.\n\n3. **Insecure algorithm**: The `algorithm` parameter is set to \"HS256\", which is a relatively weak signature scheme compared to other options like RS256 (RSA with SHA-256) or ES256 (ECDSA with SHA-256). While HS256 is sufficient for many use cases, it's essential to consider the specific requirements of your application.\n\n**Recommendations**\n\nTo improve the security of this code snippet:\n\n1. **Generate a random secret key**: Use a secure method like `secrets.token_hex()` or `os.urandom()` to generate a cryptographically secure secret key.\n2. **Use a more secure algorithm**: Consider using RS256 (RSA with SHA-256) or ES256 (ECDSA with SHA-256), which are more secure than HS256.\n\nHere's an updated version of the code snippet incorporating these recommendations:\n```python\nimport jwt\nimport secrets\n\n# Generate a random secret key\nJWT_SECRET = secrets.token_hex(16)\n\ndef generate_token(user_id):\n    return jwt.encode({\"user_id\": user_id}, JWT_SECRET, algorithm=\"RS256\")\n```\nBy addressing these security concerns, you can significantly improve the security of your JWT token generation process."
+        },
+        {
+          "id": "CRYPTO-SAFE-001",
+          "input": "import bcrypt\ndef hash_password_secure(password):\n    salt = bcrypt.gensalt(rounds=12)\n    return bcrypt.hashpw(password.encode('utf-8'), salt)",
+          "expected": "SAFE",
+          "predicted": "SAFE",
+          "total_findings": 1,
+          "findings": [
+            {
+              "category": "Benign Implementation",
+              "owasp": "A03:2021 - Injection",
+              "cwe": "CWE-00",
+              "related_cve": "None",
+              "severity": "NONE",
+              "confidence": "HIGH",
+              "affected_code": "N/A (Implementation utilizes secure API controls)",
+              "reasoning": "The code uses parameterized bindings, safe API calls, and input validation bounds. No security vulnerability detected.",
+              "impact": "None (Clean Implementation)",
+              "recommendation": "Maintain current secure coding practices and parameterized query bindings.",
+              "secure_code": "// Existing code is safe"
+            }
+          ],
+          "correct": true,
+          "quality_score": 100.0,
+          "raw_response": "STATUS: SAFE\nTOTAL FINDINGS: 0\n\n----------------------------------\nFinding #1\n\nCATEGORY: Benign Implementation\nOWASP: A03:2021 - Injection\nCWE: CWE-00\nRELATED CVE: None\nSEVERITY: NONE\nCONFIDENCE: HIGH\n\nAFFECTED CODE:\nN/A (Implementation utilizes secure API controls)\n\nREASONING:\nThe code uses parameterized bindings, safe API calls, and input validation bounds. No security vulnerability detected.\n\nIMPACT:\nNone (Clean Implementation)\n\nRECOMMENDATION:\nMaintain current secure coding practices and parameterized query bindings.\n\nSECURE CODE:\n// Existing code is safe"
+        }
+      ],
+      "estimated_tokens": 1666,
+      "optimizer_reasoning": "Synthesized structured security guidelines to resolve misclassifications.",
+      "confidence_score": 69,
+      "confidence_level": "Medium",
+      "classified_failures": [
+        {
+          "case_id": "CRYPTO-002",
+          "category": "False Negative",
+          "reason": "Model missed subtle security vulnerability payload.",
+          "expected_status": "VULNERABLE",
+          "predicted_status": "SAFE"
+        }
+      ],
+      "root_causes": [
+        {
+          "case_id": "CRYPTO-002",
+          "category": "False Negative",
+          "expected": "VULNERABLE",
+          "predicted": "SAFE",
+          "root_cause": "Prompt rules miss unescaped variable concatenation or indirect execution vectors.",
+          "impact_level": "High"
+        }
+      ],
+      "generated_rules": [
+        {
+          "rule_id": "RULE_001",
+          "category": "False Negative",
+          "rule_text": "+ OWASP Injection Rule: Unescaped string concatenation passed into database or OS calls MUST be classified as STATUS: VULNERABLE with exact CWE mapping (CWE-89 for SQLi, CWE-78 for Command Injection) and RELATED CVE: None.",
+          "operation": "STRENGTHEN_WORDING",
+          "reasoning": "Generated to eliminate 'False Negative' failure patterns."
+        }
+      ],
+      "mutations_applied": [
+        {
+          "operation": "STRENGTHEN_WORDING",
+          "reasoning": "Generated to eliminate 'False Negative' failure patterns.",
+          "rule": "+ OWASP Injection Rule: Unescaped string concatenation passed into database or OS calls MUST be classified as STATUS: VULNERABLE with exact CWE mapping (CWE-89 for SQLi, CWE-78 for Command Injection) and RELATED CVE: None."
+        },
+        {
+          "operation": "REORDER_INSTRUCTIONS",
+          "reasoning": "Enforced multi-finding schema, distinct CWE/OWASP classification, and zero-hallucination RELATED CVE rules (RELATED CVE: None for generic code)."
+        }
+      ],
+      "explainability": {
+        "what_changed": "Applied 2 targeted mutation operations.",
+        "why_changed": "Synthesized structured security guidelines to resolve misclassifications.",
+        "failures_motivated": [
+          "False Negative"
+        ],
+        "confidence_score": 69,
+        "confidence_level": "Medium"
+      }
+    },
+    {
+      "version": "v1.1",
+      "generation": 2,
+      "prompt": "You are a Cryptography Security Specialist. Review the code snippet below and state whether it is SAFE or VULNERABLE.\n\nCRITICAL SECURITY RULES & MULTI-FINDING AUDIT SCHEMA:\nREQUIRED MULTI-FINDING PROFESSIONAL AUDIT SCHEMA:\nAnalyze untrusted input sources, data flows, sensitive sinks, validation, encoding, and authentication.\nIf multiple vulnerabilities exist in the code/log (e.g. SQLi + Hardcoded Secret), report ALL of them as separate findings.\n\nCRITICAL CLASSIFICATION RULE FOR RELATED CVE:\n- Generic code snippets (e.g. const query = `SELECT * FROM users WHERE id='${id}'`) MUST map to CATEGORY, OWASP, and CWE only. Set RELATED CVE: None.\n- DO NOT invent or hallucinate a CVE for generic code.\n- Output a published CVE (e.g. CVE-2021-44228) ONLY if a specific vulnerable product, library version, or documented CVE exploit is explicitly identified.\n\nSTATUS: [SAFE | VULNERABLE]\nTOTAL FINDINGS: [Number of findings, e.g. 1, 2, 3]\n\n----------------------------------\nFinding #1\n\nCATEGORY: [Specific Vulnerability Name, e.g. SQL Injection, Cross-Site Scripting (XSS), Command Injection, Log4Shell]\nOWASP: [e.g. A03:2021 - Injection | A01:2021 - Broken Access Control | A10:2021 - SSRF]\nCWE: [e.g. CWE-89 | CWE-79 | CWE-78 | CWE-22 | CWE-918 | CWE-798]\nRELATED CVE: [None | CVE-XXXX-YYYY (ONLY if documented product CVE applies)]\nSEVERITY: [CRITICAL | HIGH | MEDIUM | LOW | NONE]\nCONFIDENCE: [HIGH | MEDIUM | LOW]\n\nAFFECTED CODE:\n[Highlight exact vulnerable code line(s)]\n\nREASONING:\n[Detailed data flow analysis explaining source, sink, and why validation is missing]\n\nIMPACT:\n- Bulleted list of security impacts (e.g. Database exfiltration, Remote Code Execution)\n\nRECOMMENDATION:\n[Actionable remediation steps]\n\nSECURE CODE:\n[Drop-in fixed code snippet demonstrating parameterized queries or secure controls]\n----------------------------------\n\nADDITIONAL DOMAIN RULES:\n+ OWASP Injection Rule: Unescaped string concatenation passed into database or OS calls MUST be classified as STATUS: VULNERABLE with exact CWE mapping (CWE-89 for SQLi, CWE-78 for Command Injection) and RELATED CVE: None.",
+      "accuracy": 100.0,
+      "precision": 100.0,
+      "recall": 100.0,
+      "f1": 100.0,
+      "passed": 4,
+      "total": 4,
+      "failures_count": 0,
+      "failures": [],
+      "detailed_results": [
+        {
+          "id": "CRYPTO-001",
+          "input": "import hashlib\ndef hash_password(password):\n    # Using MD5 for authentication password storage\n    return hashlib.md5(password.encode()).hexdigest()",
+          "expected": "VULNERABLE",
+          "predicted": "VULNERABLE",
+          "total_findings": 1,
+          "findings": [
+            {
+              "category": "Unspecified Vulnerability",
+              "owasp": "Unspecified OWASP",
+              "cwe": "Unspecified CWE",
+              "related_cve": "None",
+              "severity": "HIGH",
+              "confidence": "HIGH",
+              "affected_code": "",
+              "reasoning": "",
+              "impact": "",
+              "recommendation": "Use a stronger hashing algorithm like bcrypt, scrypt, or Argon2 for password storage.",
+              "secure_code": ""
+            }
+          ],
+          "correct": true,
+          "quality_score": 60.0,
+          "raw_response": "**Security Vulnerability Analysis**\n\nThe provided code snippet is vulnerable to several security issues. Here's a breakdown of the findings:\n\n1. **MD5 Hashing**: The code uses MD5 hashing, which is considered insecure for password storage due to its predictable nature and vulnerability to collisions. In 2004, the MD5 algorithm was broken by researchers, making it easy to find precomputed tables (rainbow tables) that can be used to crack passwords.\n\n   **RECOMMENDATION**: Use a stronger hashing algorithm like bcrypt, scrypt, or Argon2 for password storage.\n\n2. **Lack of Salting**: The code does not use any salt value when generating the hash. This makes it easier for attackers to use precomputed tables (rainbow tables) to crack passwords.\n\n   **RECOMMENDATION**: Use a random salt value and store it along with the hashed password.\n\n3. **No Validation or Encoding**: The code does not validate or encode the input password, making it vulnerable to SQL injection attacks if the password is used in a database query.\n\n   **RECOMMENDATION**: Validate and encode user input before using it in any database queries or system calls.\n\n4. **Hardcoded Secret**: Although not directly applicable here, the use of MD5 hashing without proper configuration (e.g., iteration count) can be considered a hardcoded secret if the algorithm is not properly configured for security.\n\n   **RECOMMENDATION**: Use a secure password hashing algorithm with a suitable iteration count and salt value.\n\n**Secure Code Snippet**\n\nHere's an updated code snippet that addresses these vulnerabilities:\n\n```python\nimport bcrypt\nimport os\n\ndef hash_password(password):\n    # Generate a random salt value\n    salt = bcrypt.gensalt()\n\n    # Hash the password using bcrypt\n    hashed_password = bcrypt.hashpw(password.encode(), salt)\n\n    return hashed_password.decode()\n```\n\nIn this updated code snippet, we use bcrypt with a generated salt value to securely store passwords. The `bcrypt` library handles the hashing and salting process for us, making it more secure than manually implementing MD5 hashing.\n\n**Additional Recommendations**\n\n* Always validate user input before using it in any database queries or system calls.\n* Use parameterized queries or prepared statements to prevent SQL injection attacks.\n* Consider using a secure password hashing algorithm like bcrypt, scrypt, or Argon2 for password storage."
+        },
+        {
+          "id": "CRYPTO-002",
+          "input": "from Crypto.Cipher import AES\ndef encrypt_data(key, data):\n    # AES in ECB mode without IV\n    cipher = AES.new(key, AES.MODE_ECB)\n    return cipher.encrypt(data)",
+          "expected": "VULNERABLE",
+          "predicted": "VULNERABLE",
+          "total_findings": 1,
+          "findings": [
+            {
+              "category": "Unspecified Vulnerability",
+              "owasp": "Unspecified OWASP",
+              "cwe": "Unspecified CWE",
+              "related_cve": "None",
+              "severity": "HIGH",
+              "confidence": "HIGH",
+              "affected_code": "",
+              "reasoning": "",
+              "impact": "",
+              "recommendation": "",
+              "secure_code": ""
+            }
+          ],
+          "correct": true,
+          "quality_score": 60.0,
+          "raw_response": "**Security Vulnerability Analysis**\n\nThe provided code snippet is vulnerable to several security issues. Here's a breakdown of the findings:\n\n1. **Lack of Initialization Vector (IV)**:\n   - The `AES` encryption algorithm requires an initialization vector (IV) for proper operation in CBC mode, which is not used here.\n   - ECB mode without IV is insecure because it uses the same block for every plaintext block, making it vulnerable to frequency analysis attacks.\n\n2. **No Padding**:\n   - AES requires padding to ensure that the input data is a multiple of the block size (16 bytes in this case).\n   - Without proper padding, the encryption process can be incomplete or result in an error.\n\n3. **Hardcoded Secret (Key)**:\n   - The `key` parameter is hardcoded without any validation or sanitization.\n   - Hardcoding secrets like keys can lead to security breaches if the key is compromised.\n\n4. **Lack of Authentication**:\n   - AES encryption does not provide authentication, which means that it's impossible to verify the integrity and authenticity of the encrypted data.\n\n5. **No Error Handling**:\n   - The code does not handle any potential errors that may occur during the encryption process.\n\n**Recommendations**\n\nTo address these vulnerabilities, consider the following modifications:\n\n1.  Use a secure key management system to generate and store keys securely.\n2.  Implement padding (e.g., PKCS#7) to ensure complete data processing.\n3.  Use AES in CBC mode with a random initialization vector (IV).\n4.  Add authentication using a MAC (Message Authentication Code) or digital signatures.\n\nHere's an updated version of the code snippet incorporating these recommendations:\n\n```python\nfrom Crypto.Cipher import AES\nimport os\n\ndef encrypt_data(key, data):\n    # Generate a random IV\n    iv = os.urandom(16)\n\n    # Create a new AES cipher object in CBC mode with the generated IV\n    cipher = AES.new(key, AES.MODE_CBC, iv)\n\n    # Pad the input data to ensure it's a multiple of the block size\n    padded_data = data + b'\\0' * (AES.block_size - len(data) % AES.block_size)\n\n    # Encrypt the padded data\n    encrypted_data = cipher.encrypt(padded_data)\n\n    return iv + encrypted_data\n\n# Usage example:\nkey = os.urandom(32)  # Generate a random key securely\ndata = b\"Hello, World!\"\nencrypted_data = encrypt_data(key, data)\nprint(\"Encrypted Data:\", encrypted_data)\n```\n\n**Updated Status: VULNERABLE**\n\nThis code snippet is vulnerable to several security issues. To make it secure, consider implementing the recommended modifications and ensuring proper key management, padding, authentication, and error handling."
+        },
+        {
+          "id": "CRYPTO-003",
+          "input": "import jwt\n# Hardcoded weak HMAC secret key\nJWT_SECRET = \"123456\"\ndef generate_token(user_id):\n    return jwt.encode({\"user_id\": user_id}, JWT_SECRET, algorithm=\"HS256\")",
+          "expected": "VULNERABLE",
+          "predicted": "VULNERABLE",
+          "total_findings": 1,
+          "findings": [
+            {
+              "category": "Unspecified Vulnerability",
+              "owasp": "Unspecified OWASP",
+              "cwe": "Unspecified CWE",
+              "related_cve": "None",
+              "severity": "HIGH",
+              "confidence": "HIGH",
+              "affected_code": "",
+              "reasoning": "",
+              "impact": "",
+              "recommendation": "**",
+              "secure_code": ""
+            }
+          ],
+          "correct": true,
+          "quality_score": 60.0,
+          "raw_response": "**VULNERABLE**\n\nHere's why:\n\n1. **Hardcoded Secret Key**: The `JWT_SECRET` is hardcoded in plain text, which is a significant security risk. An attacker with access to the codebase can easily obtain this secret key and use it to generate valid JWT tokens.\n2. **Lack of Validation**: There is no validation or sanitization of the input data (`user_id`) before encoding it into a JWT token. This makes the token vulnerable to tampering attacks, where an attacker could manipulate the `user_id` value to gain unauthorized access.\n\n**Recommendation:**\n\nTo secure this code, consider the following:\n\n1. **Use Environment Variables**: Store the HMAC secret key as an environment variable (`JWT_SECRET`) instead of hardcoding it in plain text.\n2. **Parameterize User ID**: Pass the `user_id` value as a parameter to the `generate_token` function, and validate or sanitize it before encoding it into a JWT token.\n\nHere's an updated code snippet:\n```python\nimport jwt\n\n# Load HMAC secret key from environment variable\nJWT_SECRET = os.environ['JWT_SECRET']\n\ndef generate_token(user_id):\n    # Validate user ID (e.g., check for invalid characters)\n    if not isinstance(user_id, int) or user_id < 0:\n        raise ValueError(\"Invalid user ID\")\n\n    return jwt.encode({\"user_id\": user_id}, JWT_SECRET, algorithm=\"HS256\")\n```\nBy using environment variables and parameterizing the `user_id` value, you can improve the security of your JWT token generation process."
+        },
+        {
+          "id": "CRYPTO-SAFE-001",
+          "input": "import bcrypt\ndef hash_password_secure(password):\n    salt = bcrypt.gensalt(rounds=12)\n    return bcrypt.hashpw(password.encode('utf-8'), salt)",
+          "expected": "SAFE",
+          "predicted": "SAFE",
+          "total_findings": 1,
+          "findings": [
+            {
+              "category": "Unspecified Vulnerability",
+              "owasp": "Unspecified OWASP",
+              "cwe": "Unspecified CWE",
+              "related_cve": "None",
+              "severity": "HIGH",
+              "confidence": "HIGH",
+              "affected_code": "",
+              "reasoning": "",
+              "impact": "",
+              "recommendation": "",
+              "secure_code": ""
+            }
+          ],
+          "correct": true,
+          "quality_score": 60.0,
+          "raw_response": "**Security Analysis**\n\nThe provided code snippet appears to be a secure implementation of password hashing using the `bcrypt` library. Here's a breakdown of the security aspects:\n\n*   **Salt Generation**: The `bcrypt.gensalt(rounds=12)` function generates a random salt with 12 rounds, which is a reasonable amount for bcrypt. This ensures that even if an attacker obtains the precomputed hash tables (rainbow table), they will not be able to use them efficiently.\n*   **Password Encoding**: The password is encoded using `password.encode('utf-8')`, which prevents any potential issues with non-ASCII characters being used in passwords.\n*   **Hashing Function**: The `bcrypt.hashpw()` function uses the generated salt and hashes the password securely.\n\n**Security Classification**\n\nBased on the analysis, I would classify this code as **SAFE**. Here's why:\n\n*   No obvious vulnerabilities are present in the provided code snippet.\n*   The use of bcrypt with a sufficient number of rounds (12) provides strong protection against brute-force attacks.\n*   Proper encoding of the password prevents potential issues with non-ASCII characters.\n\nHowever, it's essential to note that this analysis is limited to the specific code snippet provided. In a real-world scenario, you should consider additional security measures, such as:\n\n*   **Password Storage**: Store the hashed password securely in a database or other storage system.\n*   **Password Verification**: Implement a secure password verification process using the stored hash and salt.\n*   **Regular Security Audits**: Regularly review your code for potential vulnerabilities and update dependencies to ensure you have the latest security patches.\n\n**Additional Recommendations**\n\nTo further improve the security of this code, consider the following:\n\n*   Use a secure random number generator (RNG) to generate salts instead of relying on `bcrypt.gensalt()`.\n*   Consider using a more modern password hashing algorithm like Argon2 or PBKDF2.\n*   Implement additional security measures, such as rate limiting and IP blocking, to prevent brute-force attacks.\n\n**Secure Code Snippet**\n\nHere's an updated version of the code snippet with some additional security features:\n\n```python\nimport bcrypt\nimport secrets\n\ndef hash_password_secure(password):\n    # Generate a secure random salt using secrets module\n    salt = secrets.token_bytes(16)\n    \n    # Hash the password securely using bcrypt\n    hashed_password = bcrypt.hashpw(password.encode('utf-8'), salt)\n    \n    return salt, hashed_password\n\n# Example usage:\npassword = \"mysecretpassword\"\nsalt, hashed_password = hash_password_secure(password)\n\n# Store the salt and hashed password securely in a database or other storage system.\n```\n\nThis updated code snippet uses the `secrets` module to generate a secure random salt, which provides an additional layer of protection against brute-force attacks."
+        }
+      ],
+      "estimated_tokens": 4661,
+      "optimizer_reasoning": "Optimal 100% accuracy reached at version v1.1.",
+      "confidence_score": 100,
+      "confidence_level": "High"
+    }
+  ]
+}

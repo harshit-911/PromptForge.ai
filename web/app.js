@@ -1505,13 +1505,17 @@ function toggleTheme() {
 function initCustomCursor() {
   const follower = document.getElementById("cursor-follower");
   if (!follower) return;
-  let mouseX = 0, mouseY = 0, followerX = 0, followerY = 0;
-  document.addEventListener("mousemove", (e) => { mouseX = e.clientX; mouseY = e.clientY; });
+  let mouseX = -100, mouseY = -100, followerX = -100, followerY = -100;
+
+  document.addEventListener("mousemove", (e) => {
+    mouseX = e.clientX;
+    mouseY = e.clientY;
+  }, { passive: true });
+
   function render() {
-    followerX += (mouseX - followerX) * 0.25;
-    followerY += (mouseY - followerY) * 0.25;
-    follower.style.left = `${followerX}px`;
-    follower.style.top = `${followerY}px`;
+    followerX += (mouseX - followerX) * 0.65;
+    followerY += (mouseY - followerY) * 0.65;
+    follower.style.transform = `translate3d(${followerX}px, ${followerY}px, 0)`;
     requestAnimationFrame(render);
   }
   requestAnimationFrame(render);
